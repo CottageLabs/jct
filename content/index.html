@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CL dev JCT</title>
+  <meta name="description" content="">
+  <meta name="author" content="Cottage Labs">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--<link href="/static/favicon.ico" rel="icon" type="image/x-icon">-->
+
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <!--
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <script type="text/javascript" src="/static/moment.min.js"></script>
+  -->
+
+  <!--
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  -->
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css">
+  <!--<link href="/static/style.css" rel='stylesheet' type='text/css'>-->
+
+  <script type="text/javascript" src="/static/jct.js"></script>
+
+  <script>
+  var st = undefined;
+  var ft = document.getElementById('funder');
+  _ready = function() {
+    ft = document.getElementById('funder');
+    if (ft !== null) {
+      clearInterval(st);
+      console.log(ft);
+      console.log('ready');
+    } else {
+      console.log('not ready')
+    }
+  }
+  if (ft === null) st = setInterval(_ready,100);
+  </script>
+
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      min-height: 100%;
+    }
+    .container {
+      max-width:1000px;
+    }
+    .unbound {
+      border:none;
+      margin:0px;
+    }
+    .success {
+      background-color: #689f38;
+      border-color: #689f38;
+    }
+    .error {
+      background-color: #d32f2f;
+      border-color: #d32f2f;
+    }
+    a.button.primary {
+      color:white;
+    }
+    .section {
+      display: none;
+      margin-top:40px;
+      border-top:1px solid #ccc;
+    }
+    .help {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!--
+  <div id="loading" class="loading" style="display:none;position:fixed;top:0;bottom:0;left:0;right:0;opacity:0.2;background-color:#ccc;">
+    <div style="margin-top:300px;margin-left:auto;margin-right:auto;width:200px;">
+      <img style="height:200px;width:200px;" src="//static.cottagelabs.com/spin_grey.svg">
+    </div>
+  </div>
+  -->
+  
+  <header id="header" class="sticky">
+    <div class="row">
+      <a href="/" class="logo col-sm-10">(CL dev) JCT</a>
+      <a id="mobmenu" href="#" class="col-sm-1 hidden-md hidden-lg" style="padding-top:5px;font-size:2em;"><span class="icon-help"></span></a>
+    </div>
+  </header>
+
+  <div id="main" class="container" style="min-height:300px;">
+    <div id="spacer" class="row hidden-sm" style="margin-top:25%;"></div>
+    
+    <!-- here are all parts of the jct tool itself, what will be necessary for the embed -->
+    <div class="row">
+      <div class="col-sm">
+        <div class="button-group shadowed">
+          <input class="unbound col-sm ac" type="text" id="funder" placeholder="your funder">
+          <input class="unbound col-sm ac" type="text" id="journal" placeholder="journal (name or ISSN)">
+          <!-- topic search is apparently also necessary, add to journal box to select journal names 
+            - or just have backend search keywords/subjects/topics if no journals match the terms provided -->
+          <input class="unbound col-sm ac" type="text" id="institution" placeholder="your institution">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div id="help_funder" class="col-sm help">
+        <p>
+          Tell us the main funder of your research, we'll find their publishing policy
+          (try Wellcome Trust). If your funder is not part of Plan S, this tool will not 
+          be relevant to you. (List will be restricted to Plan S funders later.)
+        </p>
+      </div>
+      <div id="help_journal" class="col-sm help">
+        <p>
+          Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status 
+          (for example Annals of Oncology).
+        </p>
+      </div>
+      <div id="help_institution" class="col-sm help">
+        <p>
+          Let us know the institution you're affiliated to for this research  
+          (e.g. Max Planck Society).
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm suggest" id="suggestfunder"></div>
+      <div class="col-sm suggest" id="suggestjournal"></div>
+      <div class="col-sm suggest" id="suggestinstitution"></div>
+    </div>
+    <div class="row">
+      <div id="compliant" class="card fluid success col-md-12" style="display:none;">
+        <h1>&#x2713; COMPLIANT</h1>
+      </div>
+      <div id="notcompliant" class="card fluid error col-md-12" style="display:none;">
+        <h1>&#x2717; NOT COMPLIANT</h1>
+      </div>
+      <div class="col-sm-12" id="result">
+      </div>
+      <div class="col-sm-12" id="missing" style="display:none;"><p>Sorry, we can't find any <span id="whatsmissing"></span> called <b id="titlemissing"></b>. We'll add it as soon as we can.</p></div>
+    </div>
+    <div id="loading" class="loading" style="display:none;">
+      <div style="margin-top:40px;margin-left:auto;margin-right:auto;width:200px;">
+        <img style="height:200px;width:200px;" src="//static.cottagelabs.com/spin_grey.svg">
+      </div>
+    </div>
+    <!-- end of jct tool parts -->
+    
+    <div class="section" id="section_apply">
+      <p>TODO add an application form for transformative journals here, and a bulk upload csv mechanism, with example csv file showing necessary format</p>
+      <p>Also link to explanations on plan-s site of what transformative journal is</p>
+      <p>And link to our own page here listing all transformative jouranls already known</p>
+    </div>
+    <div class="section" id="section_notify">
+      <p>TODO add a notify form so publishers/journals, or users, can notify us of changes to tranformative agreements, or other fixes</p>
+    </div>
+    <div class="section" id="section_journals">
+      <p>TODO list all transformative journals here, and link to explanations on plan-s site of what a transformative journal is.</p>
+      <p>Job of data manager will include ensuring the applications we receive are processed and approved in the system, and reviewing in line with plan-s reqs.</p>
+    </div>
+    <div class="section" id="section_agreements">
+      <p>TODO list all transformative agreements here, and link to explanations on plan-s site of what a transformative agreement is.</p>
+      <p>Also could allow filtering by institution, to see what agreements your institution is signed up to</p>
+      <p>Job of data manager will include listing out which institutions are related to which ESAC agreement, which we will store in sheets / backend.</p>
+      <p>And link to ESAC here, probably recommend them as first place to go to register any new agreements - and maybe have a way for people to let us know directly?</p>
+      <p><a href="https://esac-initiative.org/about/transformative-agreements/share/">ESAC transformative agreements registration link</a></p>
+    </div>
+    <div class="section" id="section_about">
+      <p>TODO an about page decsribing the JCT and why it exists</p>
+      
+      <p>Which will also contain a blurb about plan-s and why they exist, why they made this</p>
+      <p>And link to plan-s / coalition-s site for more info</p>
+    </div>
+    <div class="section" id="section_howto">
+      <p>TODO a click-through walkthrough thing of how to use the service</p>
+      <p>And also add an FAQ, which may best be generated from a sheet that the data manager can use to answer questions, then feed them in here automatically.</p>
+    </div>
+    <div class="section" id="section_embed">
+      <p>TODO an explanation of embedding the tool on your own site, for journal, funder, institution, with link to embed code</p>
+      <p>And how to customise it to set your journal/funder already because no point a user selecting that when already on the website of that entity.</p>
+    </div>
+    <div class="section" id="section_feedback">
+      <p>TODO a feedback form where users can tell us of problems, also link to actions where a user can click if they've put in a journal / funder etc that we did not already have in the system</p>
+      <p>Automatically grab page state when this is done, getting search terms already provided, and anything else that may be useful for bugfixing.</p>
+    </div>
+  </div>
+
+  <footer id="footer" class="sticky">
+    <div class="row">
+      <div class="col-sm">
+        <p>
+          <a id="apply" class="button primary small bordered pager" href="/apply">Apply for transformative journal status</a> <a id="notify" class="button small bordered pager" href="/changes">Notify us of changes</a><br>
+          <a id="journals" class="button small bordered pager" href="/transformative/journals">Transformative journals</a> <a id="agreements" class="button small bordered pager" href="/transformative/agreements">Transformative agreements</a>
+        </p>
+      </div>
+      <div class="col-sm">
+        <p style="text-align:right;">
+          <a id="about" class="button small bordered pager" href="/about">About this service</a> <a id="about_plans" class="button small bordered pager" href="/about#plan-s">About Plan S / cOAlition S</a><br>
+          <a id="howto" class="button small bordered pager" href="/howto">How to use this service</a> <a id="embed" class="button small bordered pager" href="/embed">Use on your site</a> <a id="feedback" class="button small bordered pager" href="/feedback">Give us feedback</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+<script>
+var body = document.body;
+var html = document.documentElement;
+var height = Math.max( window.innerHeight, body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+var hh = jct.d.gebi('header').offsetHeight;
+var fh = jct.d.gebi('footer').offsetHeight;
+jct.d.gebi('main').style['min-height'] = (height-hh-fh)+'px';
+
+if (window.innerWidth < 790) {
+  document.getElementById('footer').setAttribute('class','');
+} else {
+  //document.getElementById('journal').focus();
+}
+jct.setup();
+
+jct.d.gebi('mobmenu').addEventListener("click", function(e) {
+  e.preventDefault();
+  scroll(0,document.body.scrollHeight);
+});
+
+jct.d.each('pager', function(el) {
+  el.addEventListener("click", function(e) {
+    e.preventDefault();
+    jct.d.each('section', function(el) { el.style.display = 'none'; });
+    jct.d.gebi('spacer').style.display = 'none';
+    scroll(0,0);
+    var sid = el.getAttribute('id').split('_')[0];
+    jct.d.gebi('section_'+sid).style.display = 'block';
+    // TODO also alter the page URL bar and back/forward methods to show the right routes and sections
+    // TODO and on first show, get the content for the section from backend, so that initial page load stays fast
+    if (sid === 'agreements') {
+      if (!jct.d.gebi('agreements_table')) {
+        jct.jx('transformative/esac', undefined, function(xhr) {
+          var data = JSON.parse(xhr.response);
+          var table = '<table id="agreements_table">';
+          table += '<thead><tr><th>publisher</th><th>country</th><th>customer</th><th>size</th><th>start date</th><th>end date</th><th>ID</th></tr></thead><tbody>';
+          for ( var r in data ) {
+            table += '<tr>';
+            for ( var d in data[r] ) {
+              console.log(d)
+              if (['publisher','country','customer','size','start_date','end_date','id'].indexOf(d) !== -1) {
+                table += '<td>' + data[r][d] + '</td>';
+              }
+            }
+            table += '</tr>';
+          }
+          table += '</tbody>';
+          table += '</table>';
+          jct.d.gebi('section_agreements').innerHTML = jct.d.gebi('section_agreements').innerHTML + '<br>' + table;
+        });
+      }
+    }
+  });
+});
+</script>
+
+</html>
