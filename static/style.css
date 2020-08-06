@@ -1,0 +1,32 @@
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+}
+.container {
+    max-width:1000px;
+}
+.unbound {
+    border:none;
+    margin:0px;
+}
+.success {
+    background-color: #689f38;
+    border-color: #689f38;
+}
+.error {
+    background-color: #d32f2f;
+    border-color: #d32f2f;
+}
+a.button.primary {
+    color:white;
+}
+.section {
+    display: none;
+    margin-top:40px;
+    border-top:1px solid #ccc;
+}
+.help {
+    display: none;
+}
