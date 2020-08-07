@@ -151,7 +151,7 @@ jct.success = function(xhr) {
     jct.suggesting = false;
   } else if (js.compliance) {
     //jct.d.gebi('spacer').style.display = 'none';
-    console.log(jct.chosen)
+    jct.d.gebi(js.compliance.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
     if (jct.chosen.journal){
       jct.add_tile(jct.COMPLIANCE_ROUTES.fully_oa);
       jct.add_tile(jct.COMPLIANCE_ROUTES.ta);
