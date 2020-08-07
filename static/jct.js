@@ -150,14 +150,16 @@ jct.success = function(xhr) {
     jct.suggestions(js);
     jct.suggesting = false;
   } else if (js.compliance) {
+    jct.d.gebi("paths_results").innerHTM = ""
     //jct.d.gebi('spacer').style.display = 'none';
     jct.d.gebi(js.compliance.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+    jct.d.gebi("paths_results").innerHTML = "";
     if (jct.chosen.journal){
       jct.add_tile(jct.COMPLIANCE_ROUTES.fully_oa);
-      jct.add_tile(jct.COMPLIANCE_ROUTES.ta);
       jct.add_tile(jct.COMPLIANCE_ROUTES.tj);
+      jct.add_tile(jct.COMPLIANCE_ROUTES.sa);
       if (jct.chosen.institution){
-        jct.add_tile(jct.COMPLIANCE_ROUTES.sa);
+        jct.add_tile(jct.COMPLIANCE_ROUTES.ta);
       }
     }
 
@@ -166,28 +168,28 @@ jct.success = function(xhr) {
 }
 
 jct.add_tile = (tile_type) => {
-  let tile = document.createElement("div")
+  let tile;
   switch(tile_type) {
     case jct.COMPLIANCE_ROUTES.fully_oa:
-      tile.innerHTML = jct.fullyOA_tile(jct.chosen.journal.title)
+      tile = htmlToElement(jct.fullyOA_tile(jct.chosen.journal.title))
       break;
     case jct.COMPLIANCE_ROUTES.ta:
-      tile.innerHTML = jct.transformative_agreement_tile(jct.chosen.journal.title, jct.chosen.institution.title)
+      tile = htmlToElement(jct.transformative_agreement_tile(jct.chosen.journal.title, jct.chosen.institution.title))
       break;
     case jct.COMPLIANCE_ROUTES.tj:
-      tile.innerHTML = jct.transformative_journal_tile(jct.chosen.journal.title)
+      tile = htmlToElement(jct.transformative_journal_tile(jct.chosen.journal.title))
       break;
     case jct.COMPLIANCE_ROUTES.sa:
-      tile.innerHTML = jct.self_archiving_tile(jct.chosen.journal.title)
+      tile = htmlToElement(jct.self_archiving_tile(jct.chosen.journal.title))
       break;
   }
-  jct.d.gebi("paths_results").appendChild(tile);
+  jct.d.gebi("paths_results").append(tile);
 }
 
 jct.fullyOA_tile = (journal_title) => {
     return `
     <div class="paths_results paths_results__tile" id="fyllyOA_tile ` + journal_title  + `">
-        <b>` + journal_title + `</b> is fully open access.
+        <p><b>` + journal_title + `</b> is fully open access.</p>
     </div>
   `
 }
@@ -195,7 +197,7 @@ jct.fullyOA_tile = (journal_title) => {
 jct.transformative_agreement_tile = (journal_title, publisher_title) => {
   return `
     <div class="paths_results paths_results__tile" id="ta_tile` + journal_title + `-` + publisher_title + `">
-      It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.
+      <p>It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.</p>
     </div>
   `
 }
@@ -203,7 +205,7 @@ jct.transformative_agreement_tile = (journal_title, publisher_title) => {
 jct.transformative_journal_tile = (journal_title) => {
   return `
     <div class="paths_results paths_results__tile" id="tj_tile` +journal_title + `">
-     It is a transformative journal.
+     <p>It is a transformative journal.</p>
     </div>
   `
 }
@@ -211,7 +213,7 @@ jct.transformative_journal_tile = (journal_title) => {
 jct.self_archiving_tile = (journal_title) => {
   return `
     <div class="paths_results paths_results__tile" id="sa_tile` + journal_title + `">
-     It has a self-archiving policy, as shown on DOAJ.
+     <p>It has a self-archiving policy, as shown on DOAJ.</p>
     </div>
 `
 }
@@ -392,4 +394,15 @@ jct.setup = function() {
   jct.d.gebi("institution").addEventListener("focus", _choose);
 
   jct.preload();
+}
+
+/**
+ * @param {String} HTML representing a single element
+ * @return {Element}
+ */
+let htmlToElement = (html) => {
+  var template = document.createElement('template');
+  html = html.trim(); // Never return a text node of whitespace as the result
+  template.innerHTML = html;
+  return template.content.firstChild;
 }

@@ -32,21 +32,23 @@ a.button.primary {
 }
 
 .paths_results {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    grid-template-rows: 200px;
+    grid-auto-flow: row;
 }
 
 .paths_results__tile {
-    display: block;
-    width: 285px;
-    height: 290px;
-    margin: 30px;
+    display: grid;
+    justify-self: stretch;
+    align-self: center;
+
+    justify-content: flex-start;
+    align-content: stretch;
 
     font-style: normal;
     font-weight: normal;
     font-size: 24px;
-    line-height: 33px;
 
     /* black */
     color: #000000;
