@@ -30,3 +30,25 @@ a.button.primary {
 .help {
     display: none;
 }
+
+.paths_results {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.paths_results__tile {
+    display: block;
+    width: 285px;
+    height: 290px;
+    margin: 30px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 33px;
+
+    /* black */
+    color: #000000;
+    border: black solid 1px;
+}

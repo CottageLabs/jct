@@ -6,9 +6,64 @@ var jct = {
   chosen: {}
 }
 
+
+
+let plugin_template =`
+<div class="button-group shadowed">
+    <input class="unbound col-sm ac" type="text" id="journal" placeholder="journal (name or ISSN)">
+    <input class="unbound col-sm ac" type="text" id="funder" placeholder="your funder">
+    <input class="unbound col-sm ac" type="text" id="institution" placeholder="your institution"> 
+</div>
+<div class="row">
+  <div id="help_funder" class="col-sm help">
+    <p>
+      Tell us the main funder of your research, we'll find their publishing policy
+      (try Wellcome Trust). If your funder is not part of Plan S, this tool will not
+      be relevant to you. (List will be restricted to Plan S funders later.)
+    </p>
+  </div>
+  <div id="help_journal" class="col-sm help">
+    <p>
+      Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status
+      (for example Annals of Oncology).
+    </p>
+  </div>
+  <div id="help_institution" class="col-sm help">
+    <p>
+      Let us know the institution you're affiliated to for this research
+      (e.g. Max Planck Society).
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm suggest" id="suggestfunder"></div>
+  <div class="col-sm suggest" id="suggestjournal"></div>
+  <div class="col-sm suggest" id="suggestinstitution"></div>
+</div>
+<div class="row">
+  <div id="compliant" class="card fluid success col-md-12" style="display:none;">
+    <h1>&#x2713; COMPLIANT</h1>
+  </div>
+  <div id="notcompliant" class="card fluid error col-md-12" style="display:none;">
+    <h1>&#x2717; NOT COMPLIANT</h1>
+  </div>
+  <div class="col-sm-12" id="result">
+  </div>
+  <div class="paths_results" id="paths_results"></div>
+  <div class="col-sm-12" id="missing" style="display:none;"><p>Sorry, we can't find any <span id="whatsmissing"></span> called <b id="titlemissing"></b>. We'll add it as soon as we can.</p></div>
+</div>
+<div id="loading" class="loading" style="display:none;">
+  <div style="margin-top:40px;margin-left:auto;margin-right:auto;width:200px;">
+    <img style="height:200px;width:200px;" src="//static.cottagelabs.com/spin_grey.svg">
+  </div>
+</div>`
+
 jct.d = document;
 jct.d.gebi = document.getElementById;
 jct.d.gebc = document.getElementsByClassName;
+
+
+
 jct.d.each = function(cls, key, val) {
   if (cls.indexOf('.') === 0) cls = cls.replace('.','');
   var els = jct.d.gebc(cls);
@@ -73,6 +128,13 @@ jct.choose = function(e, el) {
   }
 }
 
+jct.COMPLIANCE_ROUTES = {
+  fully_oa: "fully_oa",
+  ta: "transformative_agreement",
+  tj: "transformative_journal",
+  sa: "self_archiving"
+}
+
 jct.error = function(xhr) {
   console.log(xhr.status + ': ' + xhr.statusText);
 }
@@ -84,16 +146,76 @@ jct.success = function(xhr) {
   console.log(xhr.response.length + ' bytes');
   var js = JSON.parse(xhr.response);
   if (xhr.response.startsWith('[')) js = js[0];
-  console.log(js);
   if (jct.suggesting) {
     jct.suggestions(js);
     jct.suggesting = false;
   } else if (js.compliance) {
     //jct.d.gebi('spacer').style.display = 'none';
-    jct.d.gebi(js.compliance.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+    console.log(jct.chosen)
+    if (jct.chosen.journal){
+      jct.add_tile(jct.COMPLIANCE_ROUTES.fully_oa);
+      jct.add_tile(jct.COMPLIANCE_ROUTES.ta);
+      jct.add_tile(jct.COMPLIANCE_ROUTES.tj);
+      if (jct.chosen.institution){
+        jct.add_tile(jct.COMPLIANCE_ROUTES.sa);
+      }
+    }
+
     // TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
   }
 }
+
+jct.add_tile = (tile_type) => {
+  let tile = document.createElement("div")
+  switch(tile_type) {
+    case jct.COMPLIANCE_ROUTES.fully_oa:
+      tile.innerHTML = jct.fullyOA_tile(jct.chosen.journal.title)
+      break;
+    case jct.COMPLIANCE_ROUTES.ta:
+      tile.innerHTML = jct.transformative_agreement_tile(jct.chosen.journal.title, jct.chosen.institution.title)
+      break;
+    case jct.COMPLIANCE_ROUTES.tj:
+      tile.innerHTML = jct.transformative_journal_tile(jct.chosen.journal.title)
+      break;
+    case jct.COMPLIANCE_ROUTES.sa:
+      tile.innerHTML = jct.self_archiving_tile(jct.chosen.journal.title)
+      break;
+  }
+  jct.d.gebi("paths_results").appendChild(tile);
+}
+
+jct.fullyOA_tile = (journal_title) => {
+    return `
+    <div class="paths_results paths_results__tile" id="fyllyOA_tile ` + journal_title  + `">
+        <b>` + journal_title + `</b> is fully open access.
+    </div>
+  `
+}
+
+jct.transformative_agreement_tile = (journal_title, publisher_title) => {
+  return `
+    <div class="paths_results paths_results__tile" id="ta_tile` + journal_title + `-` + publisher_title + `">
+      It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.
+    </div>
+  `
+}
+
+jct.transformative_journal_tile = (journal_title) => {
+  return `
+    <div class="paths_results paths_results__tile" id="tj_tile` +journal_title + `">
+     It is a transformative journal.
+    </div>
+  `
+}
+
+jct.self_archiving_tile = (journal_title) => {
+  return `
+    <div class="paths_results paths_results__tile" id="sa_tile` + journal_title + `">
+     It has a self-archiving policy, as shown on DOAJ.
+    </div>
+`
+}
+
 jct.jx = function(route,q,after,api) {
   var url = api ? api : jct.api;
   if (!url.endsWith('/')) url += '/';
@@ -242,6 +364,7 @@ jct.preload = function() {
 // start off with getting the funder automcompletes, then the journal autocompletes, which should be filtering results already
 // then do further autocompletes by institution and filter the possible journals by that too
 jct.setup = function() {
+  document.getElementById("plugin").innerHTML = plugin_template;
   var f = jct.d.gebi("funder");
   /*while (f === null) {
     console.log('waiting for page to draw');

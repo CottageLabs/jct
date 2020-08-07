@@ -44,7 +44,6 @@
   }
   if (ft === null) st = setInterval(_ready,100);
   </script>
-
 </head>
 
 <body>
@@ -68,59 +67,7 @@
     <div id="spacer" class="row hidden-sm" style="margin-top:25%;"></div>
     
     <!-- here are all parts of the jct tool itself, what will be necessary for the embed -->
-    <div class="row">
-      <div class="col-sm">
-        <div class="button-group shadowed">
-          <input class="unbound col-sm ac" type="text" id="funder" placeholder="your funder">
-          <input class="unbound col-sm ac" type="text" id="journal" placeholder="journal (name or ISSN)">
-          <!-- topic search is apparently also necessary, add to journal box to select journal names 
-            - or just have backend search keywords/subjects/topics if no journals match the terms provided -->
-          <input class="unbound col-sm ac" type="text" id="institution" placeholder="your institution">
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div id="help_funder" class="col-sm help">
-        <p>
-          Tell us the main funder of your research, we'll find their publishing policy
-          (try Wellcome Trust). If your funder is not part of Plan S, this tool will not 
-          be relevant to you. (List will be restricted to Plan S funders later.)
-        </p>
-      </div>
-      <div id="help_journal" class="col-sm help">
-        <p>
-          Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status 
-          (for example Annals of Oncology).
-        </p>
-      </div>
-      <div id="help_institution" class="col-sm help">
-        <p>
-          Let us know the institution you're affiliated to for this research  
-          (e.g. Max Planck Society).
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm suggest" id="suggestfunder"></div>
-      <div class="col-sm suggest" id="suggestjournal"></div>
-      <div class="col-sm suggest" id="suggestinstitution"></div>
-    </div>
-    <div class="row">
-      <div id="compliant" class="card fluid success col-md-12" style="display:none;">
-        <h1>&#x2713; COMPLIANT</h1>
-      </div>
-      <div id="notcompliant" class="card fluid error col-md-12" style="display:none;">
-        <h1>&#x2717; NOT COMPLIANT</h1>
-      </div>
-      <div class="col-sm-12" id="result">
-      </div>
-      <div class="col-sm-12" id="missing" style="display:none;"><p>Sorry, we can't find any <span id="whatsmissing"></span> called <b id="titlemissing"></b>. We'll add it as soon as we can.</p></div>
-    </div>
-    <div id="loading" class="loading" style="display:none;">
-      <div style="margin-top:40px;margin-left:auto;margin-right:auto;width:200px;">
-        <img style="height:200px;width:200px;" src="//static.cottagelabs.com/spin_grey.svg">
-      </div>
-    </div>
+    <div id="plugin"></div>
     <!-- end of jct tool parts -->
     
     <div class="section" id="section_apply">
