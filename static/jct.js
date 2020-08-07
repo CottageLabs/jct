@@ -15,17 +15,17 @@ let plugin_template =`
     <input class="unbound col-sm ac" type="text" id="institution" placeholder="your institution"> 
 </div>
 <div class="row">
+    <div id="help_journal" class="col-sm help">
+    <p>
+      Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status
+      (for example Annals of Oncology).
+    </p>
+  </div>
   <div id="help_funder" class="col-sm help">
     <p>
       Tell us the main funder of your research, we'll find their publishing policy
       (try Wellcome Trust). If your funder is not part of Plan S, this tool will not
       be relevant to you. (List will be restricted to Plan S funders later.)
-    </p>
-  </div>
-  <div id="help_journal" class="col-sm help">
-    <p>
-      Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status
-      (for example Annals of Oncology).
     </p>
   </div>
   <div id="help_institution" class="col-sm help">
@@ -36,8 +36,8 @@ let plugin_template =`
   </div>
 </div>
 <div class="row">
+ <div class="col-sm suggest" id="suggestjournal"></div>
   <div class="col-sm suggest" id="suggestfunder"></div>
-  <div class="col-sm suggest" id="suggestjournal"></div>
   <div class="col-sm suggest" id="suggestinstitution"></div>
 </div>
 <div class="row">
