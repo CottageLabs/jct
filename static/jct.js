@@ -188,7 +188,7 @@ jct.add_tile = (tile_type) => {
 
 jct.fullyOA_tile = (journal_title) => {
     return `
-    <div class="paths_results paths_results__tile" id="fyllyOA_tile ` + journal_title  + `">
+    <div class="paths_results__tile" id="fyllyOA_tile ` + journal_title  + `">
         <p><b>` + journal_title + `</b> is fully open access.</p>
     </div>
   `
@@ -196,7 +196,7 @@ jct.fullyOA_tile = (journal_title) => {
 
 jct.transformative_agreement_tile = (journal_title, publisher_title) => {
   return `
-    <div class="paths_results paths_results__tile" id="ta_tile` + journal_title + `-` + publisher_title + `">
+    <div class="paths_results__tile" id="ta_tile` + journal_title + `-` + publisher_title + `">
       <p>It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.</p>
     </div>
   `
@@ -204,7 +204,7 @@ jct.transformative_agreement_tile = (journal_title, publisher_title) => {
 
 jct.transformative_journal_tile = (journal_title) => {
   return `
-    <div class="paths_results paths_results__tile" id="tj_tile` +journal_title + `">
+    <div class="paths_results__tile" id="tj_tile` +journal_title + `">
      <p>It is a transformative journal.</p>
     </div>
   `
@@ -212,7 +212,7 @@ jct.transformative_journal_tile = (journal_title) => {
 
 jct.self_archiving_tile = (journal_title) => {
   return `
-    <div class="paths_results paths_results__tile" id="sa_tile` + journal_title + `">
+    <div class="paths_results__tile" id="sa_tile` + journal_title + `">
      <p>It has a self-archiving policy, as shown on DOAJ.</p>
     </div>
 `
