@@ -28,6 +28,7 @@
   <link href="../static/style.css" rel='stylesheet' type='text/css'>
 
   <script type="text/javascript" src="../static/jct.js"></script>
+  <script type="text/javascript" src="../static/contact.js"></script>
 
   <script>
   var st = undefined;
@@ -69,7 +70,8 @@
     <!-- here are all parts of the jct tool itself, what will be necessary for the embed -->
     <div id="plugin"></div>
     <!-- end of jct tool parts -->
-    
+
+
     <div class="section" id="section_apply">
       <p>TODO add an application form for transformative journals here, and a bulk upload csv mechanism, with example csv file showing necessary format</p>
       <p>Also link to explanations on plan-s site of what transformative journal is</p>
@@ -104,8 +106,20 @@
       <p>And how to customise it to set your journal/funder already because no point a user selecting that when already on the website of that entity.</p>
     </div>
     <div class="section" id="section_feedback">
-      <p>TODO a feedback form where users can tell us of problems, also link to actions where a user can click if they've put in a journal / funder etc that we did not already have in the system</p>
-      <p>Automatically grab page state when this is done, getting search terms already provided, and anything else that may be useful for bugfixing.</p>
+      <form onsubmit="send_feedback()" id="contact_form">
+
+        <label for="name">Name</label>
+        <input type="text" id="name" name="firstname" placeholder="Your name..">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Your email..">
+
+        <label for="message">Your message</label>
+        <textarea id="message" name="message" placeholder="Write something.."></textarea>
+
+        <input type="submit" value="Submit">
+
+      </form>
     </div>
   </div>
 
@@ -113,14 +127,19 @@
     <div class="row">
       <div class="col-sm">
         <p>
-          <a id="apply" class="button primary small bordered pager" href="/apply">Apply for transformative journal status</a> <a id="notify" class="button small bordered pager" href="/changes">Notify us of changes</a><br>
-          <a id="journals" class="button small bordered pager" href="/transformative/journals">Transformative journals</a> <a id="agreements" class="button small bordered pager" href="/transformative/agreements">Transformative agreements</a>
+          <button type="button" id="apply" class="button primary small bordered pager"> Apply for transformative journal status</button>
+          <button type="button" id="notify" class="button small bordered pager">Notify us of changes</button><br>
+          <button type="button" id="journals" class="button small bordered pager"> Transformative journals</button>
+          <button type="button" id="agreements" class="button small bordered pager">Transformative agreements</button>
         </p>
       </div>
       <div class="col-sm">
         <p style="text-align:right;">
-          <a id="about" class="button small bordered pager" href="/about">About this service</a> <a id="about_plans" class="button small bordered pager" href="/about#plan-s">About Plan S / cOAlition S</a><br>
-          <a id="howto" class="button small bordered pager" href="/howto">How to use this service</a> <a id="embed" class="button small bordered pager" href="/embed">Use on your site</a> <a id="feedback" class="button small bordered pager" href="/feedback">Give us feedback</a>
+          <button type="button" id="about" class="button small bordered pager">About this service</button>
+          <button type="button" id="about_plans" class="button small bordered pager">About Plan S / cOAlition S</button><br>
+          <button type="button" id="howto" class="button small bordered pager">How to use this service</button>
+          <button type="button" id="embed" class="button small bordered pager">Use on your site</button>
+          <button type="button" id="feedback" class="button small bordered pager">Give us feedback</button>
         </p>
       </div>
     </div>
@@ -148,8 +167,14 @@ jct.d.gebi('mobmenu').addEventListener("click", function(e) {
   scroll(0,document.body.scrollHeight);
 });
 
+jct.gebi("feedback").click(() => {
+  jct.gebi("contact").style.display = "block";
+})
+
 jct.d.each('pager', function(el) {
+  console.log(el)
   el.addEventListener("click", function(e) {
+    console.log("clicked")
     e.preventDefault();
     jct.d.each('section', function(el) { el.style.display = 'none'; });
     jct.d.gebi('spacer').style.display = 'none';

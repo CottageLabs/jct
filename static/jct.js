@@ -2,7 +2,8 @@ let jct = {
     api: 'https://api.jct.cottagelabs.com',
     delay: 700,
     cache: {},
-    chosen: {}
+    chosen: {},
+    latest_response: null
 };
 
 let plugin_template =`
@@ -131,12 +132,15 @@ jct.COMPLIANCE_ROUTES = {
 }
 
 jct.error = (xhr) => {
+    jct.latest_response = xhr;
     console.log(xhr.status + ': ' + xhr.statusText);
 }
 jct.progress = (e) => {
+    jct.latest_response = xhr;
     e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
+    jct.latest_response = xhr;
     jct.d.gebi('loading').style.display = 'none';
     console.log(xhr.response.length + ' bytes');
     let js = JSON.parse(xhr.response);
