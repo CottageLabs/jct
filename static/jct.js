@@ -365,13 +365,13 @@ jct.preload = () => {
 // start off with getting the funder automcompletes, then the journal autocompletes, which should be filtering results already
 // then do further autocompletes by institution and filter the possible journals by that too
 jct.setup = () => {
+    console.log("setup")
     document.getElementById("plugin").innerHTML = plugin_template;
     let f = jct.d.gebi("funder");
     /*while (f === null) {
       console.log('waiting for page to draw');
       f = jct.d.gebi("funder");
     }*/
-    console.log(f)
 
     let _sug = (e) => {
         jct.d.each('help', function(el) { el.style.display = 'none'; });

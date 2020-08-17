@@ -4,9 +4,6 @@ html {
 body {
     min-height: 100%;
 }
-.container {
-    max-width:1000px;
-}
 .unbound {
     border:none;
     margin:0px;
@@ -22,7 +19,7 @@ body {
 a.button.primary {
     color:white;
 }
-.section {
+.static_section .section {
     display: none;
     margin-top:40px;
     border-top:1px solid #ccc;
