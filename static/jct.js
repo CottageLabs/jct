@@ -177,51 +177,51 @@ jct.add_tile = (tile_type, data) => {
     let tile;
     switch(tile_type) {
         case jct.COMPLIANCE_ROUTES.fully_oa:
-            tile = htmlToElement(jct.fullyOA_tile(data.journal.title))
+            tile = jct.fullyOA_tile(data.journal.title);
             break;
         case jct.COMPLIANCE_ROUTES.ta:
-            tile = htmlToElement(jct.transformative_agreement_tile(data.journal.title, data.institution.title))
+            tile = jct.transformative_agreement_tile(data.journal.title, data.institution.title);
             break;
         case jct.COMPLIANCE_ROUTES.tj:
-            tile = htmlToElement(jct.transformative_journal_tile(data.journal.title))
+            tile = jct.transformative_journal_tile(data.journal.title);
             break;
         case jct.COMPLIANCE_ROUTES.sa:
-            tile = htmlToElement(jct.self_archiving_tile(data.journal.title))
+            tile = jct.self_archiving_tile(data.journal.title);
             break;
     }
     jct.d.gebi("paths_results").append(tile);
 }
 
 jct.fullyOA_tile = (journal_title) => {
-    return `
+    return htmlToElement (`
     <div class="paths_results__tile" id="fyllyOA_tile ` + journal_title  + `">
         <p><b>` + journal_title + `</b> is fully open access.</p>
     </div>
-  `
+  `)
 }
 
 jct.transformative_agreement_tile = (journal_title, publisher_title) => {
-    return `
+    return htmlToElement(`
     <div class="paths_results__tile" id="ta_tile` + journal_title + `-` + publisher_title + `">
       <p>It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.</p>
     </div>
-  `
+  `)
 }
 
 jct.transformative_journal_tile = (journal_title) => {
-    return `
+    return htmlToElement (`
     <div class="paths_results__tile" id="tj_tile` +journal_title + `">
      <p>It is a transformative journal.</p>
     </div>
-  `
+  `)
 }
 
 jct.self_archiving_tile = (journal_title) => {
-    return `
+    return htmlToElement (`
     <div class="paths_results__tile" id="sa_tile` + journal_title + `">
      <p>It has a self-archiving policy, as shown on DOAJ.</p>
     </div>
-`
+`)
 }
 
 jct.jx = (route,q,after,api) => {
