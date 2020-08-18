@@ -30,7 +30,6 @@
     <link href="../static/style.css" rel='stylesheet' type='text/css'>
 
     <script type="text/javascript" src="../static/jct.js"></script>
-    <script type="text/javascript" src="../static/contact.js"></script>
 
     <script>
         let st = undefined;
@@ -94,20 +93,22 @@
 </div>
 <div class="section" id="section_feedback" style="display: none">
     <div class="container" id="contact">
-        <form onsubmit="send_feedback()" id="contact_form">
+        <form id="contact_form">
 
             <label for="name">Name</label>
-            <input type="text" id="name" name="firstname" placeholder="Your name..">
+            <input type="text" id="name" name="name" placeholder="Your name.." value="Aga">
 
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Your email..">
+            <input type="email" id="email" name="email" placeholder="Your email.." value="aga@example.com">
 
             <label for="message">Your message</label>
-            <textarea id="message" name="message" placeholder="Write something.."></textarea>
+            <textarea id="message" name="message" placeholder="Write something..">This is my message.</textarea>
 
             <input type="submit" value="Submit">
 
         </form>
+        <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
+        <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
     </div>
 </div>
 </div>
@@ -178,5 +179,6 @@
         });
     });
 </script>
+<script type="text/javascript" src="../static/contact.js"></script>
 
 </html>

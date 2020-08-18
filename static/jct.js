@@ -136,7 +136,6 @@ jct.error = (xhr) => {
     console.log(xhr.status + ': ' + xhr.statusText);
 }
 jct.progress = (e) => {
-    jct.latest_response = xhr;
     e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
