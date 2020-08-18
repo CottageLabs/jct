@@ -5,8 +5,8 @@ jct.d.gebi("contact_form")
     let email = jct.d.gebi("email").value;
     let message = jct.d.gebi("message").value;
 
-    let data = JSON.stringify(
-        {
+    let data =
+        JSON.stringify({
             "name" : name,
             "email" : email,
             "feedback" : message,
@@ -32,6 +32,7 @@ jct.d.gebi("contact_form")
         jct.d.gebi("feedback_success").style.display = "block"
     };
     xhr.onerror = () => { jct.d.gebi("feedback_error").style.display = "block" };
+    xhr.setRequestHeader('Content-type', 'application/json');
     xhr.send(data);
     return false
 });

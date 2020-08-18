@@ -119,15 +119,15 @@ jct.choose = (e, el) => {
         let qr = {journal: jct.chosen.journal.id};
         if (jct.chosen.funder && jct.chosen.funder.id) qr.funder = jct.chosen.funder.id;
         if (jct.chosen.institution && jct.chosen.institution.id) qr.institution = jct.chosen.institution.id;
-        jct.jx(undefined, qr);
+        jct.jx('/calculate', qr);
         jct.d.gebi('loading').style.display = 'block';
     }
 }
 
 jct.COMPLIANCE_ROUTES = {
     fully_oa: "fully_oa",
-    ta: "transformative_agreement",
-    tj: "transformative_journal",
+    ta: "ta",
+    tj: "tj",
     sa: "self_archiving"
 }
 
@@ -139,7 +139,6 @@ jct.progress = (e) => {
     e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
-    jct.latest_response = xhr;
     jct.d.gebi('loading').style.display = 'none';
     console.log(xhr.response.length + ' bytes');
     let js = JSON.parse(xhr.response);
@@ -147,38 +146,47 @@ jct.success = (xhr) => {
     if (jct.suggesting) {
         jct.suggestions(js);
         jct.suggesting = false;
-    } else if (js.compliance) {
+    } else {
+        console.log(js)
+        jct.latest_response = js.results;
         jct.d.gebi("paths_results").innerHTM = ""
         //jct.d.gebi('spacer').style.display = 'none';
-        jct.d.gebi(js.compliance.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+        jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         jct.d.gebi("paths_results").innerHTML = "";
-        if (jct.chosen.journal){
-            jct.add_tile(jct.COMPLIANCE_ROUTES.fully_oa);
-            jct.add_tile(jct.COMPLIANCE_ROUTES.tj);
-            jct.add_tile(jct.COMPLIANCE_ROUTES.sa);
-            if (jct.chosen.institution){
-                jct.add_tile(jct.COMPLIANCE_ROUTES.ta);
-            }
+        // if (jct.chosen.journal){
+        //     jct.add_tile(jct.COMPLIANCE_ROUTES.fully_oa);
+        //     jct.add_tile(jct.COMPLIANCE_ROUTES.tj);
+        //     jct.add_tile(jct.COMPLIANCE_ROUTES.sa);
+        //     if (jct.chosen.institution){
+        //         jct.add_tile(jct.COMPLIANCE_ROUTES.ta);
+        //     }
+        // }
+        if (js.compliant) {
+            js.results.forEach((r) => {
+                if (r.compliant === "yes") {
+                    jct.add_tile(r.route, jct.chosen)
+                }
+            })
         }
 
         // TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
     }
 }
 
-jct.add_tile = (tile_type) => {
+jct.add_tile = (tile_type, data) => {
     let tile;
     switch(tile_type) {
         case jct.COMPLIANCE_ROUTES.fully_oa:
-            tile = htmlToElement(jct.fullyOA_tile(jct.chosen.journal.title))
+            tile = htmlToElement(jct.fullyOA_tile(data.journal.title))
             break;
         case jct.COMPLIANCE_ROUTES.ta:
-            tile = htmlToElement(jct.transformative_agreement_tile(jct.chosen.journal.title, jct.chosen.institution.title))
+            tile = htmlToElement(jct.transformative_agreement_tile(data.journal.title, data.institution.title))
             break;
         case jct.COMPLIANCE_ROUTES.tj:
-            tile = htmlToElement(jct.transformative_journal_tile(jct.chosen.journal.title))
+            tile = htmlToElement(jct.transformative_journal_tile(data.journal.title))
             break;
         case jct.COMPLIANCE_ROUTES.sa:
-            tile = htmlToElement(jct.self_archiving_tile(jct.chosen.journal.title))
+            tile = htmlToElement(jct.self_archiving_tile(data.journal.title))
             break;
     }
     jct.d.gebi("paths_results").append(tile);
