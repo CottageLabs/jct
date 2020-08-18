@@ -20,7 +20,7 @@ jct.d.gebi("contact_form")
                 "results" : [
                     jct.latest_response
                 ],
-                "url" : window.location
+                "url" : window.location.href
             }
         });
 
