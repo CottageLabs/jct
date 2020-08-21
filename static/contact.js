@@ -4,6 +4,7 @@ jct.d.gebi("contact_form")
     let name  = jct.d.gebi("name").value;
     let email = jct.d.gebi("email").value;
     let message = jct.d.gebi("message").value;
+    let timestamp = new Date().toUTCString()
 
     let data =
         JSON.stringify({
@@ -12,7 +13,7 @@ jct.d.gebi("contact_form")
             "feedback" : message,
             "context" : {
                 "request" : {
-                    "timestamp" : event.timeStamp,
+                    "timestamp" : timestamp,
                     "issn" : jct.chosen.journal ? jct.chosen.journal.id : "",
                     "funder" : jct.chosen.funder ? jct.chosen.funder.id : "",
                     "ror" : jct.chosen.institution ? jct.chosen.institution.id : ""
