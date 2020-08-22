@@ -105,20 +105,20 @@ jct.choose = (e, el) => {
     if (cls.indexOf('success') !== -1) {
         jct.d.gebi('spacer').style.display = 'none';
         jct.d.gebi('compliant').style.display = 'block'; // TODO may want to add more info here about the compliance
-    } else if (which === 'funder') {
-        jct.d.gebi('journal').focus();
     } else if (which === 'journal') {
+        jct.d.gebi('funder').focus();
+    } else if (which === 'funder') {
         jct.d.gebi('institution').focus();
     } else {
         jct.d.gebi('institution').blur();
         //jct.jx('journal/' + jct.chosen.journal.id, {funder: jct.chosen.funder.id, institution: jct.chosen.institution.id});
         //jct.d.gebi('loading').style.display = 'block';
     }
-    if (jct.chosen.journal && jct.chosen.journal.id) {
+    if (jct.chosen.journal && jct.chosen.funder && jct.chosen.institution) {
         // TODO don't query every time if available values haven't changed sufficiently to alter an already received answer
         let qr = {journal: jct.chosen.journal.id};
-        if (jct.chosen.funder && jct.chosen.funder.id) qr.funder = jct.chosen.funder.id;
-        if (jct.chosen.institution && jct.chosen.institution.id) qr.institution = jct.chosen.institution.id;
+        qr.funder = jct.chosen.funder.id;
+        qr.institution = jct.chosen.institution.id;
         jct.jx('/calculate', qr);
         jct.d.gebi('loading').style.display = 'block';
     }
@@ -150,17 +150,8 @@ jct.success = (xhr) => {
         console.log(js)
         jct.latest_response = js.results;
         jct.d.gebi("paths_results").innerHTM = ""
-        //jct.d.gebi('spacer').style.display = 'none';
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         jct.d.gebi("paths_results").innerHTML = "";
-        // if (jct.chosen.journal){
-        //     jct.add_tile(jct.COMPLIANCE_ROUTES.fully_oa);
-        //     jct.add_tile(jct.COMPLIANCE_ROUTES.tj);
-        //     jct.add_tile(jct.COMPLIANCE_ROUTES.sa);
-        //     if (jct.chosen.institution){
-        //         jct.add_tile(jct.COMPLIANCE_ROUTES.ta);
-        //     }
-        // }
         if (js.compliant) {
             js.results.forEach((r) => {
                 if (r.compliant === "yes") {
