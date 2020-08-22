@@ -16,7 +16,17 @@ jct.d.gebi("contact_form")
                     "timestamp" : timestamp,
                     "issn" : jct.chosen.journal ? jct.chosen.journal.id : "",
                     "funder" : jct.chosen.funder ? jct.chosen.funder.id : "",
-                    "ror" : jct.chosen.institution ? jct.chosen.institution.id : ""
+                    "ror" : jct.chosen.institution ? jct.chosen.institution.id : "",
+                    "navigator data": {
+                        "appCodeName": navigator.appCodeName,
+                        "appName": navigator.appName,
+                        "appVersion": navigator.appVersion,
+                        "cookieEnabled": navigator.cookieEnabled,
+                        "language": navigator.language,
+                        "platform": navigator.platform,
+                        "userAgent": navigator.userAgent,
+                        "vendor": navigator.vendor
+                    }
                 },
                 "results" : [
                     jct.latest_response

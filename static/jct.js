@@ -13,25 +13,25 @@ let plugin_template =`
     <input class="unbound col-sm ac" type="text" id="institution" placeholder="your institution"> 
 </div>
 <div class="row">
-    <div id="help_journal" class="col-sm help">
-    <p>
-      Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status
-      (for example Annals of Oncology).
-    </p>
-  </div>
-  <div id="help_funder" class="col-sm help">
-    <p>
-      Tell us the main funder of your research, we'll find their publishing policy
-      (try Wellcome Trust). If your funder is not part of Plan S, this tool will not
-      be relevant to you. (List will be restricted to Plan S funders later.)
-    </p>
-  </div>
-  <div id="help_institution" class="col-sm help">
-    <p>
-      Let us know the institution you're affiliated to for this research
-      (e.g. Max Planck Society).
-    </p>
-  </div>
+<!--    <div id="help_journal" class="col-sm help">-->
+<!--    <p>-->
+<!--      Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status-->
+<!--      (for example Annals of Oncology).-->
+<!--    </p>-->
+<!--  </div>-->
+<!--  <div id="help_funder" class="col-sm help">-->
+<!--    <p>-->
+<!--      Tell us the main funder of your research, we'll find their publishing policy-->
+<!--      (try Wellcome Trust). If your funder is not part of Plan S, this tool will not-->
+<!--      be relevant to you. (List will be restricted to Plan S funders later.)-->
+<!--    </p>-->
+<!--  </div>-->
+<!--  <div id="help_institution" class="col-sm help">-->
+<!--    <p>-->
+<!--      Let us know the institution you're affiliated to for this research-->
+<!--      (e.g. Max Planck Society).-->
+<!--    </p>-->
+<!--  </div>-->
 </div>
 <div class="row">
  <div class="col-sm suggest" id="suggestjournal"></div>
@@ -47,7 +47,7 @@ let plugin_template =`
   </div>
   <div class="col-sm-12" id="result">
   </div>
-  <div class="paths_results" id="paths_results"></div>
+  <div class="row paths_results" id="paths_results"></div>
   <div class="col-sm-12" id="missing" style="display:none;"><p>Sorry, we can't find any <span id="whatsmissing"></span> called <b id="titlemissing"></b>. We'll add it as soon as we can.</p></div>
 </div>
 <div id="loading" class="loading" style="display:none;">
@@ -194,7 +194,7 @@ jct.add_tile = (tile_type, data) => {
 
 jct.fullyOA_tile = (journal_title) => {
     return htmlToElement (`
-    <div class="paths_results__tile" id="fyllyOA_tile ` + journal_title  + `">
+    <div class="col col--1of4" id="fyllyOA_tile ` + journal_title  + `">
         <p><b>` + journal_title + `</b> is fully open access.</p>
     </div>
   `)
@@ -202,7 +202,7 @@ jct.fullyOA_tile = (journal_title) => {
 
 jct.transformative_agreement_tile = (journal_title, publisher_title) => {
     return htmlToElement(`
-    <div class="paths_results__tile" id="ta_tile` + journal_title + `-` + publisher_title + `">
+    <div class="col col--1of4" id="ta_tile` + journal_title + `-` + publisher_title + `">
       <p>It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.</p>
     </div>
   `)
@@ -210,7 +210,7 @@ jct.transformative_agreement_tile = (journal_title, publisher_title) => {
 
 jct.transformative_journal_tile = (journal_title) => {
     return htmlToElement (`
-    <div class="paths_results__tile" id="tj_tile` +journal_title + `">
+    <div class="col col--1of4" id="tj_tile` +journal_title + `">
      <p>It is a transformative journal.</p>
     </div>
   `)
@@ -218,7 +218,7 @@ jct.transformative_journal_tile = (journal_title) => {
 
 jct.self_archiving_tile = (journal_title) => {
     return htmlToElement (`
-    <div class="paths_results__tile" id="sa_tile` + journal_title + `">
+    <div class="col col--1of4" id="sa_tile` + journal_title + `">
      <p>It has a self-archiving policy, as shown on DOAJ.</p>
     </div>
 `)

@@ -27,7 +27,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css">
 
-    <link href="../static/style.css" rel='stylesheet' type='text/css'>
+    <link href="../static/css/style.css" rel='stylesheet' type='text/css'>
 
     <script type="text/javascript" src="../static/jct.js"></script>
 
@@ -57,40 +57,32 @@
     <div id="plugin"></div>
     <div id="spacer" class="row hidden-sm" style="margin-top:25%;"></div>
 </main>
-<!-- <other_options></other_options> -->
-<div class="section" id="section_apply" style="display: none">
-    <p>TODO add an application form for transformative journals here, and a bulk upload csv mechanism, with example csv file showing necessary format</p>
-    <p>Also link to explanations on plan-s site of what transformative journal is</p>
-    <p>And link to our own page here listing all transformative jouranls already known</p>
-</div>
-<div class="section" id="section_notify" style="display: none">
-    <p>TODO add a notify form so publishers/journals, or users, can notify us of changes to tranformative agreements, or other fixes</p>
-</div>
-<div class="section" id="section_journals" style="display: none">
-    <p>TODO list all transformative journals here, and link to explanations on plan-s site of what a transformative journal is.</p>
-    <p>Job of data manager will include ensuring the applications we receive are processed and approved in the system, and reviewing in line with plan-s reqs.</p>
-</div>
-<div class="section" id="section_agreements" style="display: none">
-    <p>TODO list all transformative agreements here, and link to explanations on plan-s site of what a transformative agreement is.</p>
-    <p>Also could allow filtering by institution, to see what agreements your institution is signed up to</p>
-    <p>Job of data manager will include listing out which institutions are related to which ESAC agreement, which we will store in sheets / backend.</p>
-    <p>And link to ESAC here, probably recommend them as first place to go to register any new agreements - and maybe have a way for people to let us know directly?</p>
-    <p><a href="https://esac-initiative.org/about/transformative-agreements/share/">ESAC transformative agreements registration link</a></p>
-</div>
-<div class="section" id="section_about" style="display: none">
-    <p>TODO an about page decsribing the JCT and why it exists</p>
+<!--<div class="section" id="section_apply" style="display: none">-->
+<!--    <p>Also link to explanations on plan-s site of what transformative journal is</p>-->
+<!--    <p>And link to our own page here listing all transformative jouranls already known</p>-->
+<!--</div>-->
+<!--<div class="section" id="section_notify" style="display: none">-->
+<!--</div>-->
+<!--<div class="section" id="section_journals" style="display: none">-->
+<!--    <p>Job of data manager will include ensuring the applications we receive are processed and approved in the system, and reviewing in line with plan-s reqs.</p>-->
+<!--</div>-->
+<!--<div class="section" id="section_agreements" style="display: none">-->
+<!--    <p>Also could allow filtering by institution, to see what agreements your institution is signed up to</p>-->
+<!--    <p>Job of data manager will include listing out which institutions are related to which ESAC agreement, which we will store in sheets / backend.</p>-->
+<!--    <p>And link to ESAC here, probably recommend them as first place to go to register any new agreements - and maybe have a way for people to let us know directly?</p>-->
+<!--    <p><a href="https://esac-initiative.org/about/transformative-agreements/share/">ESAC transformative agreements registration link</a></p>-->
+<!--</div>-->
+<!--<div class="section" id="section_about" style="display: none">-->
 
-    <p>Which will also contain a blurb about plan-s and why they exist, why they made this</p>
-    <p>And link to plan-s / coalition-s site for more info</p>
-</div>
-<div class="section" id="section_howto" style="display: none">
-    <p>TODO a click-through walkthrough thing of how to use the service</p>
-    <p>And also add an FAQ, which may best be generated from a sheet that the data manager can use to answer questions, then feed them in here automatically.</p>
-</div>
-<div class="section" id="section_embed" style="display: none">
-    <p>TODO an explanation of embedding the tool on your own site, for journal, funder, institution, with link to embed code</p>
-    <p>And how to customise it to set your journal/funder already because no point a user selecting that when already on the website of that entity.</p>
-</div>
+<!--    <p>Which will also contain a blurb about plan-s and why they exist, why they made this</p>-->
+<!--    <p>And link to plan-s / coalition-s site for more info</p>-->
+<!--</div>-->
+<!--<div class="section" id="section_howto" style="display: none">-->
+<!--    <p>And also add an FAQ, which may best be generated from a sheet that the data manager can use to answer questions, then feed them in here automatically.</p>-->
+<!--</div>-->
+<!--<div class="section" id="section_embed" style="display: none">-->
+<!--    <p>And how to customise it to set your journal/funder already because no point a user selecting that when already on the website of that entity.</p>-->
+<!--</div>-->
 <div class="section" id="section_feedback" style="display: none">
     <div class="container" id="contact">
         <form id="contact_form">
@@ -111,23 +103,22 @@
         <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
     </div>
 </div>
-</div>
 
-<div class="row">
-    <div class="col-sm">
-        <p>
-            <button type="button" id="apply" class="button primary small bordered pager">Apply for transformative journal status </button>  <button type="button" id="notify" class="button small bordered pager" >Notify us of changes </button><br>
-            <button type="button" id="journals" class="button small bordered pager">Transformative journals </button>  <button type="button" id="agreements" class="button small bordered pager" >Transformative agreements </button>
-        </p>
-    </div>
-    <div class="col-sm">
-        <p style="text-align:right;">
-            <button type="button" id="about" class="button small bordered pager">About this service </button>  <button type="button" id="about_plans" class="button small bordered pager" >About Plan S / cOAlition S </button><br>
-            <button type="button" id="howto" class="button small bordered pager">How to use this service </button>  <button type="button" id="embed" class="button small bordered pager" >Use on your site </button>
-            <button type="button" id="feedback" class="button small bordered pager">Give us feedback </button>
-        </p>
-    </div>
-</div>
+<!--<div class="row">-->
+<!--    <div class="col-sm">-->
+<!--        <p>-->
+<!--            <button type="button" id="apply" class="button primary small bordered pager">Apply for transformative journal status </button>  <button type="button" id="notify" class="button small bordered pager" >Notify us of changes </button><br>-->
+<!--            <button type="button" id="journals" class="button small bordered pager">Transformative journals </button>  <button type="button" id="agreements" class="button small bordered pager" >Transformative agreements </button>-->
+<!--        </p>-->
+<!--    </div>-->
+<!--    <div class="col-sm">-->
+<!--        <p style="text-align:right;">-->
+<!--            <button type="button" id="about" class="button small bordered pager">About this service </button>  <button type="button" id="about_plans" class="button small bordered pager" >About Plan S / cOAlition S </button><br>-->
+<!--            <button type="button" id="howto" class="button small bordered pager">How to use this service </button>  <button type="button" id="embed" class="button small bordered pager" >Use on your site </button>-->
+           <button type="button" id="feedback" class="button small bordered pager">Give us feedback </button>
+<!--        </p>-->
+<!--    </div>-->
+<!--</div>-->
 
 </body>
 

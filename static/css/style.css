@@ -1,0 +1,58 @@
+@import 'new-grid.css';
+@import 'new-typescale.css';
+@import 'normalize.css';
+
+/*html {*/
+/*    height: 100%;*/
+/*}*/
+/*body {*/
+/*    min-height: 100%;*/
+/*}*/
+/*.unbound {*/
+/*    border:none;*/
+/*    margin:0px;*/
+/*}*/
+/*.success {*/
+/*    background-color: #689f38;*/
+/*    border-color: #689f38;*/
+/*}*/
+/*.error {*/
+/*    background-color: #d32f2f;*/
+/*    border-color: #d32f2f;*/
+/*}*/
+/*a.button.primary {*/
+/*    color:white;*/
+/*}*/
+/*.static_section .section {*/
+/*    display: none;*/
+/*    margin-top:40px;*/
+/*    border-top:1px solid #ccc;*/
+/*}*/
+/*.help {*/
+/*    display: none;*/
+/*}*/
+
+/*.paths_results {*/
+/*    display: grid;*/
+/*    grid-template-columns: repeat(4, 25%);*/
+/*    grid-template-rows: 200px;*/
+/*    grid-gap: 20px 20px;*/
+/*    grid-auto-flow: row;*/
+/*}*/
+
+/*.paths_results__tile {*/
+/*    display: grid;*/
+/*    justify-self: stretch;*/
+/*    align-self: stretch;*/
+
+/*    justify-content: flex-start;*/
+/*    align-content: stretch;*/
+
+/*    font-style: normal;*/
+/*    font-weight: normal;*/
+/*    font-size: 24px;*/
+
+/*    !* black *!*/
+/*    color: #000000;*/
+/*    border: black solid 1px;*/
+/*}*/

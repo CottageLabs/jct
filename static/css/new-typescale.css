@@ -1,0 +1,58 @@
+/* Typescale in minor third */
+
+:root {
+    --typescale-01:    2.488em;
+    --typescale-02:    2.074em;
+    --typescale-03:    1.728em;
+    --typescale-04:    1.44em;
+    --typescale-05:    1.2em;
+    --typescale-06:    0.833em;
+
+    --gutter:          2.5vw;
+    --gutter-negative: -2.5vw;
+}
+
+html {
+    font-size: 18px;
+}
+
+body {
+    line-height: 1.25;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 2.75rem 0 1rem;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+h1 {
+    font-size: var(--typescale-01);
+}
+
+h2 {
+    font-size: var(--typescale-02);
+}
+
+h3 {
+    font-size: var(--typescale-03);
+}
+
+h4 {
+    font-size: var(--typescale-04);
+}
+
+h5 {
+    font-size: var(--typescale-05);
+}
+
+h6, small {
+    font-size: var(--typescale-06);
+}
+
+p {
+    margin: 0 0 var(--gutter) 0;
+}
