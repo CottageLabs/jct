@@ -258,7 +258,12 @@ jct.suggestions = (suggs, cached) => {
     let sgst = '';
     let sd = jct.d.gebi('suggest'+jct.suggesting);
     let typed = jct.d.gebi(jct.suggesting).value.toLowerCase();
-    jct.d.each('choose', function(el) { if (el.innerHTML.toLowerCase().indexOf(typed) === -1) { el.parentNode.removeChild(el); } });
+    jct.d.each('choose', (el) => {
+        if (el.innerHTML.toLowerCase().indexOf(typed) === -1) {
+            console.log(el.parentNode)
+            el.parentNode.parentNode.removeChild(el).parentNode;
+        }
+    });
     if (jct.cache[jct.suggesting] === undefined) jct.cache[jct.suggesting] = {string: '', data: []};
     let update = false;
     for ( let s in suggs.data ) {
@@ -310,9 +315,7 @@ jct.suggest = (e) => {
         let typed = e.target.value.toLowerCase().replace(' of','').replace('the ','');
         if ('journal'.indexOf(typed.trim()) !== -1) typed = '';
         if (typed.length === 0) {
-            jct.d.each('suggest', (e, el) => {
-                el.innerHTML = '';
-            })
+            jct.d.each('suggest','innerHTML','');
         } else {
             if (typed.length > 1) {
                 jct.suggesting = which;
@@ -395,7 +398,7 @@ jct.setup = () => {
         jct.d.each('help', function(el) { el.style.display = 'none'; });
         let sl = jct.d.gebi('help_'+e.target.id);
         if (sl) sl.parentNode.removeChild(sl);
-        jct.d.each('choose', function(el) { if (el.innerHTML.toLowerCase().indexOf(e.target.value.toLowerCase()) === -1 || el.getAttribute('which') !== e.target.id) el.parentNode.removeChild(el); });
+        jct.d.each('choose', function(el) { if (el.innerHTML.toLowerCase().indexOf(e.target.value.toLowerCase()) === -1 || el.getAttribute('which') !== e.target.id) el.parentNode.parentNode.removeChild(el.parentNode); });
         if (jct.waiting === false) jct.waiting = e; setTimeout(jct.suggest,jct.delay);
     }
     jct.d.gebi("funder").addEventListener("keyup", _sug);
