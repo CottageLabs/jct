@@ -16,16 +16,6 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!--
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <script type="text/javascript" src="/static/moment.min.js"></script>
-    -->
-
-    <!--
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    -->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/3.0.1/mini-default.min.css">
 
     <link href="../static/css/style.css" rel='stylesheet' type='text/css'>
 
@@ -48,14 +38,20 @@
     </script>
 </head>
 
-<body class="container">
-<div class="row">
-    <a href="/" class="logo col-sm-10">(CL dev) JCT</a>
-    <a id="mobmenu" href="#" class="col-sm-1 hidden-md hidden-lg" style="padding-top:5px;font-size:2em;"><span class="icon-help"></span></a>
-</div>
-<main id="main" class="container">
-    <div id="plugin"></div>
-    <div id="spacer" class="row hidden-sm" style="margin-top:25%;"></div>
+<body>
+
+<header>
+    <div class="row">
+        <div class="col col--1of3 logo">
+            <a href="/index.html" class="logo_text">Is this compliant with Plan S?</a>
+        </div>
+    </div>
+    <div class="row row-inputs" id="inputs_plugin"></div>
+</header>
+
+<main>
+    <div id="results_plugin"></div>
+    <div id="spacer"></div>
 </main>
 <!--<div class="section" id="section_apply" style="display: none">-->
 <!--    <p>Also link to explanations on plan-s site of what transformative journal is</p>-->
@@ -83,20 +79,28 @@
 <!--<div class="section" id="section_embed" style="display: none">-->
 <!--    <p>And how to customise it to set your journal/funder already because no point a user selecting that when already on the website of that entity.</p>-->
 <!--</div>-->
-<div class="section" id="section_feedback" style="display: none">
-    <div class="container" id="contact">
+<div class="modal" id="modal_feedback" style="display: none">
+    <div class="modal-content" id="contact">
         <form id="contact_form">
-
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Your name.." value="Aga">
-
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Your email.." value="aga@example.com">
-
-            <label for="message">Your message</label>
-            <textarea id="message" name="message" placeholder="Write something..">This is my message.</textarea>
-
-            <input type="submit" value="Submit">
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="name">Name</label>
+                    <input class="contact_input" type="text" id="name" name="name" placeholder="Your name.." value="Aga">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="email">Email</label>
+                    <input class="contact_input" type="email" id="email" name="email" placeholder="Your email.." value="aga@example.com">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="message">Your message</label>
+                    <textarea class="contact_input" id="message" name="message" placeholder="Write something..">This is my message.</textarea>
+                </div>
+            </div>
+            <input class="contact_submit" type="submit" value="Submit">
 
         </form>
         <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
@@ -104,6 +108,9 @@
     </div>
 </div>
 
+<div class="footer row">
+    <a type="button" id="feedback" class="col col--1of3 pager">Send us feedback </a>
+</div>
 <!--<div class="row">-->
 <!--    <div class="col-sm">-->
 <!--        <p>-->
@@ -115,7 +122,7 @@
 <!--        <p style="text-align:right;">-->
 <!--            <button type="button" id="about" class="button small bordered pager">About this service </button>  <button type="button" id="about_plans" class="button small bordered pager" >About Plan S / cOAlition S </button><br>-->
 <!--            <button type="button" id="howto" class="button small bordered pager">How to use this service </button>  <button type="button" id="embed" class="button small bordered pager" >Use on your site </button>-->
-           <button type="button" id="feedback" class="button small bordered pager">Give us feedback </button>
+
 <!--        </p>-->
 <!--    </div>-->
 <!--</div>-->
@@ -126,49 +133,52 @@
 
     jct.setup();
 
-    jct.d.gebi('mobmenu').addEventListener("click", function(e) {
-        e.preventDefault();
-        scroll(0,document.body.scrollHeight);
-    });
+    // jct.d.gebi('mobmenu').addEventListener("click", function(e) {
+    //     e.preventDefault();
+    //     scroll(0,document.body.scrollHeight);
+    // });
 
 
     jct.d.each('pager', (el) => {
         el.addEventListener("click", (e) => {
             e.preventDefault();
-            jct.d.each('section', (el) => {
-                el.style.display = 'none';
-            });
-            jct.d.gebi('spacer').style.display = 'none';
-            scroll(0, 0);
             let sid = el.getAttribute('id').split('_')[0];
-            jct.d.gebi('section_' + sid).style.display = 'block';
-            // TODO also alter the page URL bar and back/forward methods to show the right routes and sections
-            // TODO and on first show, get the content for the section from backend, so that initial page load stays fast
-            if (sid === 'agreements') {
-                if (!jct.d.gebi('agreements_table')) {
-                    jct.jx('transformative/esac', undefined, (xhr) => {
-                        let data = JSON.parse(xhr.response);
-                        console.log(xhr.response)
-                        let table = '<table id="agreements_table">';
-                        table += '<thead><tr><th>publisher</th><th>country</th><th>customer</th><th>size</th><th>start date</th><th>end date</th><th>ID</th></tr></thead><tbody>';
-                        for (let r in data) {
-                            table += '<tr>';
-                            for (let d in data[r]) {
-                                console.log(d)
-                                if (['publisher', 'country', 'customer', 'size', 'start_date', 'end_date', 'id'].indexOf(d) !== -1) {
-                                    table += '<td>' + data[r][d] + '</td>';
-                                }
-                            }
-                            table += '</tr>';
-                        }
-                        table += '</tbody>';
-                        table += '</table>';
-                        jct.d.gebi('section_agreements').innerHTML = jct.d.gebi('section_agreements').innerHTML + '<br>' + table;
-                    });
-                }
-            }
+            let modal = jct.d.gebi('modal_' + sid)
+            modal.style.display = 'block';
+
+            // if (sid === 'agreements') {
+            //     if (!jct.d.gebi('agreements_table')) {
+            //         jct.jx('transformative/esac', undefined, (xhr) => {
+            //             let data = JSON.parse(xhr.response);
+            //             console.log(xhr.response)
+            //             let table = '<table id="agreements_table">';
+            //             table += '<thead><tr><th>publisher</th><th>country</th><th>customer</th><th>size</th><th>start date</th><th>end date</th><th>ID</th></tr></thead><tbody>';
+            //             for (let r in data) {
+            //                 table += '<tr>';
+            //                 for (let d in data[r]) {
+            //                     console.log(d)
+            //                     if (['publisher', 'country', 'customer', 'size', 'start_date', 'end_date', 'id'].indexOf(d) !== -1) {
+            //                         table += '<td>' + data[r][d] + '</td>';
+            //                     }
+            //                 }
+            //                 table += '</tr>';
+            //             }
+            //             table += '</tbody>';
+            //             table += '</table>';
+            //             jct.d.gebi('section_agreements').innerHTML = jct.d.gebi('section_agreements').innerHTML + '<br>' + table;
+            //         });
+            //     }
+            // }
         });
     });
+
+    window.onclick = (e) => {
+        let modals = [].slice.call(jct.d.gebc("modal"));
+        if (modals.includes(e.target)){
+            e.target.style.display = "none";
+        }
+    }
+
 </script>
 <script type="text/javascript" src="../static/contact.js"></script>
 

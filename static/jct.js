@@ -6,13 +6,20 @@ let jct = {
     latest_response: null
 };
 
-let plugin_template =`
-<div class="button-group shadowed">
-    <input class="unbound col-sm ac" type="text" id="journal" placeholder="journal (name or ISSN)">
-    <input class="unbound col-sm ac" type="text" id="funder" placeholder="your funder">
-    <input class="unbound col-sm ac" type="text" id="institution" placeholder="your institution"> 
-</div>
-<div class="row">
+let inputs_plugin =`
+    <div class="col col--1of3">
+        <label for="journal">Journal *</label>
+        <input type="text" id="journal" name="journal">
+    </div>
+        <div class="col col--1of3">
+        <label for="founder">Founder *</label>
+    <input type="text" id="funder">
+    </div>
+    <div class="col col--1of3">
+        <label for="institution">Institution *</label>
+        <input type="text" id="institution"> 
+    </div>
+<!--<div class="row">-->
 <!--    <div id="help_journal" class="col-sm help">-->
 <!--    <p>-->
 <!--      Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status-->
@@ -32,29 +39,36 @@ let plugin_template =`
 <!--      (e.g. Max Planck Society).-->
 <!--    </p>-->
 <!--  </div>-->
-</div>
-<div class="row">
- <div class="col-sm suggest" id="suggestjournal"></div>
-  <div class="col-sm suggest" id="suggestfunder"></div>
-  <div class="col-sm suggest" id="suggestinstitution"></div>
-</div>
-<div class="row">
-  <div id="compliant" class="card fluid success col-md-12" style="display:none;">
-    <h1>&#x2713; COMPLIANT</h1>
-  </div>
-  <div id="notcompliant" class="card fluid error col-md-12" style="display:none;">
-    <h1>&#x2717; NOT COMPLIANT</h1>
-  </div>
-  <div class="col-sm-12" id="result">
-  </div>
-  <div class="row paths_results" id="paths_results"></div>
-  <div class="col-sm-12" id="missing" style="display:none;"><p>Sorry, we can't find any <span id="whatsmissing"></span> called <b id="titlemissing"></b>. We'll add it as soon as we can.</p></div>
-</div>
-<div id="loading" class="loading" style="display:none;">
-  <div style="margin-top:40px;margin-left:auto;margin-right:auto;width:200px;">
-    <img style="height:200px;width:200px;" src="//static.cottagelabs.com/spin_grey.svg">
-  </div>
-</div>`;
+<!--</div>-->
+    <div class="col col--1of3 suggest" id="suggestjournal">
+    </div>
+    <div class="col col--1of3 suggest" id="suggestfunder">
+    </div>
+    <div class="col col--1of3 suggest" id="suggestinstitution">
+    </div>
+`
+let results_plugin =
+    `
+        <div class="row">
+            <div id="compliant" class="col col--2of3" style="display:none">
+                <h1>Yes, this combination is compliant.</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div id="notcompliant" class="col col--2of3" style="display:none;">
+                <h1>No, this is not compliant.</h1>
+            </div>
+        </div>
+        <div class="row" id="result">
+        </div>
+        <div class="row paths_results" id="paths_results"></div>
+            <div class="col-sm-12" id="missing" style="display:none;"><p>Sorry, we can't find any <span id="whatsmissing"></span> called <b id="titlemissing"></b>. We'll add it as soon as we can.</p></div>
+        </div>
+        <div id="loading" class="loading" style="display:none;">
+            <div style="margin-top:40px;margin-left:auto;margin-right:auto;width:200px;">
+                <img style="height:200px;width:200px;" src="//static.cottagelabs.com/spin_grey.svg">
+        </div>
+`;
 
 jct.d = document;
 jct.d.gebi = document.getElementById;
@@ -99,9 +113,11 @@ jct.choose = (e, el) => {
     let cls = et.getAttribute('class');
     jct.chosen[which] = {id: id, title: title};
     jct.d.gebi(which).value = title;
-    jct.d.each('section',function(el) { el.style.display = 'none'; });
+    jct.d.each('section',(el) => {
+        el.style.display = 'none';
+    });
     jct.d.each('suggest','innerHTML','');
-    //scroll(0,0); // TODO should take account of embed location and only scroll to search box height, if embedded further down a page
+//scroll(0,0); // TODO should take account of embed location and only scroll to search box height, if embedded further down a page
     if (cls.indexOf('success') !== -1) {
         jct.d.gebi('spacer').style.display = 'none';
         jct.d.gebi('compliant').style.display = 'block'; // TODO may want to add more info here about the compliance
@@ -111,11 +127,11 @@ jct.choose = (e, el) => {
         jct.d.gebi('institution').focus();
     } else {
         jct.d.gebi('institution').blur();
-        //jct.jx('journal/' + jct.chosen.journal.id, {funder: jct.chosen.funder.id, institution: jct.chosen.institution.id});
-        //jct.d.gebi('loading').style.display = 'block';
+//jct.jx('journal/' + jct.chosen.journal.id, {funder: jct.chosen.funder.id, institution: jct.chosen.institution.id});
+//jct.d.gebi('loading').style.display = 'block';
     }
     if (jct.chosen.journal && jct.chosen.funder && jct.chosen.institution) {
-        // TODO don't query every time if available values haven't changed sufficiently to alter an already received answer
+// TODO don't query every time if available values haven't changed sufficiently to alter an already received answer
         let qr = {journal: jct.chosen.journal.id};
         qr.funder = jct.chosen.funder.id;
         qr.institution = jct.chosen.institution.id;
@@ -154,13 +170,14 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTML = "";
         if (js.compliant) {
             js.results.forEach((r) => {
-                if (r.compliant === "yes") {
+                //TODO: commented out for dev
+                //if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
-                }
+                //}
             })
         }
 
-        // TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
+// TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
     }
 }
 
@@ -185,33 +202,33 @@ jct.add_tile = (tile_type, data) => {
 
 jct.fullyOA_tile = (journal_title) => {
     return htmlToElement (`
-    <div class="col col--1of4" id="fyllyOA_tile ` + journal_title  + `">
-        <p><b>` + journal_title + `</b> is fully open access.</p>
-    </div>
-  `)
+<div class="col col--1of4" id="fyllyOA_tile ` + journal_title  + `">
+<p class="tile"><b>` + journal_title + `</b> is fully open access.</p>
+</div>
+`)
 }
 
 jct.transformative_agreement_tile = (journal_title, publisher_title) => {
     return htmlToElement(`
-    <div class="col col--1of4" id="ta_tile` + journal_title + `-` + publisher_title + `">
-      <p>It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.</p>
-    </div>
-  `)
+<div class="col col--1of4" id="ta_tile` + journal_title + `-` + publisher_title + `">
+<p class="tile">It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.</p>
+</div>
+`)
 }
 
 jct.transformative_journal_tile = (journal_title) => {
     return htmlToElement (`
-    <div class="col col--1of4" id="tj_tile` +journal_title + `">
-     <p>It is a transformative journal.</p>
-    </div>
-  `)
+<div class="col col--1of4" id="tj_tile` +journal_title + `">
+<p class="tile">It is a transformative journal.</p>
+</div>
+`)
 }
 
 jct.self_archiving_tile = (journal_title) => {
     return htmlToElement (`
-    <div class="col col--1of4" id="sa_tile` + journal_title + `">
-     <p>It has a self-archiving policy, as shown on DOAJ.</p>
-    </div>
+<div class="col col--1of4" id="sa_tile` + journal_title + `">
+<p class="tile">It has a self-archiving policy, as shown on DOAJ.</p>
+</div>
 `)
 }
 
@@ -259,7 +276,7 @@ jct.suggestions = (suggs, cached) => {
     }
     if (update) {
         try {
-            // in case we get too big for local storage...
+// in case we get too big for local storage...
             localStorage.setItem(jct.suggesting,JSON.stringify(jct.cache[jct.suggesting].data));
         } catch(err) {}
     }
@@ -270,30 +287,32 @@ jct.suggestions = (suggs, cached) => {
         jct.d.each("choose", function(el) { el.addEventListener('click', jct.choose); });
     }
     if (jct.d.gebc('choose').length < 10 && cached) {
-        // TODO also track how many were remaining from the last query (suggs.total - suggs.data.length)
-        // and take into account if typed is still a subset of the last search, in which case there is no point triggering another search
+// TODO also track how many were remaining from the last query (suggs.total - suggs.data.length)
+// and take into account if typed is still a subset of the last search, in which case there is no point triggering another search
         jct.jx('/suggest/'+jct.suggesting+'/'+typed.replace('journal','').replace(' of','').replace(' and',''));
     }
     if (!jct.d.gebc('choose')) {
         jct.d.gebi('whatsmissing').innerHTML = jct.suggesting;
         jct.d.gebi('titlemissing').innerHTML = jct.d.gebi(jct.suggesting).value;
         jct.d.gebi('missing').style.display = 'block';
-        // TODO send missing value to backend
+// TODO send missing value to backend
     }
 }
 
 // suggest strings based on user input, get jx from remote if not already present
 jct.waiting = false;
 jct.suggest = (e) => {
-    // if on journal tab, could be a topic search
-    // could also be an issn search starting with a number, in which case do nothing until is at least half an ISSN
+// if on journal tab, could be a topic search
+// could also be an issn search starting with a number, in which case do nothing until is at least half an ISSN
     if (e === undefined) e = jct.waiting;
     if (e) {
         let which = e.target.id;
         let typed = e.target.value.toLowerCase().replace(' of','').replace('the ','');
         if ('journal'.indexOf(typed.trim()) !== -1) typed = '';
         if (typed.length === 0) {
-            jct.d.each('suggest','innerHTML','');
+            jct.d.each('suggest', (e, el) => {
+                el.innerHTML = '';
+            })
         } else {
             if (typed.length > 1) {
                 jct.suggesting = which;
@@ -322,8 +341,8 @@ jct.preload = () => {
                 jct.cache[keys[k]].string += jct.cache[keys[k]].data[sk].title.toLowerCase() + ' ';
             }
         }
-        // TODO check js.date of local storage, and get any createdAt / updatedAt since then and add to local storage
-        // also probably refresh after X time? or on url param?
+// TODO check js.date of local storage, and get any createdAt / updatedAt since then and add to local storage
+// also probably refresh after X time? or on url param?
     } else {
         let size = 2000;
         let max = 10000; // TODO once we have an idea of usage, get most popular rather than just first X on initial load
@@ -364,11 +383,12 @@ jct.preload = () => {
 // then do further autocompletes by institution and filter the possible journals by that too
 jct.setup = () => {
     console.log("setup")
-    document.getElementById("plugin").innerHTML = plugin_template;
+    document.getElementById("inputs_plugin").innerHTML = inputs_plugin;
+    document.getElementById("results_plugin").innerHTML = results_plugin;
     let f = jct.d.gebi("funder");
     /*while (f === null) {
-      console.log('waiting for page to draw');
-      f = jct.d.gebi("funder");
+    console.log('waiting for page to draw');
+    f = jct.d.gebi("funder");
     }*/
 
     let _sug = (e) => {

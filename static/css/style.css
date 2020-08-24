@@ -2,57 +2,128 @@
 @import 'new-typescale.css';
 @import 'normalize.css';
 
-/*html {*/
-/*    height: 100%;*/
-/*}*/
-/*body {*/
-/*    min-height: 100%;*/
-/*}*/
-/*.unbound {*/
-/*    border:none;*/
-/*    margin:0px;*/
-/*}*/
-/*.success {*/
-/*    background-color: #689f38;*/
-/*    border-color: #689f38;*/
-/*}*/
-/*.error {*/
-/*    background-color: #d32f2f;*/
-/*    border-color: #d32f2f;*/
-/*}*/
-/*a.button.primary {*/
-/*    color:white;*/
-/*}*/
-/*.static_section .section {*/
-/*    display: none;*/
-/*    margin-top:40px;*/
-/*    border-top:1px solid #ccc;*/
-/*}*/
-/*.help {*/
-/*    display: none;*/
-/*}*/
+:root {
+    --grey: rgba(196, 196, 196, 0.25);
+}
 
-/*.paths_results {*/
-/*    display: grid;*/
-/*    grid-template-columns: repeat(4, 25%);*/
-/*    grid-template-rows: 200px;*/
-/*    grid-gap: 20px 20px;*/
-/*    grid-auto-flow: row;*/
-/*}*/
+.logo {
+    margin-bottom: var(--gutter);
+}
 
-/*.paths_results__tile {*/
-/*    display: grid;*/
-/*    justify-self: stretch;*/
-/*    align-self: stretch;*/
+.logo_text {
+    color: black;
+    text-decoration: none;
+    font-size: xx-large;
+    font-weight: bold;
+}
 
-/*    justify-content: flex-start;*/
-/*    align-content: stretch;*/
+header {
+    margin-right: var(--gutter-negative);
+    margin-left: var(--gutter-negative);
+    margin-top: var(--gutter-negative);
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+    padding-top: var(--gutter);
+    background-color: var(--grey);
+}
 
-/*    font-style: normal;*/
-/*    font-weight: normal;*/
-/*    font-size: 24px;*/
+label {
+    display: block;
+}
 
-/*    !* black *!*/
-/*    color: #000000;*/
-/*    border: black solid 1px;*/
-/*}*/
+.row-inputs {
+    padding-bottom: var(--gutter);
+}
+
+input {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    border-bottom: 1px solid black;
+    padding-top: var(--half-gutter);
+}
+
+textarea {
+    margin-top: var(--half-gutter);
+}
+
+.suggest {
+    background-color: white;
+    color: black;
+    text-decoration: none;
+    text-align: left;
+}
+
+.choose {
+    color: black;
+    text-decoration: none;
+}
+
+.tile {
+    height: 100%;
+    border: black 1px solid;
+}
+
+.footer {
+    position: fixed;
+    width: 100%;
+    color: #585756;
+    text-align: right;
+}
+
+#feedback {
+    position: fixed;
+    bottom: 10px;
+    right: 0px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 15% from the top and centered */
+    padding: var(--gutter);
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.contact_input {
+    width: 100%;
+}
+
+.contact_submit {
+    border: black 1px solid;
+    text-decoration: none;
+    text-align: center;
+    padding: 1em;
+}

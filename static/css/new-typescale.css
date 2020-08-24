@@ -10,6 +10,8 @@
 
     --gutter:          2.5vw;
     --gutter-negative: -2.5vw;
+    --half-gutter: 1.25vw;
+    --half-gutter-negative: -1.25vw;
 }
 
 html {
@@ -55,4 +57,5 @@ h6, small {
 
 p {
     margin: 0 0 var(--gutter) 0;
+    padding: 1rem;
 }
