@@ -81,6 +81,14 @@
 <!--</div>-->
 <div class="modal" id="modal_feedback" style="display: none">
     <div class="modal-content" id="contact">
+        <header class="modal-header">
+            <div class="row">
+                <div class="col col--1of1">
+                    Feedback? Suggestion? Contact us here.
+                    <span class="close">&times;</span>
+                </div>
+            </div>
+        </header>
         <form id="contact_form">
             <div class="row row-inputs">
                 <div class="col col--1of1">
@@ -96,7 +104,7 @@
             </div>
             <div class="row row-inputs">
                 <div class="col col--1of1">
-                    <label for="message">Your message</label>
+                    <label for="message">Comment</label>
                     <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
                 </div>
             </div>
@@ -178,6 +186,12 @@
             e.target.style.display = "none";
         }
     }
+
+    jct.d.each("close", (el) => {
+        el.addEventListener("click", (e) => {
+            e.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
+        })
+    })
 
 </script>
 <script type="text/javascript" src="../static/contact.js"></script>

@@ -32,7 +32,8 @@ label {
 }
 
 .row-inputs {
-    padding-bottom: var(--gutter);
+    padding-bottom: var(--half-gutter);
+    padding-top: var(--half-gutter);
 }
 
 input {
@@ -126,4 +127,11 @@ textarea {
     text-decoration: none;
     text-align: center;
     padding: 1em;
+}
+
+.modal-header {
+    position: relative;
+    height: 10%;
+    padding: 1rem;
+    font-weight: bold;
 }
