@@ -12,7 +12,7 @@ let inputs_plugin =`
         <input type="text" id="journal" name="journal">
     </div>
         <div class="col col--1of3">
-        <label for="founder">Founder *</label>
+        <label for="founder">Funder *</label>
     <input type="text" id="funder">
     </div>
     <div class="col col--1of3">
