@@ -37,6 +37,7 @@ label {
 }
 
 input {
+    width: 100%;
     border: 0;
     outline: 0;
     background: transparent;
@@ -134,4 +135,11 @@ textarea {
     height: 10%;
     padding: 1rem;
     font-weight: bold;
+}
+
+.select_option {
+    text-align: center;
+    padding: 1rem;
+    margin: 0;
+    border: 1px black solid;
 }

@@ -11,8 +11,8 @@ let inputs_plugin =`
         <label for="journal">Journal *</label>
         <input type="text" id="journal" name="journal">
     </div>
-        <div class="col col--1of3">
-        <label for="founder">Funder *</label>
+    <div class="col col--1of3">
+        <label for="founder">Founder *</label>
     <input type="text" id="funder">
     </div>
     <div class="col col--1of3">
@@ -270,7 +270,7 @@ jct.suggestions = (suggs, cached) => {
         let tl = t.toLowerCase();
         if (!jct.d.gebi(suggs.data[s].id)) {
             if (tl.indexOf(typed) !== -1) {
-                sgst += '<p><a class="button choose' + (suggs.data[s].doaj ? ' success' : '') + '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
+                sgst += '<p class="select_option"><a class="button choose' + (suggs.data[s].doaj ? ' success' : '') + '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             }
         } else if (!cached && jct.cache[jct.suggesting].string.indexOf(tl) === -1) {
             jct.cache[jct.suggesting].string += ' ' + tl;
