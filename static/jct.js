@@ -170,10 +170,9 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTML = "";
         if (js.compliant) {
             js.results.forEach((r) => {
-                //TODO: commented out for dev
-                //if (r.compliant === "yes") {
+                if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
-                //}
+                }
             })
         }
 
