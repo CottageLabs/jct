@@ -260,7 +260,7 @@ jct.suggestions = (suggs, cached) => {
     jct.d.each('choose', (el) => {
         if (el.innerHTML.toLowerCase().indexOf(typed) === -1) {
             console.log(el.parentNode)
-            el.parentNode.parentNode.removeChild(el).parentNode;
+            el.parentNode.parentNode.removeChild(el.parentNode);
         }
     });
     if (jct.cache[jct.suggesting] === undefined) jct.cache[jct.suggesting] = {string: '', data: []};
