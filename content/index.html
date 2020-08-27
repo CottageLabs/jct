@@ -43,7 +43,7 @@
 <header>
     <div class="row">
         <div class="col col--1of3 logo">
-            <a href="/index.html" class="logo_text">Is this compliant with Plan S?</a>
+            <a href="index.html" class="logo_text">Is this compliant with Plan S?</a>
         </div>
     </div>
     <div class="row row-inputs" id="inputs_plugin"></div>
@@ -51,34 +51,8 @@
 
 <main>
     <div id="results_plugin"></div>
-    <div id="spacer"></div>
 </main>
-<!--<div class="section" id="section_apply" style="display: none">-->
-<!--    <p>Also link to explanations on plan-s site of what transformative journal is</p>-->
-<!--    <p>And link to our own page here listing all transformative jouranls already known</p>-->
-<!--</div>-->
-<!--<div class="section" id="section_notify" style="display: none">-->
-<!--</div>-->
-<!--<div class="section" id="section_journals" style="display: none">-->
-<!--    <p>Job of data manager will include ensuring the applications we receive are processed and approved in the system, and reviewing in line with plan-s reqs.</p>-->
-<!--</div>-->
-<!--<div class="section" id="section_agreements" style="display: none">-->
-<!--    <p>Also could allow filtering by institution, to see what agreements your institution is signed up to</p>-->
-<!--    <p>Job of data manager will include listing out which institutions are related to which ESAC agreement, which we will store in sheets / backend.</p>-->
-<!--    <p>And link to ESAC here, probably recommend them as first place to go to register any new agreements - and maybe have a way for people to let us know directly?</p>-->
-<!--    <p><a href="https://esac-initiative.org/about/transformative-agreements/share/">ESAC transformative agreements registration link</a></p>-->
-<!--</div>-->
-<!--<div class="section" id="section_about" style="display: none">-->
 
-<!--    <p>Which will also contain a blurb about plan-s and why they exist, why they made this</p>-->
-<!--    <p>And link to plan-s / coalition-s site for more info</p>-->
-<!--</div>-->
-<!--<div class="section" id="section_howto" style="display: none">-->
-<!--    <p>And also add an FAQ, which may best be generated from a sheet that the data manager can use to answer questions, then feed them in here automatically.</p>-->
-<!--</div>-->
-<!--<div class="section" id="section_embed" style="display: none">-->
-<!--    <p>And how to customise it to set your journal/funder already because no point a user selecting that when already on the website of that entity.</p>-->
-<!--</div>-->
 <div class="modal" id="modal_feedback" style="display: none">
     <div class="modal-content" id="contact">
         <header class="modal-header">
@@ -117,23 +91,8 @@
 </div>
 
 <div class="footer row">
-    <a type="button" id="feedback" class="col col--1of3 pager">Send us feedback </a>
+    <a type="button" id="feedback" class="col col--1of3">Send us feedback </a>
 </div>
-<!--<div class="row">-->
-<!--    <div class="col-sm">-->
-<!--        <p>-->
-<!--            <button type="button" id="apply" class="button primary small bordered pager">Apply for transformative journal status </button>  <button type="button" id="notify" class="button small bordered pager" >Notify us of changes </button><br>-->
-<!--            <button type="button" id="journals" class="button small bordered pager">Transformative journals </button>  <button type="button" id="agreements" class="button small bordered pager" >Transformative agreements </button>-->
-<!--        </p>-->
-<!--    </div>-->
-<!--    <div class="col-sm">-->
-<!--        <p style="text-align:right;">-->
-<!--            <button type="button" id="about" class="button small bordered pager">About this service </button>  <button type="button" id="about_plans" class="button small bordered pager" >About Plan S / cOAlition S </button><br>-->
-<!--            <button type="button" id="howto" class="button small bordered pager">How to use this service </button>  <button type="button" id="embed" class="button small bordered pager" >Use on your site </button>-->
-
-<!--        </p>-->
-<!--    </div>-->
-<!--</div>-->
 
 </body>
 
@@ -147,37 +106,11 @@
     // });
 
 
-    jct.d.each('pager', (el) => {
-        el.addEventListener("click", (e) => {
-            e.preventDefault();
-            let sid = el.getAttribute('id').split('_')[0];
-            let modal = jct.d.gebi('modal_' + sid)
-            modal.style.display = 'block';
-
-            // if (sid === 'agreements') {
-            //     if (!jct.d.gebi('agreements_table')) {
-            //         jct.jx('transformative/esac', undefined, (xhr) => {
-            //             let data = JSON.parse(xhr.response);
-            //             console.log(xhr.response)
-            //             let table = '<table id="agreements_table">';
-            //             table += '<thead><tr><th>publisher</th><th>country</th><th>customer</th><th>size</th><th>start date</th><th>end date</th><th>ID</th></tr></thead><tbody>';
-            //             for (let r in data) {
-            //                 table += '<tr>';
-            //                 for (let d in data[r]) {
-            //                     console.log(d)
-            //                     if (['publisher', 'country', 'customer', 'size', 'start_date', 'end_date', 'id'].indexOf(d) !== -1) {
-            //                         table += '<td>' + data[r][d] + '</td>';
-            //                     }
-            //                 }
-            //                 table += '</tr>';
-            //             }
-            //             table += '</tbody>';
-            //             table += '</table>';
-            //             jct.d.gebi('section_agreements').innerHTML = jct.d.gebi('section_agreements').innerHTML + '<br>' + table;
-            //         });
-            //     }
-            // }
-        });
+    jct.d.gebi('feedback').addEventListener("click", (e) => {
+        e.preventDefault();
+        let sid = el.getAttribute('id').split('_')[0];
+        let modal = jct.d.gebi('modal_' + sid)
+        modal.style.display = 'block';
     });
 
     window.onclick = (e) => {

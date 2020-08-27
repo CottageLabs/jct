@@ -1,6 +1,6 @@
 let jct = {
     api: 'https://api.jct.cottagelabs.com',
-    delay: 700,
+    delay: 100,
     cache: {},
     chosen: {},
     latest_response: null
@@ -9,37 +9,16 @@ let jct = {
 let inputs_plugin =`
     <div class="col col--1of3">
         <label for="journal">Journal *</label>
-        <input type="text" id="journal" name="journal">
+        <input type="text" id="journal" name="journal" which="journal">
     </div>
     <div class="col col--1of3">
-        <label for="founder">Founder *</label>
-    <input type="text" id="funder">
+        <label for="funder">Funder *</label>
+    <input type="text" id="funder" which="funder">
     </div>
     <div class="col col--1of3">
         <label for="institution">Institution *</label>
-        <input type="text" id="institution"> 
+        <input type="text" id="institution" which="institution"> 
     </div>
-<!--<div class="row">-->
-<!--    <div id="help_journal" class="col-sm help">-->
-<!--    <p>-->
-<!--      Start typing a journal title, ISSN, or field of research, we'll find it and check its OA status-->
-<!--      (for example Annals of Oncology).-->
-<!--    </p>-->
-<!--  </div>-->
-<!--  <div id="help_funder" class="col-sm help">-->
-<!--    <p>-->
-<!--      Tell us the main funder of your research, we'll find their publishing policy-->
-<!--      (try Wellcome Trust). If your funder is not part of Plan S, this tool will not-->
-<!--      be relevant to you. (List will be restricted to Plan S funders later.)-->
-<!--    </p>-->
-<!--  </div>-->
-<!--  <div id="help_institution" class="col-sm help">-->
-<!--    <p>-->
-<!--      Let us know the institution you're affiliated to for this research-->
-<!--      (e.g. Max Planck Society).-->
-<!--    </p>-->
-<!--  </div>-->
-<!--</div>-->
     <div class="col col--1of3 suggest" id="suggestjournal">
     </div>
     <div class="col col--1of3 suggest" id="suggestfunder">
@@ -73,6 +52,8 @@ let results_plugin =
 jct.d = document;
 jct.d.gebi = document.getElementById;
 jct.d.gebc = document.getElementsByClassName;
+
+jct.MAX_SUGGS_LENGTHS = 10;
 
 jct.d.each = (cls, key, val) => {
     if (cls.indexOf('.') === 0) cls = cls.replace('.','');
@@ -110,28 +91,20 @@ jct.choose = (e, el) => {
     let which = et.getAttribute('which');
     let id = et.getAttribute('id');
     let title = et.getAttribute('title');
-    let cls = et.getAttribute('class');
     jct.chosen[which] = {id: id, title: title};
     jct.d.gebi(which).value = title;
     jct.d.each('section',(el) => {
         el.style.display = 'none';
     });
     jct.d.each('suggest','innerHTML','');
-//scroll(0,0); // TODO should take account of embed location and only scroll to search box height, if embedded further down a page
-    if (cls.indexOf('success') !== -1) {
-        jct.d.gebi('spacer').style.display = 'none';
-        jct.d.gebi('compliant').style.display = 'block'; // TODO may want to add more info here about the compliance
-    } else if (which === 'journal') {
+    if (which === 'journal') {
         jct.d.gebi('funder').focus();
     } else if (which === 'funder') {
         jct.d.gebi('institution').focus();
     } else {
         jct.d.gebi('institution').blur();
-//jct.jx('journal/' + jct.chosen.journal.id, {funder: jct.chosen.funder.id, institution: jct.chosen.institution.id});
-//jct.d.gebi('loading').style.display = 'block';
     }
     if (jct.chosen.journal && jct.chosen.funder && jct.chosen.institution) {
-// TODO don't query every time if available values haven't changed sufficiently to alter an already received answer
         let qr = {journal: jct.chosen.journal.id};
         qr.funder = jct.chosen.funder.id;
         qr.institution = jct.chosen.institution.id;
@@ -156,19 +129,19 @@ jct.progress = (e) => {
 }
 jct.success = (xhr) => {
     jct.d.gebi('loading').style.display = 'none';
-    console.log(xhr.response.length + ' bytes');
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
     if (jct.suggesting) {
+        // console.log(js)
         jct.suggestions(js);
         jct.suggesting = false;
     } else {
-        console.log(js)
+        // console.log(js)
         jct.latest_response = js.results;
         jct.d.gebi("paths_results").innerHTM = ""
-        jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         jct.d.gebi("paths_results").innerHTML = "";
         if (js.compliant) {
+            jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
             js.results.forEach((r) => {
                 if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
@@ -257,49 +230,21 @@ jct.suggestions = (suggs, cached) => {
     let sgst = '';
     let sd = jct.d.gebi('suggest'+jct.suggesting);
     let typed = jct.d.gebi(jct.suggesting).value.toLowerCase();
-    jct.d.each('choose', (el) => {
-        if (el.innerHTML.toLowerCase().indexOf(typed) === -1) {
-            console.log(el.parentNode)
-            el.parentNode.parentNode.removeChild(el.parentNode);
-        }
-    });
-    if (jct.cache[jct.suggesting] === undefined) jct.cache[jct.suggesting] = {string: '', data: []};
     let update = false;
-    for ( let s in suggs.data ) {
+    let l = suggs.data.length > jct.MAX_SUGGS_LENGTHS ? jct.MAX_SUGGS_LENGTHS : suggs.data.length;
+    for ( let s = 0; s < l; s++ ) {
         let t = suggs.data[s].title;
         let tl = t.toLowerCase();
-        if (!jct.d.gebi(suggs.data[s].id)) {
-            if (tl.indexOf(typed) !== -1) {
-                sgst += '<p class="select_option"><a class="button choose' + (suggs.data[s].doaj ? ' success' : '') + '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
-            }
-        } else if (!cached && jct.cache[jct.suggesting].string.indexOf(tl) === -1) {
-            jct.cache[jct.suggesting].string += ' ' + tl;
-            jct.cache[jct.suggesting].data.push(suggs.data[s]);
-            update = true;
-        }
+        sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
     }
-    if (update) {
-        try {
-// in case we get too big for local storage...
-            localStorage.setItem(jct.suggesting,JSON.stringify(jct.cache[jct.suggesting].data));
-        } catch(err) {}
-    }
-    console.log(jct.d.gebc('choose').length)
     if (sgst.length) {
-        console.log(jct.suggesting + ' ' + jct.cache[jct.suggesting].data.length);
-        sd.innerHTML = sgst + sd.innerHTML;
+        sd.innerHTML = sgst;
         jct.d.each("choose", function(el) { el.addEventListener('click', jct.choose); });
-    }
-    if (jct.d.gebc('choose').length < 10 && cached) {
-// TODO also track how many were remaining from the last query (suggs.total - suggs.data.length)
-// and take into account if typed is still a subset of the last search, in which case there is no point triggering another search
-        jct.jx('/suggest/'+jct.suggesting+'/'+typed.replace('journal','').replace(' of','').replace(' and',''));
     }
     if (!jct.d.gebc('choose')) {
         jct.d.gebi('whatsmissing').innerHTML = jct.suggesting;
         jct.d.gebi('titlemissing').innerHTML = jct.d.gebi(jct.suggesting).value;
         jct.d.gebi('missing').style.display = 'block';
-// TODO send missing value to backend
     }
 }
 
@@ -318,11 +263,7 @@ jct.suggest = (e) => {
         } else {
             if (typed.length > 1) {
                 jct.suggesting = which;
-                if (jct.cache[which] !== undefined && jct.cache[which].string !== undefined && jct.cache[which].string.indexOf(typed) !== -1) {
-                    jct.suggestions(jct.cache[which], true);
-                } else {
-                    jct.jx('/suggest/'+which+'/'+typed);
-                }
+                jct.jx('/suggest/'+which+'/'+typed);
             }
         }
     }
@@ -333,53 +274,53 @@ jct.suggest = (e) => {
 // store them in local storage - NOTE local storage can be up to 5MB / 2551000 characters, all journals, funders, institutions
 // with IDs comes to almost that - if we end up with a lot more, may need to store just the title strings 
 // separately then get the IDs when needed. Also note that we may want to start caching possible results too.
-jct.preload = () => {
-    let sdate = localStorage.getItem('cache');
-    if (sdate && window.location.search.indexOf('storage=false') === -1) {
-        let keys = ['journal','funder','institution'];
-        for ( let k in keys) {
-            jct.cache[keys[k]] = {string: '', data: localStorage.getItem(keys[k]) ? JSON.parse(localStorage.getItem(keys[k])) : {}};
-            for ( let sk in jct.cache[keys[k]].data ) {
-                jct.cache[keys[k]].string += jct.cache[keys[k]].data[sk].title.toLowerCase() + ' ';
-            }
-        }
-// TODO check js.date of local storage, and get any createdAt / updatedAt since then and add to local storage
-// also probably refresh after X time? or on url param?
-    } else {
-        let size = 2000;
-        let max = 10000; // TODO once we have an idea of usage, get most popular rather than just first X on initial load
-        let types = ['journal','funder','institution'];
-        jct.preload._totals = {};
-        jct.preload._from = {};
-        jct.preload._preload = (xhr) => {
-            let tps = xhr.responseURL.split('suggest/')[1].split('?')[0];
-            let js = JSON.parse(xhr.response);
-            if (jct.preload._totals[tps] === undefined) jct.preload._totals[tps] = js.total;
-            for ( let s in js.data ) {
-                jct.cache[tps].string += ' ' + js.data[s].title.toLowerCase();
-                jct.cache[tps].data.push(js.data[s]);
-            }
-            let jcs = JSON.stringify({date: Date.now(), cache: jct.cache});
-            console.log(jcs.length + ' chars going to local storage');
-            try {
-                localStorage.setItem('cache',Date.now());
-                localStorage.setItem(tps,JSON.stringify(jct.cache[tps].data));
-            } catch(err) {}
-            console.log(tps + ' ' + jct.cache[tps].data.length);
-            jct.preload._from[tps] += size;
-            if (jct.preload._from[tps] < jct.preload._totals[tps] && jct.preload._from[tps] < max) jct.preload._get(tps);
-        }
-        jct.preload._get = (tp) => {
-            jct.jx('suggest/'+tp, 'size=' + size + '&from='+jct.preload._from[tp], jct.preload._preload);
-        }
-        for ( let t in types ) {
-            let tp = types[t];
-            if (jct.cache[tp] === undefined) jct.cache[tp] = {string: '', data: []};
-            if (jct.preload._from[tp] === undefined) jct.preload._from[tp] = 0;
-            jct.preload._get(types[t]);
-        }
-    }
-}
+// jct.preload = () => {
+//     let sdate = localStorage.getItem('cache');
+//     if (sdate && window.location.search.indexOf('storage=false') === -1) {
+//         let keys = ['journal','funder','institution'];
+//         for ( let k in keys) {
+//             jct.cache[keys[k]] = {string: '', data: localStorage.getItem(keys[k]) ? JSON.parse(localStorage.getItem(keys[k])) : {}};
+//             for ( let sk in jct.cache[keys[k]].data ) {
+//                 jct.cache[keys[k]].string += jct.cache[keys[k]].data[sk].title.toLowerCase() + ' ';
+//             }
+//         }
+// // TODO check js.date of local storage, and get any createdAt / updatedAt since then and add to local storage
+// // also probably refresh after X time? or on url param?
+//     } else {
+//         let size = 2000;
+//         let max = 10000; // TODO once we have an idea of usage, get most popular rather than just first X on initial load
+//         let types = ['journal','funder','institution'];
+//         jct.preload._totals = {};
+//         jct.preload._from = {};
+//         jct.preload._preload = (xhr) => {
+//             let tps = xhr.responseURL.split('suggest/')[1].split('?')[0];
+//             let js = JSON.parse(xhr.response);
+//             if (jct.preload._totals[tps] === undefined) jct.preload._totals[tps] = js.total;
+//             for ( let s in js.data ) {
+//                 jct.cache[tps].string += ' ' + js.data[s].title.toLowerCase();
+//                 jct.cache[tps].data.push(js.data[s]);
+//             }
+//             let jcs = JSON.stringify({date: Date.now(), cache: jct.cache});
+//             console.log(jcs.length + ' chars going to local storage');
+//             try {
+//                 localStorage.setItem('cache',Date.now());
+//                 localStorage.setItem(tps,JSON.stringify(jct.cache[tps].data));
+//             } catch(err) {}
+//             console.log(tps + ' ' + jct.cache[tps].data.length);
+//             jct.preload._from[tps] += size;
+//             if (jct.preload._from[tps] < jct.preload._totals[tps] && jct.preload._from[tps] < max) jct.preload._get(tps);
+//         }
+//         jct.preload._get = (tp) => {
+//             jct.jx('suggest/'+tp, 'size=' + size + '&from='+jct.preload._from[tp], jct.preload._preload);
+//         }
+//         for ( let t in types ) {
+//             let tp = types[t];
+//             if (jct.cache[tp] === undefined) jct.cache[tp] = {string: '', data: []};
+//             if (jct.preload._from[tp] === undefined) jct.preload._from[tp] = 0;
+//             jct.preload._get(types[t]);
+//         }
+//     }
+// }
 
 // start off with getting the funder automcompletes, then the journal autocompletes, which should be filtering results already
 // then do further autocompletes by institution and filter the possible journals by that too
@@ -394,25 +335,32 @@ jct.setup = () => {
     }*/
 
     let _sug = (e) => {
-        jct.d.each('help', function(el) { el.style.display = 'none'; });
-        let sl = jct.d.gebi('help_'+e.target.id);
-        if (sl) sl.parentNode.removeChild(sl);
-        jct.d.each('choose', function(el) { if (el.innerHTML.toLowerCase().indexOf(e.target.value.toLowerCase()) === -1 || el.getAttribute('which') !== e.target.id) el.parentNode.parentNode.removeChild(el.parentNode); });
-        if (jct.waiting === false) jct.waiting = e; setTimeout(jct.suggest,jct.delay);
+        // jct.d.each('choose', (el) => {
+        //     console.log(e.target.id)
+        //     if (el.innerHTML.toLowerCase().indexOf(e.target.value.toLowerCase()) === -1 || el.getAttribute('which') !== e.target.id)
+        //         console.log("removing parent")
+        //         // console.log(el)
+        //         el.parentNode.parentNode.removeChild(el.parentNode);
+        // });
+        console.log('suggest'+e.target.id)
+        jct.d.gebi('suggest'+e.target.id).innerHTML=""
+        if (jct.waiting === false)
+            jct.waiting = e;
+        setTimeout(jct.suggest,jct.delay);
     }
     jct.d.gebi("funder").addEventListener("keyup", _sug);
     jct.d.gebi("journal").addEventListener("keyup", _sug);
     jct.d.gebi("institution").addEventListener("keyup", _sug);
 
     let _choose = (e) => {
-        if (jct.d.gebi('help_'+e.target.getAttribute('id'))) jct.d.gebi('help_'+e.target.getAttribute('id')).style.display = 'block';
+        // if (jct.d.gebi('help_'+e.target.getAttribute('id'))) jct.d.gebi('help_'+e.target.getAttribute('id')).style.display = 'block';
         jct.choose();
     }
     jct.d.gebi("funder").addEventListener("focus", _choose);
     jct.d.gebi("journal").addEventListener("focus", _choose);
     jct.d.gebi("institution").addEventListener("focus", _choose);
 
-    jct.preload();
+    // jct.preload();
 }
 
 /**
