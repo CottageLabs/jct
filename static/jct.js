@@ -132,11 +132,9 @@ jct.success = (xhr) => {
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
     if (jct.suggesting) {
-        // console.log(js)
         jct.suggestions(js);
         jct.suggesting = false;
     } else {
-        // console.log(js)
         jct.latest_response = js.results;
         jct.d.gebi("paths_results").innerHTM = ""
         jct.d.gebi("paths_results").innerHTML = "";
@@ -248,7 +246,6 @@ jct.suggestions = (suggs, cached) => {
     }
 }
 
-// suggest strings based on user input, get jx from remote if not already present
 jct.waiting = false;
 jct.suggest = (e) => {
 // if on journal tab, could be a topic search
