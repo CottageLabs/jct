@@ -11,6 +11,10 @@
 }
 
 .logo_text {
+    padding-right: 0;
+}
+
+.logo_text_link {
     color: black;
     text-decoration: none;
     font-size: xx-large;
@@ -49,6 +53,10 @@ textarea {
     margin-top: var(--half-gutter);
 }
 
+a {
+    color: black;
+}
+
 .suggest {
     background-color: white;
     color: black;
@@ -62,9 +70,15 @@ textarea {
 }
 
 .tile {
+    position: relative;
     height: 100%;
-    border: black 1px solid;
     background: var(--grey);
+}
+
+.tile_help {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
 }
 
 .footer {
@@ -160,7 +174,7 @@ textarea {
 .jct_logo {
     position: absolute;
     width: 150px;
-    height: 120px;
+    height: auto;
     top: var(--half-gutter);
     right: var(--half-gutter);
     padding-bottom: var(--half-gutter);
@@ -171,7 +185,17 @@ textarea {
     width: 150px;
     font-size:80%;
     text-align:right;
-    top: calc(120px + var(--half-gutter));
+    top: calc(140px + var(--half-gutter));
     right: var(--half-gutter);
     color: #585756;
+}
+
+.helpicon {
+    padding: 0;
+}
+
+.helpicon_img {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
 }

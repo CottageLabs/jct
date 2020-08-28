@@ -12,11 +12,11 @@ let inputs_plugin =`
         <input type="text" id="journal" name="journal" which="journal">
     </div>
     <div class="col col--1of3">
-        <label for="funder">Funder *</label>
+        <label for="funder">My Funder *</label>
     <input type="text" id="funder" which="funder">
     </div>
     <div class="col col--1of3">
-        <label for="institution">Institution *</label>
+        <label for="institution">My Institution *</label>
         <input type="text" id="institution" which="institution">
         <div class="row notHE">
             <div class="col col--1of6">
@@ -153,9 +153,9 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTM = ""
         jct.d.gebi("paths_results").innerHTML = "";
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
-        if (js.compliant) {
+        if (!js.compliant) {
             js.results.forEach((r) => {
-                if (r.compliant === "yes") {
+                if (r.compliant !== "yes") {
                     jct.add_tile(r.route, jct.chosen)
                 }
             })
@@ -182,37 +182,58 @@ jct.add_tile = (tile_type, data) => {
             break;
     }
     jct.d.gebi("paths_results").append(tile);
+    if (tile_type === jct.COMPLIANCE_ROUTES.ta){
+        jct.d.gebi('ta_modal_button').addEventListener("click", () => {
+            let modal = jct.d.gebi('modal_ta')
+            modal.style.display = 'block';
+        })
+    }
+    else if (tile_type === jct.COMPLIANCE_ROUTES.sa){
+        jct.d.gebi('sa_modal_button').addEventListener("click", () => {
+            let modal = jct.d.gebi('modal_sa')
+            modal.style.display = 'block';
+        })
+    }
 }
 
 jct.fullyOA_tile = (journal_title) => {
     return htmlToElement (`
-<div class="col col--1of4" id="fyllyOA_tile ` + journal_title  + `">
-<p class="tile"><b>` + journal_title + `</b> is fully open access.</p>
-</div>
+        <div class="col col--1of4" id="fyllyOA_tile ` + journal_title  + `">
+            <div class="tile">
+                <p class="tile"><b>` + journal_title + `</b> is fully open access.</p>
+            </div>
+        </div>
 `)
 }
 
 jct.transformative_agreement_tile = (journal_title, publisher_title) => {
     return htmlToElement(`
-<div class="col col--1of4" id="ta_tile` + journal_title + `-` + publisher_title + `">
-<p class="tile">It is part of transformative agreement between <b>` + publisher_title + `</b> and <b> ` + journal_title + `</b>.</p>
-</div>
+        <div class="col col--1of4" id="ta_tile` + journal_title + `-` + publisher_title + `">
+            <div class="tile">
+                <p>It is part of transformative agreement between <b>` + publisher_title + `</b> and <b> ` + journal_title + `</b>.
+                </p>
+                <img src="../static/img/icons/question-inverted.svg" alt="circle help icon" class="helpicon_img tile_help" id="ta_modal_button">
+            </div>
+        </div>
 `)
 }
 
 jct.transformative_journal_tile = (journal_title) => {
     return htmlToElement (`
-<div class="col col--1of4" id="tj_tile` +journal_title + `">
-<p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
-</div>
+        <div class="col col--1of4" id="tj_tile` +journal_title + `">
+            <p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
+        </div>
 `)
 }
 
 jct.self_archiving_tile = (journal_title) => {
     return htmlToElement (`
-<div class="col col--1of4" id="sa_tile` + journal_title + `">
-<p class="tile">It has a self-archiving policy</p>
-</div>
+        <div class="col col--1of4" id="sa_tile` + journal_title + `">
+            <div class="tile">
+                <p>It has a self-archiving policy</p>
+                <img src="../static/img/icons/question-inverted.svg" alt="circle help icon" class="helpicon_img tile_help" id="sa_modal_button">
+            </div>
+        </div>
 `)
 }
 
@@ -275,6 +296,7 @@ jct.suggest = (e) => {
             if (typed.length > 1) {
                 jct.suggesting = which;
                 jct.jx('/suggest/'+which+'/'+typed);
+                
             }
         }
     }
@@ -340,6 +362,8 @@ jct.setup = () => {
     document.getElementById("inputs_plugin").innerHTML = inputs_plugin;
     document.getElementById("results_plugin").innerHTML = results_plugin;
     let f = jct.d.gebi("funder");
+
+
     /*while (f === null) {
     console.log('waiting for page to draw');
     f = jct.d.gebi("funder");
@@ -353,8 +377,8 @@ jct.setup = () => {
         //         // console.log(el)
         //         el.parentNode.parentNode.removeChild(el.parentNode);
         // });
-        console.log('suggest'+e.target.id)
         jct.d.gebi('suggest'+e.target.id).innerHTML=""
+        jct.suggesting = true;
         if (jct.waiting === false)
             jct.waiting = e;
         setTimeout(jct.suggest,jct.delay);
