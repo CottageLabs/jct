@@ -17,7 +17,15 @@ let inputs_plugin =`
     </div>
     <div class="col col--1of3">
         <label for="institution">Institution *</label>
-        <input type="text" id="institution" which="institution"> 
+        <input type="text" id="institution" which="institution">
+        <div class="row notHE">
+            <div class="col col--1of6">
+                <input type="checkbox" id="notHE" name="notHE" class="notHE_input">
+            </div>
+            <div class="col col--5of6 notHE_label">
+                <label for="notHE">Not part of Higher Education</label>
+            </div>
+        </div>
     </div>
     <div class="col col--1of3 suggest" id="suggestjournal">
     </div>
@@ -69,6 +77,18 @@ jct.d.each = (cls, key, val) => {
 
 jct.suggesting = false;
 
+let _calculate_if_all_data_provided = () => {
+    if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("notHE").checked)) {
+        let qr = {journal: jct.chosen.journal.id};
+        qr.funder = jct.chosen.funder.id;
+        if (jct.chosen.institution) {
+            qr.institution = jct.chosen.institution.id;
+        }
+        jct.jx('/calculate', qr);
+        jct.d.gebi('loading').style.display = 'block';
+    }
+}
+
 jct.choose = (e, el) => {
     jct.suggesting = false;
     let et;
@@ -104,13 +124,7 @@ jct.choose = (e, el) => {
     } else {
         jct.d.gebi('institution').blur();
     }
-    if (jct.chosen.journal && jct.chosen.funder && jct.chosen.institution) {
-        let qr = {journal: jct.chosen.journal.id};
-        qr.funder = jct.chosen.funder.id;
-        qr.institution = jct.chosen.institution.id;
-        jct.jx('/calculate', qr);
-        jct.d.gebi('loading').style.display = 'block';
-    }
+    _calculate_if_all_data_provided();
 }
 
 jct.COMPLIANCE_ROUTES = {
@@ -138,10 +152,10 @@ jct.success = (xhr) => {
         jct.latest_response = js.results;
         jct.d.gebi("paths_results").innerHTM = ""
         jct.d.gebi("paths_results").innerHTML = "";
-        if (js.compliant) {
-            jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+        jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+        if (!js.compliant) {
             js.results.forEach((r) => {
-                if (r.compliant === "yes") {
+                if (r.compliant === "no") {
                     jct.add_tile(r.route, jct.chosen)
                 }
             })
@@ -181,7 +195,7 @@ jct.fullyOA_tile = (journal_title) => {
 jct.transformative_agreement_tile = (journal_title, publisher_title) => {
     return htmlToElement(`
 <div class="col col--1of4" id="ta_tile` + journal_title + `-` + publisher_title + `">
-<p class="tile">It is part of transformative agreement between <i>` + publisher_title + `</i> and <i> ` + journal_title + `</i>.</p>
+<p class="tile">It is part of transformative agreement between <b>` + publisher_title + `</b> and <b> ` + journal_title + `</b>.</p>
 </div>
 `)
 }
@@ -189,7 +203,7 @@ jct.transformative_agreement_tile = (journal_title, publisher_title) => {
 jct.transformative_journal_tile = (journal_title) => {
     return htmlToElement (`
 <div class="col col--1of4" id="tj_tile` +journal_title + `">
-<p class="tile">It is a transformative journal.</p>
+<p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
 </div>
 `)
 }
@@ -197,7 +211,7 @@ jct.transformative_journal_tile = (journal_title) => {
 jct.self_archiving_tile = (journal_title) => {
     return htmlToElement (`
 <div class="col col--1of4" id="sa_tile` + journal_title + `">
-<p class="tile">It has a self-archiving policy, as shown on DOAJ.</p>
+<p class="tile">It has a self-archiving policy</p>
 </div>
 `)
 }
@@ -269,7 +283,7 @@ jct.suggest = (e) => {
 
 // preload most popular strings for first user interaction (on journals, most likely)
 // store them in local storage - NOTE local storage can be up to 5MB / 2551000 characters, all journals, funders, institutions
-// with IDs comes to almost that - if we end up with a lot more, may need to store just the title strings 
+// with IDs comes to almost that - if we end up with a lot more, may need to store just the title strings
 // separately then get the IDs when needed. Also note that we may want to start caching possible results too.
 // jct.preload = () => {
 //     let sdate = localStorage.getItem('cache');
@@ -348,6 +362,7 @@ jct.setup = () => {
     jct.d.gebi("funder").addEventListener("keyup", _sug);
     jct.d.gebi("journal").addEventListener("keyup", _sug);
     jct.d.gebi("institution").addEventListener("keyup", _sug);
+    jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
 
     let _choose = (e) => {
         // if (jct.d.gebi('help_'+e.target.getAttribute('id'))) jct.d.gebi('help_'+e.target.getAttribute('id')).style.display = 'block';
