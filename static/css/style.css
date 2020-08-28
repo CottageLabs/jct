@@ -157,10 +157,21 @@ textarea {
     background: transparent;
 }
 
-.journal_checker_tool {
+.jct_logo {
     position: absolute;
     width: 150px;
     height: 120px;
     top: var(--half-gutter);
     right: var(--half-gutter);
+    padding-bottom: var(--half-gutter);
+}
+
+.jct_beta {
+    position: absolute;
+    width: 150px;
+    font-size:80%;
+    text-align:right;
+    top: calc(120px + var(--half-gutter));
+    right: var(--half-gutter);
+    color: #585756;
 }
