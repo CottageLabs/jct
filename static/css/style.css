@@ -58,7 +58,7 @@ a {
 }
 
 .suggest {
-    background-color: white;
+    background-color: transparent;
     color: black;
     text-decoration: none;
     text-align: left;
@@ -169,6 +169,8 @@ a {
 
 .notHE_input {
     background: transparent;
+    width: 15px;
+    height: 15px;
 }
 
 .jct_logo {

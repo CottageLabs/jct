@@ -154,9 +154,9 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTML = "";
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         //negatives only for dev
-        if (!js.compliant) {
+        if (js.compliant) {
             js.results.forEach((r) => {
-                if (r.compliant !== "yes") {
+                if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
                 }
             })
