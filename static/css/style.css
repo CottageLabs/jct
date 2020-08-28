@@ -156,3 +156,11 @@ textarea {
 .notHE_input {
     background: transparent;
 }
+
+.journal_checker_tool {
+    position: absolute;
+    width: 150px;
+    height: 120px;
+    top: var(--half-gutter);
+    right: var(--half-gutter);
+}
