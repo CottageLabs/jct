@@ -153,6 +153,7 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTM = ""
         jct.d.gebi("paths_results").innerHTML = "";
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+        //negatives only for dev
         if (!js.compliant) {
             js.results.forEach((r) => {
                 if (r.compliant !== "yes") {
@@ -378,7 +379,7 @@ jct.setup = () => {
         //         el.parentNode.parentNode.removeChild(el.parentNode);
         // });
         jct.d.gebi('suggest'+e.target.id).innerHTML=""
-        jct.suggesting = true;
+        jct.suggesting = e.target.id;
         if (jct.waiting === false)
             jct.waiting = e;
         setTimeout(jct.suggest,jct.delay);
