@@ -160,7 +160,7 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTM = ""
         jct.d.gebi("detailed_results").innerHTML = "";
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
-        jct.d.gebi('explain_results').style.display = 'block'
+        jct.d.gebi('explain_results').style.display = 'flex';
         //negatives only for dev
         if (js.compliant) {
             js.results.forEach((r) => {

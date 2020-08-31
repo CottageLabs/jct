@@ -42,7 +42,7 @@ jct.explain = (q) => {
         <ul>
             <li>Journal ISSN: ` + q.request.issn[0] + `</li> 
             <li>Funder: ` + q.request.funder[0] + `</li> 
-            <li>Institution Ror: ` + q.request.ror[0] + `</li> 
+            <li>Institution ROR: ` + q.request.ror[0] + `</li> 
         </ul>
         
         We carried out this query at ` + new Date(q.request.started).toUTCString() +`, and found ` +
@@ -51,7 +51,7 @@ jct.explain = (q) => {
         </p>
     `
 
-    let elem = htmlToElement("<div>" + text + compliant_routes + noncompliant_routes + "</div>")
+    let elem = htmlToElement("<div>" + text + (compliant_routes_number > 0 ? compliant_routes : "") + (noncomplicant_routes_number > 0 ? noncompliant_routes : "") + "</div>")
     jct.d.gebi("detailed_results").append(elem);
 
 }
