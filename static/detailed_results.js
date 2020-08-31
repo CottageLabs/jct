@@ -52,7 +52,7 @@ jct.explain = (q) => {
 
     let detailed_results = jct.d.gebi("detailed_results")
 
-    let print_button = htmlToElement("<button id='print' class='button__print'> Print this results </button>");
+    let print_button = htmlToElement("<button id='print' class='button__print'> Print this result </button>");
     let elem = htmlToElement("<div id='detailed_result_text'>" + text + (compliant_routes_number > 0 ? compliant_routes : "") + (noncomplicant_routes_number > 0 ? noncompliant_routes : "") + "</div>");
     detailed_results.append(print_button);
     detailed_results.append(elem);

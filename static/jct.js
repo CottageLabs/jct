@@ -43,7 +43,7 @@ let results_plugin =
             <div id="notcompliant" class="col col--2of3 compliance" style="display:none;">
                 <h1>No, this is not compliant.</h1>
             </div>  
-            <a type="button" id="explain_results" class="col col--1of3" style="display: none;">Explain my results</a>
+            <a type="button" id="explain_results" class="col col--1of3" style="display: none;">Explain my result</a>
         </div>
 <!--        <div class="row" id="buttons">-->
 <!--            <div class="col col&#45;&#45;1of4">-->
