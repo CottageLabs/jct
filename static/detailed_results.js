@@ -51,16 +51,17 @@ jct.explain = (q) => {
     `
 
     let detailed_results = jct.d.gebi("detailed_results")
-    let print_button = htmlToElement("<button id='print'> Print this results </button>");
+
+    let print_button = htmlToElement("<button id='print' class='button__print'> Print this results </button>");
     let elem = htmlToElement("<div id='detailed_result_text'>" + text + (compliant_routes_number > 0 ? compliant_routes : "") + (noncomplicant_routes_number > 0 ? noncompliant_routes : "") + "</div>");
     detailed_results.append(print_button);
     detailed_results.append(elem);
 
     jct.d.gebi("print").addEventListener("click", () => {
         let a = window.open('', '', 'height=500, width=500');
-        let complicance = jct.d.gebc("compliance")[0]
+        let compliance = jct.d.gebc("compliance")[0]
         let results_to_print = jct.d.gebi("detailed_result_text")
-        a.document.write(complicance.innerHTML);
+        a.document.write(compliance.innerHTML);
         a.document.write(results_to_print.innerHTML);
         a.document.close();
         a.print();

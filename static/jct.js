@@ -42,9 +42,14 @@ let results_plugin =
             </div>
             <div id="notcompliant" class="col col--2of3 compliance" style="display:none;">
                 <h1>No, this is not compliant.</h1>
-            </div>
+            </div>  
             <a type="button" id="explain_results" class="col col--1of3" style="display: none;">Explain my results</a>
         </div>
+<!--        <div class="row" id="buttons">-->
+<!--            <div class="col col&#45;&#45;1of4">-->
+<!--                <button id="refresh" class="button__refresh" style="display: none;">START AGAIN</button>-->
+<!--            </div>  -->
+<!--        </div>-->
         <div class="row" id="result">
         </div>
         <div class="row paths_results" id="paths_results"></div>
@@ -160,6 +165,7 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTM = ""
         jct.d.gebi("detailed_results").innerHTML = "";
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+        // jct.d.gebi("refresh").style.display = 'block';
         jct.d.gebi('explain_results').style.display = 'flex';
         //negatives only for dev
         if (js.compliant) {
@@ -415,6 +421,8 @@ jct.setup = () => {
     jct.d.gebi("explain_results").addEventListener("click", () => {
         jct.d.gebi("detailed_results").style.display = "block";
     })
+
+    // jct.d.gebi("refresh").addEventListener("click", () => {location.reload()})
 
     // jct.preload();
 }

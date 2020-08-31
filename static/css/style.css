@@ -212,11 +212,20 @@ a {
     justify-content: flex-end;
 }
 
-#print {
-    background: white;
-    color: black;
+button {
     border: black 1px solid;
     border-radius: 0;
-    padding: 1rem;
+    padding: 0.5rem;
     cursor: pointer;
+    margin-top: 1rem;
+}
+
+.button__print {
+    background: white;
+    color: black;
+}
+
+.button__refresh {
+    background: black;
+    color: white;
 }
