@@ -127,11 +127,18 @@ jct.choose = (e, el) => {
     _calculate_if_all_data_provided();
 }
 
-jct.COMPLIANCE_ROUTES = {
+jct.COMPLIANCE_ROUTES_SHORT = {
     fully_oa: "fully_oa",
     ta: "ta",
     tj: "tj",
     sa: "self_archiving"
+}
+
+jct.COMPLIANCE_ROUTES_LONG = {
+    fully_oa: "Fully Open Access",
+    ta: "Transformative agreement",
+    tj: "Transformative journal",
+    sa: "Self-archiving policy"
 }
 
 jct.error = (xhr) => {
@@ -142,6 +149,7 @@ jct.progress = (e) => {
     e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
+    jct.d.gebi("detailed_results").innerHtml = "";
     jct.d.gebi('loading').style.display = 'none';
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
@@ -158,9 +166,11 @@ jct.success = (xhr) => {
             js.results.forEach((r) => {
                 if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
+
                 }
             })
         }
+        jct.explain(js)
 
 // TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
     }
@@ -169,27 +179,27 @@ jct.success = (xhr) => {
 jct.add_tile = (tile_type, data) => {
     let tile;
     switch(tile_type) {
-        case jct.COMPLIANCE_ROUTES.fully_oa:
+        case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
             tile = jct.fullyOA_tile(data.journal.title);
             break;
-        case jct.COMPLIANCE_ROUTES.ta:
+        case jct.COMPLIANCE_ROUTES_SHORT.ta:
             tile = jct.transformative_agreement_tile(data.journal.title, data.institution.title);
             break;
-        case jct.COMPLIANCE_ROUTES.tj:
+        case jct.COMPLIANCE_ROUTES_SHORT.tj:
             tile = jct.transformative_journal_tile(data.journal.title);
             break;
-        case jct.COMPLIANCE_ROUTES.sa:
+        case jct.COMPLIANCE_ROUTES_SHORT.sa:
             tile = jct.self_archiving_tile(data.journal.title);
             break;
     }
     jct.d.gebi("paths_results").append(tile);
-    if (tile_type === jct.COMPLIANCE_ROUTES.ta){
+    if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.ta){
         jct.d.gebi('ta_modal_button').addEventListener("click", () => {
             let modal = jct.d.gebi('modal_ta')
             modal.style.display = 'block';
         })
     }
-    else if (tile_type === jct.COMPLIANCE_ROUTES.sa){
+    else if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.sa){
         jct.d.gebi('sa_modal_button').addEventListener("click", () => {
             let modal = jct.d.gebi('modal_sa')
             modal.style.display = 'block';
