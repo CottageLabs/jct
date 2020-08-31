@@ -35,10 +35,9 @@ jct.explain = (q) => {
 
     let text =
         `
-        <h1>Explain my result</h1>
         <h2>Your query</h2>
         
-        <p> You asked us to calculate whether you are Plan S compliant under the following conditions:
+        <p>You asked us to calculate whether you are Plan S compliant under the following conditions:
         
         <ul>
             <li>Journal ISSN: ` + q.request.issn[0] + `</li> 
@@ -54,31 +53,5 @@ jct.explain = (q) => {
 
     let elem = htmlToElement("<div>" + text + compliant_routes + noncompliant_routes + "</div>")
     jct.d.gebi("detailed_results").append(elem);
-
-        
-
-        // If you wish to take this route to Plan S compliance, there are a number of things to take into consideration:
-        //
-        // [For each \`qualifications\` entry]
-        // * [qualification description, including parameters if present]
-        //
-        //
-        //
-        //
-        // ### [Route Type]
-        //
-        // You cannot comply with Plan S on this route ([Route Type]) under the following conditions:
-        //
-        // * Journal ISSN: [ISSN]
-        // * Funder: [list of funders]
-        // * Institutions: [list of institutions]
-        //
-        // The following checks were carried out to determine that this is a non-compliant route:
-        //
-        // [For each \`log\` entry]
-        // * [action]
-        //     * [result]
-        //     * For reference, see: [url]
-        // [end For]
 
 }

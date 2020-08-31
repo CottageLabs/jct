@@ -40,11 +40,10 @@ let results_plugin =
             <div id="compliant" class="col col--2of3" style="display:none">
                 <h1>Yes, this combination is compliant.</h1>
             </div>
-        </div>
-        <div class="row">
             <div id="notcompliant" class="col col--2of3" style="display:none;">
                 <h1>No, this is not compliant.</h1>
             </div>
+            <a type="button" id="explain_results" class="col col--1of3" style="display: none;">Explain my results</a>
         </div>
         <div class="row" id="result">
         </div>
@@ -153,6 +152,7 @@ jct.success = (xhr) => {
     jct.d.gebi('loading').style.display = 'none';
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
+    console.log(jct.suggesting)
     if (jct.suggesting) {
         jct.suggestions(js);
         jct.suggesting = false;
@@ -161,6 +161,7 @@ jct.success = (xhr) => {
         jct.d.gebi("paths_results").innerHTM = ""
         jct.d.gebi("paths_results").innerHTML = "";
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+        jct.d.gebi('explain_results').style.display = 'block'
         //negatives only for dev
         if (js.compliant) {
             js.results.forEach((r) => {
@@ -406,6 +407,10 @@ jct.setup = () => {
     jct.d.gebi("funder").addEventListener("focus", _choose);
     jct.d.gebi("journal").addEventListener("focus", _choose);
     jct.d.gebi("institution").addEventListener("focus", _choose);
+
+    jct.d.gebi("explain_results").addEventListener("click", () => {
+        jct.d.gebi("detailed_results").style.display = "block";
+    })
 
     // jct.preload();
 }

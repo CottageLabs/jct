@@ -21,6 +21,12 @@
     font-weight: bold;
 }
 
+a[type="button"] {
+    color: #585756;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 header {
     margin-right: var(--gutter-negative);
     margin-left: var(--gutter-negative);
@@ -91,9 +97,7 @@ a {
 #feedback {
     position: fixed;
     bottom: 10px;
-    right: 0px;
-    text-decoration: underline;
-    cursor: pointer;
+    right: 0;
 }
 
 /* The Modal (background) */
@@ -200,4 +204,10 @@ a {
     width: 25px;
     height: 25px;
     cursor: pointer;
+}
+
+#explain_results {
+    display: flex;
+    align-self: center;
+    justify-content: flex-end;
 }
