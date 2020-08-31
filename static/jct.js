@@ -148,7 +148,6 @@ jct.progress = (e) => {
     e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
-    jct.d.gebi("detailed_results").innerHtml = "";
     jct.d.gebi('loading').style.display = 'none';
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
@@ -159,7 +158,7 @@ jct.success = (xhr) => {
     } else {
         jct.latest_response = js.results;
         jct.d.gebi("paths_results").innerHTM = ""
-        jct.d.gebi("paths_results").innerHTML = "";
+        jct.d.gebi("detailed_results").innerHTML = "";
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         jct.d.gebi('explain_results').style.display = 'block'
         //negatives only for dev
@@ -389,7 +388,12 @@ jct.setup = () => {
         //         // console.log(el)
         //         el.parentNode.parentNode.removeChild(el.parentNode);
         // });
-        jct.d.gebi('suggest'+e.target.id).innerHTML=""
+        jct.d.gebi('suggest'+e.target.id).innerHTML="";
+        jct.d.gebi('detailed_results').innerHTML = "";
+        jct.d.gebi('detailed_results').style.display = "none";
+        jct.d.gebi('explain_results').style.display = "none";
+        jct.d.gebi('paths_results').innerHTML = "";
+        //negatives only for dev
         jct.suggesting = e.target.id;
         if (jct.waiting === false)
             jct.waiting = e;
