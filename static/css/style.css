@@ -211,3 +211,12 @@ a {
     align-self: center;
     justify-content: flex-end;
 }
+
+#print {
+    background: white;
+    color: black;
+    border: black 1px solid;
+    border-radius: 0;
+    padding: 1rem;
+    cursor: pointer;
+}

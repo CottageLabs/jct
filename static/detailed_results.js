@@ -47,11 +47,22 @@ jct.explain = (q) => {
         
         We carried out this query at ` + new Date(q.request.started).toUTCString() +`, and found ` +
         compliant_routes_number + ` complaint routes and ` + noncomplicant_routes_number + ` non-compliant routes.
-        
         </p>
     `
 
-    let elem = htmlToElement("<div>" + text + (compliant_routes_number > 0 ? compliant_routes : "") + (noncomplicant_routes_number > 0 ? noncompliant_routes : "") + "</div>")
-    jct.d.gebi("detailed_results").append(elem);
+    let detailed_results = jct.d.gebi("detailed_results")
+    let print_button = htmlToElement("<button id='print'> Print this results </button>");
+    let elem = htmlToElement("<div id='detailed_result_text'>" + text + (compliant_routes_number > 0 ? compliant_routes : "") + (noncomplicant_routes_number > 0 ? noncompliant_routes : "") + "</div>");
+    detailed_results.append(print_button);
+    detailed_results.append(elem);
 
+    jct.d.gebi("print").addEventListener("click", () => {
+        let a = window.open('', '', 'height=500, width=500');
+        let complicance = jct.d.gebc("compliance")[0]
+        let results_to_print = jct.d.gebi("detailed_result_text")
+        a.document.write(complicance.innerHTML);
+        a.document.write(results_to_print.innerHTML);
+        a.document.close();
+        a.print();
+    })
 }
