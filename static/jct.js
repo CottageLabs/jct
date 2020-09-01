@@ -283,7 +283,7 @@ jct.suggestions = (suggs, cached) => {
     let sd = jct.d.gebi('suggest'+jct.suggesting);
     let typed = jct.d.gebi(jct.suggesting).value.toLowerCase();
     let update = false;
-    let l = suggs.data.length > jct.MAX_SUGGS_LENGTHS ? jct.MAX_SUGGS_LENGTHS : suggs.data.length;
+    let l = (suggs.data && suggs.data.length > jct.MAX_SUGGS_LENGTHS) ? jct.MAX_SUGGS_LENGTHS : suggs.data.length;
     for ( let s = 0; s < l; s++ ) {
         let t = suggs.data[s].title;
         let tl = t.toLowerCase();
