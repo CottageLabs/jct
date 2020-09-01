@@ -88,6 +88,8 @@ let _calculate_if_all_data_provided = () => {
         if (jct.chosen.institution) {
             qr.institution = jct.chosen.institution.id;
         }
+        qr.retention = false
+        qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
         jct.d.gebi('loading').style.display = 'block';
     }
@@ -153,10 +155,10 @@ jct.progress = (e) => {
     e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
+    console.log(jct.suggesting)
     jct.d.gebi('loading').style.display = 'none';
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
-    console.log(jct.suggesting)
     if (jct.suggesting) {
         jct.suggestions(js);
         jct.suggesting = false;
@@ -375,7 +377,6 @@ jct.suggest = (e) => {
 // start off with getting the funder automcompletes, then the journal autocompletes, which should be filtering results already
 // then do further autocompletes by institution and filter the possible journals by that too
 jct.setup = () => {
-    console.log("setup")
     document.getElementById("inputs_plugin").innerHTML = inputs_plugin;
     document.getElementById("results_plugin").innerHTML = results_plugin;
     let f = jct.d.gebi("funder");

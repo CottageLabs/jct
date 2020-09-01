@@ -40,9 +40,9 @@ jct.explain = (q) => {
         <p>You asked us to calculate whether you are Plan S compliant under the following conditions:
         
         <ul>
-            <li>Journal ISSN: ` + q.request.issn[0] + `</li> 
-            <li>Funder: ` + q.request.funder[0] + `</li> 
-            <li>Institution ROR: ` + q.request.ror[0] + `</li> 
+            <li>Journal ISSN: ` + q.request.journal[0].issn + `</li> 
+            <li>Funder: ` + q.request.funder[0].title + `</li> 
+            <li>Institution ROR: ` + q.request.institution[0].title + `</li> 
         </ul>
         
         We carried out this query at ` + new Date(q.request.started).toUTCString() +`, and found ` +
