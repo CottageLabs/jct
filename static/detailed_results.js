@@ -11,9 +11,8 @@ jct.explain = (q) => {
             let route = `
             <h3>` + jct.COMPLIANCE_ROUTES_LONG[r.route] + `</h3>
             <p>You <b>`  + (r.compliant === "yes" ? "are Plan S compliant" : "cannot comply with Plan S") + `</b> on this route (` + jct.COMPLIANCE_ROUTES_LONG[r.route] + `).</p>
-            <p>The following checks were carried out to determine that this is a compliant route:</p>
+            <p>The following checks were carried out to determine that this is`  + (r.compliant === "yes" ? "" : "not") + ` a compliant route:</p>
         `
-
             r.log.forEach((log) => {
                 route += "<ul><li>" + log.action + "</li>"
                 route += "<ul><li>" + log.result + "</li>"
@@ -40,7 +39,7 @@ jct.explain = (q) => {
         <p>You asked us to calculate whether you are Plan S compliant under the following conditions:
         
         <ul>
-            <li>Journal ISSN: ` + q.request.journal[0].issn + `</li> 
+            <li>Journal ISSN: ` + q.request.journal[0].id + `</li> 
             <li>Funder: ` + q.request.funder[0].title + `</li> 
             <li>Institution ROR: ` + q.request.institution[0].title + `</li> 
         </ul>
