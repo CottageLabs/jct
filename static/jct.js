@@ -217,7 +217,7 @@ jct.add_tile = (tile_type, data) => {
 
 jct.fullyOA_tile = (journal_title) => {
     return htmlToElement (`
-        <div class="col col--1of4" id="fyllyOA_tile ` + journal_title  + `">
+        <div class="col col--1of4" id="fullyOA_tile ` + journal_title  + `">
             <div class="tile">
                 <p class="tile"><b>` + journal_title + `</b> is fully open access.</p>
             </div>

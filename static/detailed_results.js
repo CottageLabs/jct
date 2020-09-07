@@ -45,7 +45,7 @@ jct.explain = (q) => {
         </ul>
         
         We carried out this query at ` + new Date(q.request.started).toUTCString() +`, and found ` +
-        compliant_routes_number + ` complaint routes and ` + noncomplicant_routes_number + ` non-compliant routes.
+        compliant_routes_number + ` compliant routes and ` + noncomplicant_routes_number + ` non-compliant routes.
         </p>
     `
 
