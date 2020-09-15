@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>CL dev JCT</title>
+    <meta name="description" content="">
+    <meta name="author" content="Cottage Labs">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--<link href="/static/favicon.ico" rel="icon" type="image/x-icon">-->
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+    <link href="../static/css/style.css" rel='stylesheet' type='text/css'>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script type="text/javascript" src="../static/jct.js"></script>
+    <script type="text/javascript" src="../static/detailed_results.js"></script>
+
+    <script>
+        let st = undefined;
+        let ft = document.getElementById('funder');
+        _ready = () => {
+            ft = document.getElementById('funder');
+            if (ft !== null) {
+                clearInterval(st);
+                console.log(ft);
+                console.log('ready');
+            } else {
+                console.log('not ready')
+            }
+        }
+        if (ft === null) st = setInterval(_ready,100);
+    </script>
+</head>
+
+<body><h1>Transformative Agreements Public Data</h1>
+<p>This document describes the structure of the published data for Transformative Agreements.</p>
+<h2>Transformative Agreement Index</h2>
+<p>TAs exposed by JCT are listed here: https://docs.google.com/spreadsheets/d/e/2PACX-1vStezELi7qnKcyE8OiO2OYx2kqQDOnNsDX1JfAsK487n2uB_Dve5iDTwhUFfJ7eFPDhEjkfhXhqVTGw/pub?gid=1130349201&amp;single=true&amp;output=csv</p>
+<p>This is a CSV which has the following fields:</p>
+<ul>
+<li>ESAC ID - the ID of the TA in the ESAC Registry</li>
+<li>Relationship - in the case where the TA defines multiple classes of relationship between institutions and journals, we have provided a short name
+for that relationship</li>
+<li>End Date - the date this TA is in force until</li>
+<li>C/A Only - is the TA relevant only to Corresponding Authors</li>
+<li>Data URL - a URL to a CSV of the institutions and journals involved in the TA</li>
+</ul>
+<p>All records that are listed in this index are:</p>
+<ol>
+<li>Fully reviewed by the JCT Data Management team</li>
+<li>Plan S compliant</li>
+</ol>
+<p>If a TA is missing from this list it is because it is either still under review (or in the queue to be reviewed), or it has been reviewed and found not to
+be Plan S compliant.</p>
+<h2>Transformative Agreement Data</h2>
+<p>By following the <code>Data URL</code> from the Transformative Agreement Index, you can obtain a CSV which gives you details of the Journals and Institutions involved
+in the agreement.  The CSV is structured as follows:</p>
+<ol>
+<li>Columns 1 - 5 list all the journals and their properties</li>
+<li>Columns 6 - 9 list all the institutions and their properties</li>
+</ol>
+<p>To correctly read the CSV you need to "split" it between Colums 5 and 6, and the resulting two ranges contain a journal or an institution per row.</p>
+<p>The Journal properties are:</p>
+<ul>
+<li>Journal Name - the name of the Journal, usually as provided in the original agreement.</li>
+<li>ISSN (Print) - the Print ISSN of the Journal where available</li>
+<li>ISSN (Online) - the Online ISSN of the Journal where available</li>
+<li>Journal First Seen - the date on which the TA Data Management team observed this journal to be part of the TA (see note below)</li>
+<li>Journal Last Seen - the date on which the TA Data Management team observed this journal to have left the TA (see note below)</li>
+</ul>
+<p>The Institution properties are:</p>
+<ul>
+<li>Institution Name - the name of the Institution, usually as provided in the original agreement</li>
+<li>ROR ID - the ROR ID of the Institution, where available</li>
+<li>Institution First Seen - the date on which the TA Data Management team observed this institution to be part of the TA (see note below)</li>
+<li>Institution Last Seen - the date on which the TA Data Management team observed this institution to have left the TA (see note below)</li>
+</ul>
+<p>A note on "First Seen" and "Last Seen" dates: the TA Data Management team carries out initial review and then ongoing review of TAs to determine the list
+of journals and institutions that are covered.  Over time, TAs may evolve such that new institutions or journals may be added to it, or instutitions or
+journals may leave it, all while the main TA agreement is in effect.  As a result, our dataset tracks those changes over time.  As we do not have access to
+the details of when a journal/institution joins/leaves a TA, instead we record the dates when we first/last observed the journal/institution to be part of the
+TA.  This means, for example, that if you see a "Journal First Seen" date of 2020-08-20, this does not mean that the Journal only became part of the TA on that
+date, it only means that that is the first date that we reviewed the TA and observed that journal to be a member.  The journal may have been part of the TA
+since the start date of the agreement, but we cannot necessarily verify that.</p><div class="modal" id="modal_feedback" style="display: none">
+    <div class="modal-content" id="contact">
+        <header class="modal-header">
+            <div class="row">
+                <div class="col col--1of1">
+                    Feedback? Suggestion? Contact us here.
+                    <span class="close">&times;</span>
+                </div>
+            </div>
+        </header>
+        <form id="contact_form">
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="name">Name</label>
+                    <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="email">Email</label>
+                    <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="message">Comment</label>
+                    <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
+                </div>
+            </div>
+            <input class="contact_submit" type="submit" value="Submit">
+
+        </form>
+        <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
+        <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
+    </div>
+</div>
+
+<p>See also</p>
+<ul>
+    <li><a href="apidocs.html">API Documentation</a></li>
+    <li><a href="transformative-journals.html">Transformative Jounals</a></li>
+    <li><a href="transformative-agreements.html">Transformative Agreements</a></li>
+</ul>
+
+<div class="footer row">
+    <a type="button" id="feedback" class="col col--1of4">Send us feedback </a>
+</div>
+
+</body>
+<script>
+
+    jct.setup();
+
+    // jct.d.gebi('mobmenu').addEventListener("click", function(e) {
+    //     e.preventDefault();
+    //     scroll(0,document.body.scrollHeight);
+    // });
+
+
+    jct.d.gebi('feedback').addEventListener("click", (e) => {
+        e.preventDefault();
+        let modal = jct.d.gebi('modal_feedback')
+        modal.style.display = 'block';
+    });
+
+    jct.d.gebi('help_modal_button').addEventListener("click", () => {
+        let modal = jct.d.gebi('modal_help')
+        modal.style.display = 'block';
+    })
+
+    window.onclick = (e) => {
+        let modals = [].slice.call(jct.d.gebc("modal"));
+        if (modals.includes(e.target)){
+            e.target.style.display = "none";
+        }
+    }
+
+    jct.d.each("close", (el) => {
+        el.addEventListener("click", (e) => {
+            e.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
+        })
+    })
+
+</script>
+<script type="text/javascript" src="../static/contact.js"></script>
+
+</html>

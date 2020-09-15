@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>CL dev JCT</title>
+    <meta name="description" content="">
+    <meta name="author" content="Cottage Labs">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--<link href="/static/favicon.ico" rel="icon" type="image/x-icon">-->
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+    <link href="../static/css/style.css" rel='stylesheet' type='text/css'>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script type="text/javascript" src="../static/jct.js"></script>
+    <script type="text/javascript" src="../static/detailed_results.js"></script>
+
+    <script>
+        let st = undefined;
+        let ft = document.getElementById('funder');
+        _ready = () => {
+            ft = document.getElementById('funder');
+            if (ft !== null) {
+                clearInterval(st);
+                console.log(ft);
+                console.log('ready');
+            } else {
+                console.log('not ready')
+            }
+        }
+        if (ft === null) st = setInterval(_ready,100);
+    </script>
+</head>
+
+<body><h1>Transformative Journals data</h1>
+<p>The JCT list of TA data can be obtained as a CSV from:  https://docs.google.com/spreadsheets/d/e/2PACX-1vT2SPOjVU4CKhP7FHOgaf0aRsjSOt-ApwLOy44swojTDFsWlZAIZViC0gdbmxJaEWxdJSnUmNoAnoo9/pub?gid=0&amp;single=true&amp;output=csv</p>
+<p>The format of the CSV is straightforward:</p>
+<ul>
+<li>Journal Title - The journal title according to the publisher when reporting the TJ to JCT</li>
+<li>ISSN (Print) - The Print ISSN of the journal, if available</li>
+<li>e-ISSN (Online/Web) - The Electronic ISSN of the journal, if available</li>
+</ul><div class="modal" id="modal_feedback" style="display: none">
+    <div class="modal-content" id="contact">
+        <header class="modal-header">
+            <div class="row">
+                <div class="col col--1of1">
+                    Feedback? Suggestion? Contact us here.
+                    <span class="close">&times;</span>
+                </div>
+            </div>
+        </header>
+        <form id="contact_form">
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="name">Name</label>
+                    <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="email">Email</label>
+                    <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="message">Comment</label>
+                    <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
+                </div>
+            </div>
+            <input class="contact_submit" type="submit" value="Submit">
+
+        </form>
+        <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
+        <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
+    </div>
+</div>
+
+<p>See also</p>
+<ul>
+    <li><a href="apidocs.html">API Documentation</a></li>
+    <li><a href="transformative-journals.html">Transformative Jounals</a></li>
+    <li><a href="transformative-agreements.html">Transformative Agreements</a></li>
+</ul>
+
+<div class="footer row">
+    <a type="button" id="feedback" class="col col--1of4">Send us feedback </a>
+</div>
+
+</body>
+<script>
+
+    jct.setup();
+
+    // jct.d.gebi('mobmenu').addEventListener("click", function(e) {
+    //     e.preventDefault();
+    //     scroll(0,document.body.scrollHeight);
+    // });
+
+
+    jct.d.gebi('feedback').addEventListener("click", (e) => {
+        e.preventDefault();
+        let modal = jct.d.gebi('modal_feedback')
+        modal.style.display = 'block';
+    });
+
+    jct.d.gebi('help_modal_button').addEventListener("click", () => {
+        let modal = jct.d.gebi('modal_help')
+        modal.style.display = 'block';
+    })
+
+    window.onclick = (e) => {
+        let modals = [].slice.call(jct.d.gebc("modal"));
+        if (modals.includes(e.target)){
+            e.target.style.display = "none";
+        }
+    }
+
+    jct.d.each("close", (el) => {
+        el.addEventListener("click", (e) => {
+            e.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
+        })
+    })
+
+</script>
+<script type="text/javascript" src="../static/contact.js"></script>
+
+</html>
