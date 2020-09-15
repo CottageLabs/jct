@@ -184,8 +184,48 @@ before responding to the request.</p>
 }
 </code></pre>
 
-<p>OR <code>404</code> if no TA exists for that combination.</p><div class="footer row">
-    <a type="button" id="feedback" class="col col--1of3">Send us feedback </a>
+<p>OR <code>404</code> if no TA exists for that combination.</p><div class="modal" id="modal_feedback" style="display: none">
+    <div class="modal-content" id="contact">
+        <header class="modal-header">
+            <div class="row">
+                <div class="col col--1of1">
+                    Feedback? Suggestion? Contact us here.
+                    <span class="close">&times;</span>
+                </div>
+            </div>
+        </header>
+        <form id="contact_form">
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="name">Name</label>
+                    <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="email">Email</label>
+                    <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
+                </div>
+            </div>
+            <div class="row row-inputs">
+                <div class="col col--1of1">
+                    <label for="message">Comment</label>
+                    <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
+                </div>
+            </div>
+            <input class="contact_submit" type="submit" value="Submit">
+
+        </form>
+        <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
+        <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
+    </div>
+</div>
+
+<div class="footer row">
+    <a type="button" class="col col--1of4" href="apidocs.html">API Documentation</a>
+    <a type="button" class="col col--1of4" href="transformative-journals.html">Transformative Jounals</a>
+    <a type="button" class="col col--1of4" href="transformative-agreements.html">Transformative Agreements</a>
+    <a type="button" id="feedback" class="col col--1of4">Send us feedback </a>
 </div>
 
 </body>
