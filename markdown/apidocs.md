@@ -69,20 +69,20 @@ Compliance IDs:
 Qualification IDs:
 
 * `doaj_under_review` - the journal is in the DOAJ "in progress" or "under review" list, not the public DOAJ
-  * no qualification specific data required
+    * no qualification specific data required
 * `rights_retention_author_advice` - the journal does not have an SA policy and does not appear in the rights retention data source
-  * no qualification specific data required
+    * no qualification specific data required
 * `rights_rentention_funder_implementation` - the journal does not have an SA policy and the funder has a rights retention policy that starts in the future.  There should be one record of this per funder that meets the conditions, and the following qualification specific data is requried:
-  * `funder: <funder name>`
-  * `date: <date policy comes into force (YYYY-MM-DD)`
+    * `funder: <funder name>`
+    * `date: <date policy comes into force (YYYY-MM-DD)`
 * `corresponding_authors` - the TA is only open to corresponding authors
-  * no qualification specific data required
+    * no qualification specific data required
 * `journal` - if a TA is currently in force, the journal start_date and end_date of being in the TA will be provided
-  * `start_date: <start date (human format)>`
-  * `end_date: <end date (human format)>`
+    * `start_date: <start date (human format)>`
+    * `end_date: <end date (human format)>`
 * `institution` - if a TA is currently in force, the institution start_date and end_date of being in the TA will be provided
-  * `start_date: <start date (human format)>`
-  * `end_date: <end date (human format)>`
+    * `start_date: <start date (human format)>`
+    * `end_date: <end date (human format)>`
   
 Log:
 

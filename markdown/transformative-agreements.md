@@ -4,7 +4,7 @@ This document describes the structure of the published data for Transformative A
 
 ## Transformative Agreement Index
 
-TAs exposed by JCT are listed here: https://docs.google.com/spreadsheets/d/e/2PACX-1vStezELi7qnKcyE8OiO2OYx2kqQDOnNsDX1JfAsK487n2uB_Dve5iDTwhUFfJ7eFPDhEjkfhXhqVTGw/pub?gid=1130349201&single=true&output=csv
+TAs exposed by JCT are listed [in this CSV](https://docs.google.com/spreadsheets/d/e/2PACX-1vStezELi7qnKcyE8OiO2OYx2kqQDOnNsDX1JfAsK487n2uB_Dve5iDTwhUFfJ7eFPDhEjkfhXhqVTGw/pub?gid=1130349201&single=true&output=csv)
 
 This is a CSV which has the following fields:
 
