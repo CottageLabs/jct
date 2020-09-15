@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>CL dev JCT</title>
+    <meta name="description" content="">
+    <meta name="author" content="Cottage Labs">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--<link href="/static/favicon.ico" rel="icon" type="image/x-icon">-->
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+    <link href="../static/css/style.css" rel='stylesheet' type='text/css'>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script type="text/javascript" src="../static/jct.js"></script>
+    <script type="text/javascript" src="../static/detailed_results.js"></script>
+
+    <script>
+        let st = undefined;
+        let ft = document.getElementById('funder');
+        _ready = () => {
+            ft = document.getElementById('funder');
+            if (ft !== null) {
+                clearInterval(st);
+                console.log(ft);
+                console.log('ready');
+            } else {
+                console.log('not ready')
+            }
+        }
+        if (ft === null) st = setInterval(_ready,100);
+    </script>
+</head>
+
+<body>

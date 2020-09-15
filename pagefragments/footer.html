@@ -1,0 +1,43 @@
+<div class="footer row">
+    <a type="button" id="feedback" class="col col--1of3">Send us feedback </a>
+</div>
+
+</body>
+<script>
+
+    jct.setup();
+
+    // jct.d.gebi('mobmenu').addEventListener("click", function(e) {
+    //     e.preventDefault();
+    //     scroll(0,document.body.scrollHeight);
+    // });
+
+
+    jct.d.gebi('feedback').addEventListener("click", (e) => {
+        e.preventDefault();
+        let modal = jct.d.gebi('modal_feedback')
+        modal.style.display = 'block';
+    });
+
+    jct.d.gebi('help_modal_button').addEventListener("click", () => {
+        let modal = jct.d.gebi('modal_help')
+        modal.style.display = 'block';
+    })
+
+    window.onclick = (e) => {
+        let modals = [].slice.call(jct.d.gebc("modal"));
+        if (modals.includes(e.target)){
+            e.target.style.display = "none";
+        }
+    }
+
+    jct.d.each("close", (el) => {
+        el.addEventListener("click", (e) => {
+            e.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
+        })
+    })
+
+</script>
+<script type="text/javascript" src="../static/contact.js"></script>
+
+</html>
