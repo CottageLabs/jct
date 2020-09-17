@@ -61,6 +61,10 @@ let results_plugin =
         </div>
 `;
 
+let _emptyElement = (elem) => {
+    while (elem.firstChild) elem.removeChild(elem.firstChild);
+}
+
 jct.d = document;
 jct.d.gebi = document.getElementById;
 jct.d.gebc = document.getElementsByClassName;
@@ -78,8 +82,6 @@ jct.d.each = (cls, key, val) => {
         }
     }
 };
-
-jct.suggesting = false;
 
 let _calculate_if_all_data_provided = () => {
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("notHE").checked)) {
@@ -149,23 +151,28 @@ jct.COMPLIANCE_ROUTES_LONG = {
 
 jct.error = (xhr) => {
     jct.latest_response = xhr;
+    console.log("error")
     console.log(xhr.status + ': ' + xhr.statusText);
 }
 jct.progress = (e) => {
-    e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
+    // e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
-    console.log(jct.suggesting)
     jct.d.gebi('loading').style.display = 'none';
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
+    console.log(jct.suggesting)
+    console.log(jct.suggesting ?  "true" : "false");
     if (jct.suggesting) {
         jct.suggestions(js);
         jct.suggesting = false;
     } else {
         jct.latest_response = js.results;
-        jct.d.gebi("paths_results").innerHTM = ""
-        jct.d.gebi("detailed_results").innerHTML = "";
+        let paths_results = jct.d.gebi("paths_results");
+        _emptyElement(paths_results)
+        let detailed_results = jct.d.gebi("detailed_results");
+        _emptyElement(detailed_results)
+
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         // jct.d.gebi("refresh").style.display = 'block';
         jct.d.gebi('explain_results').style.display = 'flex';
@@ -380,7 +387,7 @@ jct.setup = () => {
     document.getElementById("inputs_plugin").innerHTML = inputs_plugin;
     document.getElementById("results_plugin").innerHTML = results_plugin;
     let f = jct.d.gebi("funder");
-    jct.suggesting = "start";
+    jct.suggesting = true;
 
 
     /*while (f === null) {
