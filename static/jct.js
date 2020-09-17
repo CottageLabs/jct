@@ -85,6 +85,7 @@ jct.d.each = (cls, key, val) => {
 
 let _calculate_if_all_data_provided = () => {
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("notHE").checked)) {
+        jct.suggesting = false;
         let qr = {journal: jct.chosen.journal.id};
         qr.funder = jct.chosen.funder.id;
         if (jct.chosen.institution) {
@@ -98,7 +99,6 @@ let _calculate_if_all_data_provided = () => {
 }
 
 jct.choose = (e, el) => {
-    jct.suggesting = false;
     let et;
     if (e) {
         e.preventDefault();
@@ -165,7 +165,6 @@ jct.success = (xhr) => {
     console.log(jct.suggesting ?  "true" : "false");
     if (jct.suggesting) {
         jct.suggestions(js);
-        jct.suggesting = false;
     } else {
         jct.latest_response = js.results;
         let paths_results = jct.d.gebi("paths_results");
