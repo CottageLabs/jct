@@ -88,7 +88,7 @@ let _calculate_if_all_data_provided = () => {
         if (jct.chosen.institution) {
             qr.institution = jct.chosen.institution.id;
         }
-        qr.retention = false
+        qr.retention = true;
         qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
         jct.d.gebi('loading').style.display = 'block';
@@ -380,6 +380,7 @@ jct.setup = () => {
     document.getElementById("inputs_plugin").innerHTML = inputs_plugin;
     document.getElementById("results_plugin").innerHTML = results_plugin;
     let f = jct.d.gebi("funder");
+    jct.suggesting = "start";
 
 
     /*while (f === null) {
