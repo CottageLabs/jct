@@ -161,8 +161,6 @@ jct.success = (xhr) => {
     jct.d.gebi('loading').style.display = 'none';
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
-    console.log(jct.suggesting)
-    console.log(jct.suggesting ?  "true" : "false");
     if (jct.suggesting) {
         jct.suggestions(js);
     } else {
@@ -282,7 +280,7 @@ jct.jx = (route,q,after,api) => {
 
 jct.suggestions = (suggs, cached) => {
     jct.d.gebi('missing').style.display = 'none';
-    jct.d.gebi('result').innerHTML = '';
+    _emptyElement(jct.d.gebi('result'));
     jct.d.gebi('compliant').style.display = 'none';
     jct.d.gebi('notcompliant').style.display = 'none';
     let sgst = '';
@@ -314,7 +312,6 @@ jct.suggest = (e) => {
     if (e) {
         let which = e.target.id;
         let typed = e.target.value.toLowerCase().replace(' of','').replace('the ','');
-        if ('journal'.indexOf(typed.trim()) !== -1) typed = '';
         if (typed.length === 0) {
             jct.d.each('suggest','innerHTML','');
         } else {
