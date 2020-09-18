@@ -194,6 +194,9 @@
     jct.d.gebi('feedback').addEventListener("click", (e) => {
         e.preventDefault();
         let modal = jct.d.gebi('modal_feedback')
+        jct.d.gebi('message').value = "";
+        jct.d.gebi('feedback_success').style.display = "none";
+        jct.d.gebi('feedback_error').style.display = "none";
         modal.style.display = 'block';
     });
 
