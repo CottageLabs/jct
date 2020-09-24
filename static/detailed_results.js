@@ -1,6 +1,4 @@
 jct.explain = (q) => {
-    console.log(q)
-
     let compliant_routes = `<h2>Compliant Routes</h2>`
     let noncompliant_routes = `<h2>Non-Compliant Routes</h2>`
     let compliant_routes_number = 0;

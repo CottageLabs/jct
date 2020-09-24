@@ -39,11 +39,15 @@ jct.d.gebi("contact_form")
     let xhr = new XMLHttpRequest();
     xhr.open('POST', jct.api + '/feedback');
     xhr.onload = () => {
-        console.log(xhr.status);
-        jct.d.gebi("feedback_success").style.display = "block"
+        alert("message sent successfully")
+        //jct.d.gebi("feedback_success").style.display = "block"
     };
-    xhr.onerror = () => { jct.d.gebi("feedback_error").style.display = "block" };
+    xhr.onerror = () => {
+        //jct.d.gebi("feedback_error").style.display = "block"
+        alert("Oops, something went wrong");
+    };
     xhr.setRequestHeader('Content-type', 'application/json');
     xhr.send(data);
+    jct.d.gebi('modal_feedback').style.display = "none";
     return false
 });

@@ -61,6 +61,10 @@ let results_plugin =
         </div>
 `;
 
+let _emptyElement = (elem) => {
+    while (elem.firstChild) elem.removeChild(elem.firstChild);
+}
+
 jct.d = document;
 jct.d.gebi = document.getElementById;
 jct.d.gebc = document.getElementsByClassName;
@@ -79,16 +83,15 @@ jct.d.each = (cls, key, val) => {
     }
 };
 
-jct.suggesting = false;
-
 let _calculate_if_all_data_provided = () => {
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("notHE").checked)) {
+        jct.suggesting = false;
         let qr = {journal: jct.chosen.journal.id};
         qr.funder = jct.chosen.funder.id;
         if (jct.chosen.institution) {
             qr.institution = jct.chosen.institution.id;
         }
-        qr.retention = false
+        qr.retention = true;
         qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
         jct.d.gebi('loading').style.display = 'block';
@@ -96,7 +99,6 @@ let _calculate_if_all_data_provided = () => {
 }
 
 jct.choose = (e, el) => {
-    jct.suggesting = false;
     let et;
     if (e) {
         e.preventDefault();
@@ -149,23 +151,25 @@ jct.COMPLIANCE_ROUTES_LONG = {
 
 jct.error = (xhr) => {
     jct.latest_response = xhr;
+    console.log("error")
     console.log(xhr.status + ': ' + xhr.statusText);
 }
 jct.progress = (e) => {
-    e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
+    // e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
-    console.log(jct.suggesting)
     jct.d.gebi('loading').style.display = 'none';
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
     if (jct.suggesting) {
         jct.suggestions(js);
-        jct.suggesting = false;
     } else {
         jct.latest_response = js.results;
-        jct.d.gebi("paths_results").innerHTM = ""
-        jct.d.gebi("detailed_results").innerHTML = "";
+        let paths_results = jct.d.gebi("paths_results");
+        _emptyElement(paths_results)
+        let detailed_results = jct.d.gebi("detailed_results");
+        _emptyElement(detailed_results)
+
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         // jct.d.gebi("refresh").style.display = 'block';
         jct.d.gebi('explain_results').style.display = 'flex';
@@ -276,7 +280,7 @@ jct.jx = (route,q,after,api) => {
 
 jct.suggestions = (suggs, cached) => {
     jct.d.gebi('missing').style.display = 'none';
-    jct.d.gebi('result').innerHTML = '';
+    _emptyElement(jct.d.gebi('result'));
     jct.d.gebi('compliant').style.display = 'none';
     jct.d.gebi('notcompliant').style.display = 'none';
     let sgst = '';
@@ -308,7 +312,6 @@ jct.suggest = (e) => {
     if (e) {
         let which = e.target.id;
         let typed = e.target.value.toLowerCase().replace(' of','').replace('the ','');
-        if ('journal'.indexOf(typed.trim()) !== -1) typed = '';
         if (typed.length === 0) {
             jct.d.each('suggest','innerHTML','');
         } else {
@@ -380,6 +383,7 @@ jct.setup = () => {
     document.getElementById("inputs_plugin").innerHTML = inputs_plugin;
     document.getElementById("results_plugin").innerHTML = results_plugin;
     let f = jct.d.gebi("funder");
+    jct.suggesting = true;
 
 
     /*while (f === null) {
