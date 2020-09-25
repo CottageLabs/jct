@@ -37,10 +37,29 @@ jct.explain = (q) => {
         <p>You asked us to calculate whether you are Plan S compliant under the following conditions:
         
         <ul>
-            <li>Journal ISSN: ` + q.request.journal[0].id + `</li> 
-            <li>Funder: ` + q.request.funder[0].title + `</li> 
-            <li>Institution ROR: ` + (q.request.institution.length > 0 ? q.request.institution[0].title : "Not part of Higher Education") + `</li> 
-        </ul>
+            <li>Journal: </li>
+            <ul class="second">
+                <li> ISSN: ` + q.request.journal[0].id + `</li>
+                <li> Title: ` + q.request.journal[0].title + `</li>
+                <li> Publisher: ` + (q.request.journal[0].publisher !== undefined ? q.request.journal[0].publisher : "Not known") + `</li>
+            </ul> 
+            <li>Funder: ` + q.request.funder[0].title + `</li>`
+
+    if ((q.request.institution.length > 0)){
+        text +=
+            `
+            <li>Institution: </li>
+                <ul>
+                    <li> ROR: ` + q.request.institution[0].id + `</li>
+                    <li> Title: ` + q.request.institution[0].title + `</li>
+                </ul>`
+    }
+    else {
+        text += `<li>Not part of Higher Education</li>`
+    }
+
+    text +=
+        `</ul>
         
         We carried out this query at ` + new Date(q.request.started).toUTCString() +`, and found ` +
         compliant_routes_number + ` compliant routes and ` + noncomplicant_routes_number + ` non-compliant routes.

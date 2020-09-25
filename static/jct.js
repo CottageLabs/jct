@@ -67,8 +67,7 @@ let _emptyElement = (elem) => {
 
 jct.d = document;
 jct.d.gebi = document.getElementById;
-jct.d.gebc = document.getElementsByClassName;
-
+jct.d.gebc = document.getElementsByClassName   
 jct.MAX_SUGGS_LENGTHS = 10;
 
 jct.d.each = (cls, key, val) => {
