@@ -243,8 +243,10 @@ jct.transformative_agreement_tile = (journal_title, publisher_title) => {
 jct.transformative_journal_tile = (journal_title) => {
     return htmlToElement (`
         <div class="col col--1of4" id="tj_tile` +journal_title + `">
-            <p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
-            <img src="../static/img/icons/question-inverted.svg" alt="circle help icon" class="helpicon_img tile_help" id="tj_modal_button">
+            <div class="tile">
+                <p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
+                <img src="../static/img/icons/question-inverted.svg" alt="circle help icon" class="helpicon_img tile_help" id="tj_modal_button">
+            </div>
         </div>
 `)
 }
