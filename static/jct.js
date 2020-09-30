@@ -205,9 +205,9 @@ jct.add_tile = (tile_type, data) => {
             break;
     }
     jct.d.gebi("paths_results").append(tile);
-    if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.ta){
-        jct.d.gebi('ta_modal_button').addEventListener("click", () => {
-            let modal = jct.d.gebi('modal_ta')
+    if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.tj){
+        jct.d.gebi('tj_modal_button').addEventListener("click", () => {
+            let modal = jct.d.gebi('modal_tj')
             modal.style.display = 'block';
         })
     }
@@ -235,7 +235,6 @@ jct.transformative_agreement_tile = (journal_title, publisher_title) => {
             <div class="tile">
                 <p>It is part of transformative agreement between <b>` + publisher_title + `</b> and <b> ` + journal_title + `</b>.
                 </p>
-                <img src="../static/img/icons/question-inverted.svg" alt="circle help icon" class="helpicon_img tile_help" id="ta_modal_button">
             </div>
         </div>
 `)
@@ -245,6 +244,7 @@ jct.transformative_journal_tile = (journal_title) => {
     return htmlToElement (`
         <div class="col col--1of4" id="tj_tile` +journal_title + `">
             <p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
+            <img src="../static/img/icons/question-inverted.svg" alt="circle help icon" class="helpicon_img tile_help" id="tj_modal_button">
         </div>
 `)
 }
