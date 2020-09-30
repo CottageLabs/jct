@@ -90,7 +90,6 @@ let _calculate_if_all_data_provided = () => {
         if (jct.chosen.institution) {
             qr.institution = jct.chosen.institution.id;
         }
-        qr.retention = true;
         qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
         jct.d.gebi('loading').style.display = 'block';
