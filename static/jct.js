@@ -1,6 +1,6 @@
 let jct = {
     api: 'https://api.jct.cottagelabs.com',
-    delay: 100,
+    delay: 500,
     cache: {},
     chosen: {},
     latest_response: null
@@ -307,123 +307,79 @@ jct.suggestions = (suggs, cached) => {
 }
 
 jct.waiting = false;
-jct.suggest = (e) => {
-// if on journal tab, could be a topic search
-// could also be an issn search starting with a number, in which case do nothing until is at least half an ISSN
-    if (e === undefined) e = jct.waiting;
-    if (e) {
-        let which = e.target.id;
-        let typed = e.target.value.toLowerCase().replace(' of','').replace('the ','');
-        if (typed.length === 0) {
-            jct.d.each('suggest','innerHTML','');
-        } else {
-            if (typed.length > 1) {
-                jct.suggesting = which;
-                jct.jx('/suggest/'+which+'/'+typed);
-                
-            }
+jct.suggest = (focused) => {
+    let typed = jct.d.gebi(focused).value.toLowerCase().replace(' of','').replace('the ','');
+    if (typed.length === 0) {
+        jct.d.each('suggest','innerHTML','');
+    } else {
+        if (typed.length > 1) {
+            jct.suggesting = focused;
+            jct.jx('/suggest/'+focused+'/'+typed);
+
         }
     }
-    jct.waiting = false;
 }
 
-// preload most popular strings for first user interaction (on journals, most likely)
-// store them in local storage - NOTE local storage can be up to 5MB / 2551000 characters, all journals, funders, institutions
-// with IDs comes to almost that - if we end up with a lot more, may need to store just the title strings
-// separately then get the IDs when needed. Also note that we may want to start caching possible results too.
-// jct.preload = () => {
-//     let sdate = localStorage.getItem('cache');
-//     if (sdate && window.location.search.indexOf('storage=false') === -1) {
-//         let keys = ['journal','funder','institution'];
-//         for ( let k in keys) {
-//             jct.cache[keys[k]] = {string: '', data: localStorage.getItem(keys[k]) ? JSON.parse(localStorage.getItem(keys[k])) : {}};
-//             for ( let sk in jct.cache[keys[k]].data ) {
-//                 jct.cache[keys[k]].string += jct.cache[keys[k]].data[sk].title.toLowerCase() + ' ';
-//             }
-//         }
-// // TODO check js.date of local storage, and get any createdAt / updatedAt since then and add to local storage
-// // also probably refresh after X time? or on url param?
-//     } else {
-//         let size = 2000;
-//         let max = 10000; // TODO once we have an idea of usage, get most popular rather than just first X on initial load
-//         let types = ['journal','funder','institution'];
-//         jct.preload._totals = {};
-//         jct.preload._from = {};
-//         jct.preload._preload = (xhr) => {
-//             let tps = xhr.responseURL.split('suggest/')[1].split('?')[0];
-//             let js = JSON.parse(xhr.response);
-//             if (jct.preload._totals[tps] === undefined) jct.preload._totals[tps] = js.total;
-//             for ( let s in js.data ) {
-//                 jct.cache[tps].string += ' ' + js.data[s].title.toLowerCase();
-//                 jct.cache[tps].data.push(js.data[s]);
-//             }
-//             let jcs = JSON.stringify({date: Date.now(), cache: jct.cache});
-//             console.log(jcs.length + ' chars going to local storage');
-//             try {
-//                 localStorage.setItem('cache',Date.now());
-//                 localStorage.setItem(tps,JSON.stringify(jct.cache[tps].data));
-//             } catch(err) {}
-//             console.log(tps + ' ' + jct.cache[tps].data.length);
-//             jct.preload._from[tps] += size;
-//             if (jct.preload._from[tps] < jct.preload._totals[tps] && jct.preload._from[tps] < max) jct.preload._get(tps);
-//         }
-//         jct.preload._get = (tp) => {
-//             jct.jx('suggest/'+tp, 'size=' + size + '&from='+jct.preload._from[tp], jct.preload._preload);
-//         }
-//         for ( let t in types ) {
-//             let tp = types[t];
-//             if (jct.cache[tp] === undefined) jct.cache[tp] = {string: '', data: []};
-//             if (jct.preload._from[tp] === undefined) jct.preload._from[tp] = 0;
-//             jct.preload._get(types[t]);
-//         }
-//     }
-// }
+jct.setTimer = () => {
+    if (!jct.intervalID){
+        jct.intervalID = window.setInterval(sent_suggestion_request, jct.delay);
+    }
+}
 
-// start off with getting the funder automcompletes, then the journal autocompletes, which should be filtering results already
-// then do further autocompletes by institution and filter the possible journals by that too
+function sent_suggestion_request() {
+    let funderInput = jct.d.gebi("funder");
+    let journalInput = jct.d.gebi("journal");
+    let institutionInput = jct.d.gebi("institution");
+
+    let change = false;
+    let focused;
+    if (funderInput === document.activeElement){
+        change = funderInput.value !== jct.inputValues.Funder;
+        jct.inputValues.Funder = funderInput.value;
+        focused = "funder";
+    }
+    else if (journalInput === document.activeElement){
+        change = journalInput.value !== jct.inputValues.Journal;
+        jct.inputValues.Journal = journalInput.value;
+        focused = "journal";
+    }
+    else if (institutionInput === document.activeElement){
+        change = institutionInput.value !== jct.inputValues.Institution;
+        jct.inputValues.Institution = institutionInput.value;
+        focused = "institution";
+    }
+    else {
+        clearInterval(jct.intervalID);
+        jct.intervalID = null;
+        return;
+    }
+
+    if (change){
+        jct._sug(focused);
+    }
+}
+
 jct.setup = () => {
     document.getElementById("inputs_plugin").innerHTML = inputs_plugin;
     document.getElementById("results_plugin").innerHTML = results_plugin;
     let f = jct.d.gebi("funder");
     jct.suggesting = true;
-
-
-    /*while (f === null) {
-    console.log('waiting for page to draw');
-    f = jct.d.gebi("funder");
-    }*/
-
-    let _sug = (e) => {
-        // jct.d.each('choose', (el) => {
-        //     console.log(e.target.id)
-        //     if (el.innerHTML.toLowerCase().indexOf(e.target.value.toLowerCase()) === -1 || el.getAttribute('which') !== e.target.id)
-        //         console.log("removing parent")
-        //         // console.log(el)
-        //         el.parentNode.parentNode.removeChild(el.parentNode);
-        // });
-        jct.d.gebi('suggest'+e.target.id).innerHTML="";
-        jct.d.gebi('detailed_results').innerHTML = "";
-        jct.d.gebi('detailed_results').style.display = "none";
-        jct.d.gebi('explain_results').style.display = "none";
-        jct.d.gebi('paths_results').innerHTML = "";
-        //negatives only for dev
-        jct.suggesting = e.target.id;
-        if (jct.waiting === false)
-            jct.waiting = e;
-        setTimeout(jct.suggest,jct.delay);
+    jct.inputValues = {
+        Journal: "",
+        Funder: "",
+        Institution: "",
+        notHE: ""
     }
-    jct.d.gebi("funder").addEventListener("keyup", _sug);
-    jct.d.gebi("journal").addEventListener("keyup", _sug);
-    jct.d.gebi("institution").addEventListener("keyup", _sug);
+
+    jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
+    jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
+    jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
     jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
 
-    let _choose = (e) => {
-        // if (jct.d.gebi('help_'+e.target.getAttribute('id'))) jct.d.gebi('help_'+e.target.getAttribute('id')).style.display = 'block';
-        jct.choose();
-    }
-    jct.d.gebi("funder").addEventListener("focus", _choose);
-    jct.d.gebi("journal").addEventListener("focus", _choose);
-    jct.d.gebi("institution").addEventListener("focus", _choose);
+    //how to change it to jct.d.gebc?
+    document.querySelectorAll(".select_option").forEach(item => {
+        item.addEventListener("click", jct.choose);
+    })
 
     jct.d.gebi("explain_results").addEventListener("click", () => {
         jct.d.gebi("detailed_results").style.display = "block";
@@ -432,6 +388,17 @@ jct.setup = () => {
     // jct.d.gebi("refresh").addEventListener("click", () => {location.reload()})
 
     // jct.preload();
+}
+
+jct._sug = (focused) => {
+    jct.d.gebi('suggest'+focused).innerHTML="";
+    jct.d.gebi('detailed_results').innerHTML = "";
+    jct.d.gebi('detailed_results').style.display = "none";
+    jct.d.gebi('explain_results').style.display = "none";
+    jct.d.gebi('paths_results').innerHTML = "";
+    //negatives only for dev
+    jct.suggesting = focused;
+    jct.suggest(focused);
 }
 
 /**
