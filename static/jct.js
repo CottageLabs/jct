@@ -210,6 +210,9 @@ jct.success = (xhr) => {
         // jct.d.gebi("refresh").style.display = 'block';
         //jct.d.gebi('explain_results').style.display = 'flex';
         //negatives only for dev
+        jct.d.gebi("results").style.display = 'block';
+        document.getElementsByClassName('query')[0].classList.toggle('query--compliant');
+        document.getElementsByClassName('results')[0].classList.toggle('results--compliant');
         if (js.compliant) {
             js.results.forEach((r) => {
                 if (r.compliant === "yes") {
@@ -409,6 +412,7 @@ function sent_suggestion_request() {
 }
 
 jct.setup = () => {
+    // AOS.init();
     jct.d.gebi("inputs_plugin").innerHTML = inputs_plugin;
     jct.d.gebi("results_plugin").innerHTML = results_plugin;
     jct.d.gebi("tiles_plugin").innerHTML = tiles_plugin;
@@ -429,15 +433,7 @@ jct.setup = () => {
     //how to change it to jct.d.gebc?
     document.querySelectorAll(".select_option").forEach(item => {
         item.addEventListener("click", jct.choose);
-    })
-
-    // jct.d.gebi("explain_results").addEventListener("click", () => {
-    //     jct.d.gebi("detailed_results").style.display = "block";
-    // })
-
-    // jct.d.gebi("refresh").addEventListener("click", () => {location.reload()})
-
-    // jct.preload();
+    });
 }
 
 jct._sug = (focused) => {
