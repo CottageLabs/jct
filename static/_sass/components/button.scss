@@ -4,7 +4,8 @@ $btn-height: 70px;
 
 .button,
 button,
-input[type="submit"] {
+//input[type="submit"]
+{
   @include unstyled-input;
   margin-bottom: $spacing-04;
   padding-left: $spacing-04;
