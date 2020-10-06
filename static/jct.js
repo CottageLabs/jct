@@ -215,10 +215,10 @@ jct.success = (xhr) => {
         document.getElementsByClassName('results')[0].classList.toggle('results--compliant');
         if (js.compliant) {
             js.results.forEach((r) => {
-                if (r.compliant === "yes") {
+                //if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
 
-                }
+                //}
             })
         }
         jct.explain(js)
@@ -301,6 +301,7 @@ jct.transformative_journal_tile = (journal_title) => {
           <h4 class="label">Transformative <br>Journal</h4>
           <p>You have to do X and consult Y to comply and <a href="#">make sure to read this information</a>.</p>
         </article>
+        <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="tj_modal_button">
       </div>
 `)
 }
@@ -316,6 +317,7 @@ jct.self_archiving_tile = (journal_title) => {
           <h4 class="label">Self-archiving <br>Journal</h4>
           <p>Go ahead and publish. No additional actions to take.</p>
           <p><em>Annals of Nuclear Cardiology</em> is a transformative journal approved by cOAlition S.</p>
+          <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="sa_modal_button">
         </article>
       </div>
 `)

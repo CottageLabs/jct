@@ -582,6 +582,15 @@ button {
   padding: 1rem;
   font-weight: bold; }
 
+.helpicon {
+  padding: 0; }
+
+.helpicon_img {
+  width: 25px;
+  height: 25px;
+  float: right;
+  cursor: pointer; }
+
 .wave {
   overflow: hidden;
   margin-left: -2.5vw;
