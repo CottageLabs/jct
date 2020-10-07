@@ -16,22 +16,23 @@
 .modal-content {
   background-color: #fefefe;
   margin: 5% auto; /* 15% from the top and centered */
-  padding: var(--gutter);
+  padding: $modal-narrow $modal-wide;
   border: 1px solid #888;
-  width: 50%; /* Could be more or less, depending on screen size */
+  width: 80%; /* Could be more or less, depending on screen size */
+  border-radius: 35px 35px 35px 35px;
 }
 
 /* The Close Button */
 .close {
-  color: #aaa;
+  color: $black;
   float: right;
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 36px;
+  font-weight: 300;
 }
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: $black;
   text-decoration: none;
   cursor: pointer;
 }
@@ -48,11 +49,18 @@
 }
 
 .modal-header {
-  background-color: $orange;
+  background-color: $yellow;
   position: relative;
   height: 10%;
-  padding: 1rem;
-  font-weight: bold;
+  font-family: Open Sans, serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 36px;
+  line-height: 49px;
+  border-radius: 35px 35px 0 0;
+  padding: $modal-narrow $modal-wide;
+  margin: $modal-wide-negative $modal-wide-negative $modal-narrow $modal-wide-negative;
+
 }
 
 .helpicon {
@@ -63,5 +71,6 @@
   width: 25px;
   height: 25px;
   float: right;
+
   cursor: pointer;
 }
