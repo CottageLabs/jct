@@ -373,6 +373,10 @@ input {
   height: 70px;
   border-radius: 35px; }
 
+input:focus,
+select:focus {
+  outline: none; }
+
 section {
   padding-top: 2.5vw;
   padding-bottom: 2.5vw; }

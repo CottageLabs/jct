@@ -94,6 +94,13 @@ input {
   border-radius: 35px;
 }
 
+input,
+select {
+  &:focus {
+    outline: none;
+  }
+}
+
 section {
   padding-top: $gutter;
   padding-bottom: $gutter;
