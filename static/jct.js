@@ -43,22 +43,19 @@ let inputs_plugin =`
             </div>
         </div>
         <div class="expression__operator">
-            <!-- Temp inline JS; link should also be a <button> -->
-            <a href="#results" onclick="
-                document.getElementsByClassName('query')[0].classList.toggle('query--compliant');
-                document.getElementsByClassName('results')[0].classList.toggle('results--compliant');
-            ">
-        <svg width="70" height="70" viewbox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="35" cy="35" r="32.5" stroke="#FABE5E" stroke-width="2.5">
-                <animate attributename="r" from="10" to="35" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-            </circle>
-            <circle cx="35" cy="35" r="22.5" fill="#FABE5E">
-                <animate attributename="r" from="1" to="30" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-            </circle>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M22.5 22C21.1193 22 20 23.1193 20 24.5C20 25.8807 21.1193 27 22.5 27H47.5C48.8807 27 50 25.8807 50 24.5C50 23.1193 48.8807 22 47.5 22H22.5ZM22.5 42C21.1193 42 20 43.1193 20 44.5C20 45.8807 21.1193 47 22.5 47H47.5C48.8807 47 50 45.8807 50 44.5C50 43.1193 48.8807 42 47.5 42H22.5Z" fill="white"></path>
-        </svg>
+        <div id="wave">
+            <svg width="70" height="70" viewbox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="35" cy="35" r="32.5" stroke="#FABE5E" stroke-width="2.5">
+                    <animate attributename="r" from="10" to="35" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
+                    <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
+                </circle>
+                <circle cx="35" cy="35" r="22.5" fill="#FABE5E">
+                    <animate attributename="r" from="1" to="30" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
+                    <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
+                </circle>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M22.5 22C21.1193 22 20 23.1193 20 24.5C20 25.8807 21.1193 27 22.5 27H47.5C48.8807 27 50 25.8807 50 24.5C50 23.1193 48.8807 22 47.5 22H22.5ZM22.5 42C21.1193 42 20 43.1193 20 44.5C20 45.8807 21.1193 47 22.5 47H47.5C48.8807 47 50 45.8807 50 44.5C50 43.1193 48.8807 42 47.5 42H22.5Z" fill="white"></path>
+            </svg>
+        </div>
             </a>
           </div>
         </div>
@@ -123,6 +120,7 @@ jct.d.each = (cls, key, val) => {
 };
 
 let _calculate_if_all_data_provided = () => {
+    jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("notHE").checked)) {
         jct.suggesting = false;
         let qr = {journal: jct.chosen.journal.id};
@@ -215,9 +213,8 @@ jct.success = (xhr) => {
         //jct.d.gebi('explain_results').style.display = 'flex';
         //negatives only for dev
         jct.d.gebi("results").style.display = 'block';
-        document.getElementsByClassName('query')[0].classList.toggle('query--compliant');
-        document.getElementsByClassName('results')[0].classList.toggle('results--compliant');
         if (js.compliant) {
+            jct._setComplianceTheme(true);
             js.results.forEach((r) => {
                 if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
@@ -225,9 +222,52 @@ jct.success = (xhr) => {
                 }
             })
         }
+        else {
+            jct._setComplianceTheme(false);
+            jct.d.gebi("wave").style.display = 'none';
+        }
         jct.explain(js)
 
 // TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
+    }
+}
+
+jct._setComplianceTheme = (compliant) => {
+    let query_div = document.getElementsByClassName('query')[0];
+    let results_div = document.getElementsByClassName('results')[0];
+    if (compliant === undefined) {
+        if (query_div.classList.contains("query--non-compliant")) {
+            query_div.classList.remove("query--non-compliant");
+        }
+        if (results_div.classList.contains("results--non-compliant")) {
+            results_div.classList.remove("results--non-compliant");
+        }
+        if (query_div.classList.contains("query--compliant")) {
+            query_div.classList.remove("query--compliant");
+        }
+        if (results_div.classList.contains("results--compliant")) {
+            results_div.classList.remove("results--compliant");
+        }
+    }
+    else if (compliant){
+        if (query_div.classList.contains("query--non-compliant")) {
+            query_div.classList.remove("query--non-compliant");
+        }
+        if (results_div.classList.contains("results--non-compliant")) {
+            results_div.classList.remove("results--non-compliant");
+        }
+        query_div.classList.add('query--compliant');
+        results_div.classList.add('results--compliant');
+    }
+    else {
+        if (query_div.classList.contains("query--compliant")) {
+            query_div.classList.remove("query--compliant");
+        }
+        if (results_div.classList.contains("results--compliant")) {
+            results_div.classList.remove("results--compliant");
+        }
+        query_div.classList.add('query--non-compliant');
+        results_div.classList.add('results--non-compliant');
     }
 }
 
@@ -379,6 +419,7 @@ jct.suggest = (focused) => {
 }
 
 jct.setTimer = () => {
+    jct._setComplianceTheme();
     if (!jct.intervalID){
         jct.intervalID = window.setInterval(sent_suggestion_request, jct.delay);
     }
