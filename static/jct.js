@@ -43,7 +43,7 @@ let inputs_plugin =`
             </div>
         </div>
         <div class="expression__operator">
-        <div id="wave">
+        <div>
             <svg width="70" height="70" viewbox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="35" cy="35" r="32.5" stroke="#FABE5E" stroke-width="2.5">
                     <animate attributename="r" from="10" to="35" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
@@ -224,7 +224,6 @@ jct.success = (xhr) => {
         }
         else {
             jct._setComplianceTheme(false);
-            jct.d.gebi("wave").style.display = 'none';
         }
         jct.explain(js)
 
