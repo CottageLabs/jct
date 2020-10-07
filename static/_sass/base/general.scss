@@ -101,6 +101,13 @@ select {
   }
 }
 
+textarea {
+  @include unstyled-input;
+  padding: 25px;
+  height: 140px;
+  border-radius: 35px;
+}
+
 section {
   padding-top: $gutter;
   padding-bottom: $gutter;

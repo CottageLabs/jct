@@ -377,6 +377,18 @@ input:focus,
 select:focus {
   outline: none; }
 
+textarea {
+  border: none;
+  border-radius: none;
+  background-image: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  padding: 25px;
+  height: 140px;
+  border-radius: 35px; }
+
 section {
   padding-top: 2.5vw;
   padding-bottom: 2.5vw; }
@@ -558,6 +570,9 @@ button {
   /* Could be more or less, depending on screen size */
   border-radius: 35px 35px 35px 35px; }
 
+.modal-inputs {
+  margin-top: 2.5vw; }
+
 /* The Close Button */
 .close {
   color: #000;
@@ -572,13 +587,16 @@ button {
   cursor: pointer; }
 
 .contact_input {
-  width: 100%; }
+  width: 100%;
+  margin-top: 2.5vw;
+  border: solid 2px black;
+  background-color: transparent;
+  border-radius: 0; }
 
 .contact_submit {
-  border: black 1px solid;
-  text-decoration: none;
-  text-align: center;
-  padding: 1em; }
+  position: relative;
+  float: right;
+  width: 100%; }
 
 .modal-header {
   background-color: #FABE5E;

@@ -17,9 +17,6 @@
 
     <meta name="theme-color" content="#282624">
 
-    <!-- Animate on scroll library -->
-<!--    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">-->
-<!--    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>-->
     <noscript>
         <style type="text/css">
             [data-aos] {
@@ -50,7 +47,7 @@
 
 <header class="query">
     <div class="container">
-        <h2 class="label">
+        <h2 class="label">`
             <img src="../static/_includes/svg/oa.svg" class="jct_logo"  alt="Journal Checker Tool logo">
             Journal Checker Tool
         </h2>
@@ -91,7 +88,6 @@
 
 
 </main>
-
 <footer>
     <div class="container">
         <div class="row">
@@ -134,25 +130,31 @@
             </div>
         </header>
         <form id="contact_form">
-            <div class="row row-inputs">
+            <div class="row modal-inputs">
                 <div class="col col--1of1">
                     <label for="name">Name</label>
                     <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
                 </div>
             </div>
-            <div class="row row-inputs">
+            <div class="row modal-inputs">
                 <div class="col col--1of1">
                     <label for="email">Email</label>
                     <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
                 </div>
             </div>
-            <div class="row row-inputs">
+            <div class="row modal-inputs">
                 <div class="col col--1of1">
                     <label for="message">Comment</label>
                     <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
                 </div>
             </div>
-            <input class="contact_submit" type="submit" value="Submit">
+            <div class="row modal-inputs">
+                <div class="col col--4of4">
+                    <button class="button button--primary contact_submit" type="submit">
+                        Send
+                    </button>
+                </div>
+            </div>
 
         </form>
         <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
@@ -223,28 +225,10 @@
     </div>
 </div>
 
-<!--<hr style="margin-top: 50px">-->
-<!--<ul>-->
-<!--    <li><a href="/apidocs">API Documentation</a></li>-->
-<!--    <li><a href="/transformative-journals">Transformative Journals</a></li>-->
-<!--    <li><a href="/transformative-agreements">Transformative Agreements</a></li>-->
-<!--    <li><a href="/faq">FAQ</a></li>-->
-<!--</ul>-->
-
-
-<!--<div class="footer row">-->
-<!--</div>-->
-
 </body>
 <script>
 
     jct.setup();
-
-    // jct.d.gebi('mobmenu').addEventListener("click", function(e) {
-    //     e.preventDefault();
-    //     scroll(0,document.body.scrollHeight);
-    // });
-
 
     jct.d.gebi('feedback').addEventListener("click", (e) => {
         e.preventDefault();
@@ -254,11 +238,6 @@
         jct.d.gebi('feedback_error').style.display = "none";
         modal.style.display = 'block';
     });
-
-    // jct.d.gebi('help_modal_button').addEventListener("click", () => {
-    //     let modal = jct.d.gebi('modal_help')
-    //     modal.style.display = 'block';
-    // })
 
     window.onclick = (e) => {
         let modals = [].slice.call(jct.d.gebc("modal"));

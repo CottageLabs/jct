@@ -22,6 +22,10 @@
   border-radius: 35px 35px 35px 35px;
 }
 
+.modal-inputs {
+ margin-top: $gutter;
+}
+
 /* The Close Button */
 .close {
   color: $black;
@@ -39,13 +43,16 @@
 
 .contact_input {
   width: 100%;
+  margin-top: $gutter;
+  border: solid 2px black;
+  background-color: transparent;
+  border-radius: 0;
 }
 
 .contact_submit {
-  border: black 1px solid;
-  text-decoration: none;
-  text-align: center;
-  padding: 1em;
+  position: relative;
+  float: right;
+  width: 100%;
 }
 
 .modal-header {
