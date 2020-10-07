@@ -71,6 +71,8 @@ let inputs_plugin =`
     </div>
     <div class="col col--1of3 suggest" id="suggestinstitution">
     </div>
+    <ul class="loading" id="loading"><li class='loading__dots' style="display: none"><div></div><div></div><div></div><span class='sr-only'>Loading choices…</span></li></ul>
+    
 `
 let results_plugin =
     `
@@ -132,6 +134,7 @@ let _calculate_if_all_data_provided = () => {
         //qr.retention = true;
         qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
+        jct.d.gebi("loading").style.display = "block";
     }
 }
 
@@ -195,6 +198,7 @@ jct.progress = (e) => {
     // e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
+    jct.d.gebi("loading").style.display = "none";
     let js = JSON.parse(xhr.response);
     if (xhr.response.startsWith('[')) js = js[0];
     if (jct.suggesting) {
@@ -215,10 +219,10 @@ jct.success = (xhr) => {
         document.getElementsByClassName('results')[0].classList.toggle('results--compliant');
         if (js.compliant) {
             js.results.forEach((r) => {
-                //if (r.compliant === "yes") {
+                if (r.compliant === "yes") {
                     jct.add_tile(r.route, jct.chosen)
 
-                //}
+                }
             })
         }
         jct.explain(js)
