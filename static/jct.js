@@ -478,12 +478,15 @@ jct.setup = () => {
     // jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
     jct.clinputs.journal = clinput.init({
         element: jct.d.gebi("journal-container"),
-        initialTemplate: function() {
-            return `<label for="journal">Journal</label>
-            <input type="text" id="journal" name="journal" which="journal" placeholder="By ISSN or title" required>`;
+        id: "journal",
+        label: "Journal",
+        inputAttributes : {
+            which: "journal",
+            placeholder: "By ISSN or title",
+            required: true
         },
         options : function(text) {
-            return [{"issn" : "", "title" : "", "publisher" : ""}, {}, {}]
+            return jct._sug("journal")
         },
         optionTemplate : function(obj) {
             return "<strong>" + obj.name + "</strong>"
