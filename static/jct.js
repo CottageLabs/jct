@@ -9,9 +9,9 @@ let jct = {
 let inputs_plugin =`
     <h2 class="sr-only">Make a query</h2>
         <div class="col col--1of3 expression">
-        <div class="expression__input">
-            <label for="journal">Journal</label>
-            <input type="text" id="journal" name="journal" which="journal" placeholder="By ISSN or title" required>            
+        <div class="expression__input" id="journal-container">
+<!--            <label for="journal">Journal</label>-->
+<!--            <input type="text" id="journal" name="journal" which="journal" placeholder="By ISSN or title" required>            -->
         </div>
         <div class="expression__operator">
             <svg width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -457,6 +457,7 @@ function sent_suggestion_request() {
     }
 }
 
+jct.clinputs = {};
 jct.setup = () => {
     // AOS.init();
     jct.d.gebi("inputs_plugin").innerHTML = inputs_plugin;
@@ -471,10 +472,42 @@ jct.setup = () => {
         notHE: ""
     }
 
-    jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
-    jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
-    jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
-    jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
+    // jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
+    // jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
+    // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
+    // jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
+    jct.clinputs.journal = clinput.init({
+        element: jct.d.gebi("journal-container"),
+        initialTemplate: function() {
+            return `<label for="journal">Journal</label>
+            <input type="text" id="journal" name="journal" which="journal" placeholder="By ISSN or title" required>`;
+        },
+        options : function(text) {
+            return [{"issn" : "", "title" : "", "publisher" : ""}, {}, {}]
+        },
+        optionTemplate : function(obj) {
+            return "<strong>" + obj.name + "</strong>"
+        },
+        selectedTemplate : function(obj) {
+            if (obj.title) {
+                // title-based view
+            } else {
+                return "<strong>" + obj.issn[0] + "</strong>"
+            }
+        },
+        rateLimit: 400,
+        optionsLimit: 10,
+        allowClear: true,
+        newValue: function(text) {
+            let rx = new RegExp("\d{4}-\d{3}[\dXx]{1}")
+            if (rx.matches(text)) {
+                return {
+                    issn: [text]
+                }
+            }
+            return false;
+        }
+    });
 
     //how to change it to jct.d.gebc?
     document.querySelectorAll(".select_option").forEach(item => {
