@@ -374,7 +374,8 @@ input {
   border-radius: 35px; }
 
 input:focus,
-select:focus {
+select:focus,
+button:focus {
   outline: none; }
 
 textarea {

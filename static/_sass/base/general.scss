@@ -95,7 +95,8 @@ input {
 }
 
 input,
-select {
+select,
+button {
   &:focus {
     outline: none;
   }
