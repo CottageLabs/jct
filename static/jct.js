@@ -412,7 +412,6 @@ jct.suggest = (focused) => {
         if (typed.length > 1) {
             jct.suggesting = focused;
             jct.jx('/suggest/'+focused+'/'+typed);
-
         }
     }
 }
@@ -485,8 +484,21 @@ jct.setup = () => {
             placeholder: "By ISSN or title",
             required: true
         },
-        options : function(text) {
-            return jct._sug("journal")
+        options : function(route,q,after,api) {
+                let url = api ? api : jct.api;
+                if (!url.endsWith('/')) url += '/';
+                if (route) url += route.startsWith('/') ? route.replace('/','') : route;
+                if (typeof q === 'string') {
+                    url += (url.indexOf('?') === -1 ? '?' : '&') + (q.indexOf('=') === -1 ? 'q=' : '') + q;
+                } else if (typeof q === 'object' ) {
+                    if (url.indexOf('?') === -1) url += '?';
+                    for ( let p in q ) url += p + '=' + q[p] + '&'
+                }
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.send();
+                xhr.onload = () => { return xhr; };
+                xhr.onerror = () => { return xhr; };
         },
         optionTemplate : function(obj) {
             return "<strong>" + obj.name + "</strong>"

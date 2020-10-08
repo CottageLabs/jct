@@ -5,10 +5,11 @@ clinput.CLInput = class {
         this.timer = null;
         this.delay = params.rateLimit || 0;
         this.value = "";
-        this.options = params.options;
+        this.options_method = params.options;
+        this.options = [];
+        this.id = params.id;
 
         let element = params.element;
-        let id = params.id;
         let label = params.label;
         let inputAttrs = params.inputAttributes;
 
@@ -21,13 +22,12 @@ clinput.CLInput = class {
         }
         let attrsFrag = attrs.join(" ");
 
-        let frag = '<label for="' + id + '">' + label + '</label> \
-                <input type="text" id="' + id + '" name="' + id + '" which="' + id + '" ' + attrsFrag + '>';
-        element.innerHTML = frag;
+        element.innerHTML = '<label for="' + this.id + '">' + label + '</label> \
+                <input type="text" id="' + this.id + '" name="' + this.id + '" which="' + this.id + '" ' + attrsFrag + '>';
 
-        let input = document.getElementById(id);
-        input.addEventListener("focus", this.setTimer)
-        input.addEventListener("blur", this.unsetTimer)
+        let input = document.getElementById(this.id);
+        input.addEventListener("focus", () => {this.setTimer()})
+        input.addEventListener("blur", () => {this.setTimer()})
     }
 
     unsetTimer() {
@@ -39,15 +39,18 @@ clinput.CLInput = class {
 
     setTimer() {
         if (!this.timer) {
-            this.timer = window.setInterval(this.lookupOptions, this.delay);
+            this.timer = window.setInterval(() => {
+                this.lookupOptions();
+            }, this.delay);
         }
     }
 
     lookupOptions() {
-        let input = document.getElementById(id);
+        let input = document.getElementById(this.id);
         if (this.value !== input.value) {
             this.value = input.value;
-            this.options(this.value);
+            this.options = this.options_method(this.value);
+            console.log(this.options);
         }
     }
 }
