@@ -137,6 +137,7 @@ let _calculate_if_all_data_provided = () => {
 }
 
 jct.choose = (e, el) => {
+    console.log(el);
     console.log("choosing!");
     return;
     let et;

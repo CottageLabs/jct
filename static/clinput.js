@@ -143,7 +143,7 @@ clinput.CLInput = class {
                                 document.getElementById(this.id).focus();
                             }
                         } else if (code === "Enter") {
-                            this.chooseOption(idx);
+                            this.chooseOption(e,idx);
                         }
                     }
                 };
@@ -152,12 +152,12 @@ clinput.CLInput = class {
         }
     }
 
-    chooseOption(idx){
+    chooseOption(e,idx){
         let input = document.getElementById(this.id);
         console.log(this.options);
         // input.value = this.options[idx];
         input.value = this.selectedTemplate(this.options[idx]);
-        this.onChoice(this.options[idx]);
+        this.onChoice(e,this.options[idx]);
     }
 
     setFocusToOption(elements, i){
