@@ -6,10 +6,12 @@ clinput.CLInput = class {
         this.delay = params.rateLimit || 0;
         this.value = "";
         this.options_method = params.options;
+        this.optionsTemplate = params.optionsTemplate;
         this.options = [];
         this.id = params.id;
+        this.optionsLimit = params.optionsLimit || 0;
+        this.element = params.element;
 
-        let element = params.element;
         let label = params.label;
         let inputAttrs = params.inputAttributes;
 
@@ -22,8 +24,9 @@ clinput.CLInput = class {
         }
         let attrsFrag = attrs.join(" ");
 
-        element.innerHTML = '<label for="' + this.id + '">' + label + '</label> \
-                <input type="text" id="' + this.id + '" name="' + this.id + '" which="' + this.id + '" ' + attrsFrag + '>';
+        this.element.innerHTML = '<label for="' + this.id + '">' + label + '</label> \
+                <input type="text" id="' + this.id + '" name="' + this.id + '" which="' + this.id + '" ' + attrsFrag + '>\
+                <div id="' + this.id + '--options"></div>';
 
         let input = document.getElementById(this.id);
         input.addEventListener("focus", () => {this.setTimer()})
@@ -47,11 +50,52 @@ clinput.CLInput = class {
 
     lookupOptions() {
         let input = document.getElementById(this.id);
-        if (this.value !== input.value) {
+        if (this.value !== input.value && input.value.length > 0) {
             this.value = input.value;
-            this.options = this.options_method(this.value);
-            console.log(this.options);
+            this.options_method(this.value, (data) => {this.optionsReceived(data)});
+        } else if (input.value.length === 0) {
+            let optsContainer = document.getElementById(this.id + "--options");
+            optsContainer.innerHTML = "";
         }
+    }
+
+    optionsReceived(data) {
+        if (!this.optionsLimit) {
+            this.options = data;
+        } else {
+            this.options = data.slice(0, this.optionsLimit);
+        }
+        this._renderOptions();
+    }
+
+    _renderOptions() {
+        let optsContainer = document.getElementById(this.id + "--options")
+        if (this.options.length === 0) {
+            optsContainer.innerHTML = "";
+            return;
+        }
+
+        let frag = "<ul>";
+        for ( let s = 0; s < this.options.length; s++ ) {
+            frag += '<li class="clinput__option" data-idx="' + s + '">' + this.optionsTemplate(this.options[s]) + '</li>';
+        }
+        frag += '</ul>';
+        optsContainer.innerHTML = frag;
+
+        let entries = this.element.getElementsByClassName("clinput__option")
+        for (let i = 0; i < entries.length; i++) {
+            entries[i].addEventListener("mouseover", () => {this.highlighted(i)})
+        }
+
+        // add
+        // - arrow up
+        // - arrow down
+        // - click
+        // - enter (on keyboard)
+    }
+
+    highlighted(idx) {
+        console.log(idx);
     }
 }
 

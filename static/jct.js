@@ -484,24 +484,29 @@ jct.setup = () => {
             placeholder: "By ISSN or title",
             required: true
         },
-        options : function(route,q,after,api) {
-                let url = api ? api : jct.api;
-                if (!url.endsWith('/')) url += '/';
-                if (route) url += route.startsWith('/') ? route.replace('/','') : route;
-                if (typeof q === 'string') {
-                    url += (url.indexOf('?') === -1 ? '?' : '&') + (q.indexOf('=') === -1 ? 'q=' : '') + q;
-                } else if (typeof q === 'object' ) {
-                    if (url.indexOf('?') === -1) url += '?';
-                    for ( let p in q ) url += p + '=' + q[p] + '&'
+        options : function(text, callback) {
+            text = text.toLowerCase().replace(' of','').replace('the ','');
+            if (text.length > 1) {
+                let ourcb = (xhr) => {
+                    let js = JSON.parse(xhr.response);
+                    callback(js.data);
                 }
-                let xhr = new XMLHttpRequest();
-                xhr.open('GET', url);
-                xhr.send();
-                xhr.onload = () => { return xhr; };
-                xhr.onerror = () => { return xhr; };
+                jct.jx('/suggest/journal/'+text, false, ourcb);
+            }
         },
-        optionTemplate : function(obj) {
-            return "<strong>" + obj.name + "</strong>"
+        optionsTemplate : function(obj) {
+            let t = obj.title;
+            let issns = obj.issn.join(", ");
+            let publisher = obj.publisher;
+
+            let frag = '<span class="jct__option_title">' + t + '</span>';
+            if (publisher) {
+                frag += ' <span class="jct__option_publisher">(' + publisher + ')</span> ';
+            }
+            frag += ' <span class="jct__option_issn">' + issns + '</span> ';
+
+            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
+            return frag;
         },
         selectedTemplate : function(obj) {
             if (obj.title) {
