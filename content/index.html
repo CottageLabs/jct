@@ -82,6 +82,7 @@
             </button>
         </div>
         <div class="col col--2of3 col--right">
+            <button class="button button--secondary" id="explain_results">Explain this results</button>
             <button class="button button--secondary" id="print">
                 <img src="../static/_includes/svg/print.svg" alt="print">
 <!--                {% include svg/print.svg %}-->
@@ -252,6 +253,26 @@
 <script>
 
     jct.setup();
+
+    jct.d.gebi('restart').addEventListener("click", (e) => {
+        location.reload();
+    })
+
+    jct.d.gebi("explain_results").addEventListener("click", (e) => {
+        let section = jct.d.gebi('detailed_results');
+        if (section.style.display === "none") {
+            section.style.display = "block";
+        } else {
+            section.style.display = "none";
+        }
+        let button = jct.d.gebi("explain_results");
+        if (button.innerHTML === 'Explain this results') {
+            button.innerHTML = 'Hide explanation';
+        }
+        else {
+            button.innerHTML = 'Explain this results';
+        }
+    })
 
     jct.d.gebi('feedback').addEventListener("click", (e) => {
         e.preventDefault();

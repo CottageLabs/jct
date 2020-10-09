@@ -773,4 +773,7 @@ button {
     .results--non-compliant header {
       background-color: #F5F5F5; }
 
+.show_detailed_results {
+  display: block; }
+
 /*# sourceMappingURL=main.css.map */
