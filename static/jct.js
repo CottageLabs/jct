@@ -137,11 +137,10 @@ let _calculate_if_all_data_provided = () => {
 }
 
 jct.choose = (e, el) => {
+    console.log("choosing!");
+    return;
     let et;
-    if (e) {
-        e.preventDefault();
-        et = e.target
-    } else if(el) {
+    if(el) {
         et = el;
     } else {
         let vis = [];
@@ -475,6 +474,8 @@ jct.setup = () => {
     // jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
     // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
     // jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
+
+    let objTemplate =
     jct.clinputs.journal = clinput.init({
         element: jct.d.gebi("journal-container"),
         id: "journal",
@@ -509,12 +510,30 @@ jct.setup = () => {
             return frag;
         },
         selectedTemplate : function(obj) {
-            if (obj.title) {
-                // title-based view
-            } else {
-                return "<strong>" + obj.issn[0] + "</strong>"
+            let t = obj.title;
+            let issns = obj.issn;
+            let publisher = obj.publisher;
+
+            // let frag = '<span class="jct__option_title">' + t + '</span>';
+            // if (publisher) {
+            //     frag += ' <span class="jct__option_publisher">(' + publisher + ')</span> ';
+            // }
+            // if (issns) {
+            //     frag += ' <span class="jct__option_issn">' + issns.join(", ") + '</span> ';
+            // }
+
+            let frag = t;
+            if (publisher) {
+                frag += "( " + publisher + " )";
             }
+            if (issns) {
+                frag += ", issns:  " + issns.join(", ");
+            }
+
+            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
+            return frag;
         },
+        onChoice: jct.choose,
         rateLimit: 400,
         optionsLimit: 10,
         allowClear: true,

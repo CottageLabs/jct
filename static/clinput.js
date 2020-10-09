@@ -7,10 +7,12 @@ clinput.CLInput = class {
         this.value = "";
         this.options_method = params.options;
         this.optionsTemplate = params.optionsTemplate;
+        this.selectedTemplate = params.selectedTemplate;
         this.options = [];
         this.id = params.id;
         this.optionsLimit = params.optionsLimit || 0;
         this.element = params.element;
+        this.onChoice = params.onChoice;
 
         let label = params.label;
         let inputAttrs = params.inputAttributes;
@@ -31,6 +33,17 @@ clinput.CLInput = class {
         let input = document.getElementById(this.id);
         input.addEventListener("focus", () => {this.setTimer()})
         input.addEventListener("blur", () => {this.setTimer()})
+        input.addEventListener("keydown", (e) => {
+            let entries = document.getElementsByClassName("clinput__option_"+this.id);
+            let arrowPress = (code, entries) => {
+                if(code === "ArrowDown"){
+                    entries[0].focus();
+                }
+            }
+            if (entries.length > 0) {
+                this._dispatchForCode(event, arrowPress, entries);
+            }
+        });
     }
 
     unsetTimer() {
@@ -68,6 +81,20 @@ clinput.CLInput = class {
         this._renderOptions();
     }
 
+    _dispatchForCode(event, callback, entries){
+        let code;
+
+        if (event.key !== undefined) {
+            code = event.key;
+        } else if (event.keyIdentifier !== undefined) {
+            code = event.keyIdentifier;
+        } else if (event.keyCode !== undefined) {
+            code = event.keyCode;
+        }
+
+        callback(code, entries);
+    };
+
     _renderOptions() {
         let optsContainer = document.getElementById(this.id + "--options")
         if (this.options.length === 0) {
@@ -76,26 +103,79 @@ clinput.CLInput = class {
         }
 
         let frag = "<ul>";
-        for ( let s = 0; s < this.options.length; s++ ) {
-            frag += '<li class="clinput__option" data-idx="' + s + '">' + this.optionsTemplate(this.options[s]) + '</li>';
+        for (let s = 0; s < this.options.length; s++) {
+            frag += '<li tabIndex=' + s + ' class="clinput__option_' + this.id + '" data-idx=' + s + '>' + this.optionsTemplate(this.options[s]) + '</li>';
         }
         frag += '</ul>';
         optsContainer.innerHTML = frag;
 
-        let entries = this.element.getElementsByClassName("clinput__option")
-        for (let i = 0; i < entries.length; i++) {
-            entries[i].addEventListener("mouseover", () => {this.highlighted(i)})
-        }
+        let entries = this.element.getElementsByClassName("clinput__option_" + this.id)
 
-        // add
-        // - arrow up
-        // - arrow down
-        // - click
-        // - enter (on keyboard)
+        for (let i = 0; i < entries.length; i++) {
+            entries[i].addEventListener("mouseover", () => {
+                this.setFocusToOption(entries, i);
+            });
+            entries[i].addEventListener("mouseout", () => {
+                this.setFocusToOption(entries, i);
+            });
+            entries[i].addEventListener("click", () => {
+                this.chooseOption(i);
+            });
+            entries[i].addEventListener("focus", () => {
+                this.highlighted(entries[i], true);
+            });
+            entries[i].addEventListener("blur", () => {
+                this.highlighted(entries[i], false);
+            });
+            entries[i].addEventListener("keydown", (e) => {
+                console.log("key pressed!");
+                let arrowPress = (code, entries) => {
+                    let idx = parseInt(e.target.getAttribute("data-idx"));
+                    if (entries.length !== 0) {
+                        if (code === "ArrowDown") {
+                            if (idx < entries.length - 1) {
+                                entries[idx + 1].focus();
+                            }
+                        } else if (code === "ArrowUp") {
+                            if (idx > 0) {
+                                entries[idx - 1].focus();
+                            } else {
+                                document.getElementById(this.id).focus();
+                            }
+                        } else if (code === "Enter") {
+                            this.chooseOption(idx);
+                        }
+                    }
+                };
+                this._dispatchForCode(event, arrowPress, entries);
+            });
+        }
     }
 
-    highlighted(idx) {
-        console.log(idx);
+    chooseOption(idx){
+        let input = document.getElementById(this.id);
+        console.log(this.options);
+        // input.value = this.options[idx];
+        input.value = this.selectedTemplate(this.options[idx]);
+        this.onChoice(this.options[idx]);
+    }
+
+    setFocusToOption(elements, i){
+        if (i < 0) {
+            document.getElementById(this.id).focus();
+        }
+        else if (i < elements.length) {
+            elements[i].focus();
+        }
+    }
+
+    highlighted(element, highlight) {
+        if (highlight) {
+            element.style.backgroundColor = "grey";
+        }
+        else {
+            element.style.backgroundColor = "transparent";
+        }
     }
 }
 
