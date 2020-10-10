@@ -21,9 +21,9 @@ let inputs_plugin =`
     </div>
 
     <div class="col col--1of3 expression">
-        <div class="expression__input">
-            <label for="funder">My funder</label>
-            <input type="text" id="funder" name="funder" which="funder" placeholder="By Crossref Funders’ ID or name" required>
+        <div class="expression__input"  id="funder-container">
+<!--            <label for="funder">My funder</label>-->
+<!--            <input type="text" id="funder" name="funder" which="funder" placeholder="By Crossref Funders’ ID or name" required>-->
         </div>
         <div class="expression__operator">
             <svg width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -33,14 +33,16 @@ let inputs_plugin =`
     </div>
 
     <div class="col col--1of3 expression">
-        <div class="expression__input">
-            <label for="institution">My institution</label>
-            <input type="text" id="institution" name="institution" which="institution" placeholder="By ROR or name" required>
-            <br>
-            <div class="expression__checkbox">
-              <input type="checkbox" id="notHE" name="notHE">
-              <label for="notHE">No affiliation</label>
-            </div>
+    <div class="expression__input">
+        <div id="institution-container">
+<!--            <label for="institution">My institution</label>-->
+<!--            <input type="text" id="institution" name="institution" which="institution" placeholder="By ROR or name" required>-->
+        </div>
+        <br>
+        <div class="expression__checkbox">
+          <input type="checkbox" id="notHE" name="notHE">
+          <label for="notHE">No affiliation</label>
+        </div>
         </div>
         <div class="expression__operator">
         <div>
@@ -479,11 +481,11 @@ jct.setup = () => {
             let issns = obj.issn.join(", ");
             let publisher = obj.publisher;
 
-            let frag = '<span class="jct__option_title">' + t + '</span>';
+            let frag = '<span class="jct__option_journal_title">' + t + '</span>';
             if (publisher) {
-                frag += ' <span class="jct__option_publisher">(' + publisher + ')</span> ';
+                frag += ' <span class="jct__option_journal_publisher">(' + publisher + ')</span> ';
             }
-            frag += ' <span class="jct__option_issn">' + issns + '</span> ';
+            frag += ' <span class="jct__option_journal_issn">' + issns + '</span> ';
 
             // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
@@ -493,14 +495,6 @@ jct.setup = () => {
             let issns = obj.issn;
             let publisher = obj.publisher;
 
-            // let frag = '<span class="jct__option_title">' + t + '</span>';
-            // if (publisher) {
-            //     frag += ' <span class="jct__option_publisher">(' + publisher + ')</span> ';
-            // }
-            // if (issns) {
-            //     frag += ' <span class="jct__option_issn">' + issns.join(", ") + '</span> ';
-            // }
-
             let frag = t;
             if (publisher) {
                 frag += "( " + publisher + " )";
@@ -508,8 +502,6 @@ jct.setup = () => {
             if (issns) {
                 frag += ", issns:  " + issns.join(", ");
             }
-
-            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
         onChoice: function(e,el) {
@@ -527,6 +519,100 @@ jct.setup = () => {
             }
             return false;
         }
+    });
+
+    jct.clinputs.funder = clinput.init({
+        element: jct.d.gebi("funder-container"),
+        id: "funder",
+        label: "My funder",
+        inputAttributes : {
+            which: "funder",
+            placeholder: "By Crossref Funders’ ID or name",
+            required: true
+        },
+        options : function(text, callback) {
+            text = text.toLowerCase().replace(' of','').replace('the ','');
+            if (text.length > 1) {
+                let ourcb = (xhr) => {
+                    let js = JSON.parse(xhr.response);
+                    callback(js.data);
+                }
+                jct.jx('/suggest/funder/'+text, false, ourcb);
+            }
+        },
+        optionsTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = '<span class="jct__option_publisher_title">' + title + '</span>';
+            if (id) {
+                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span> ';
+            }
+            return frag;
+        },
+        selectedTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = title;
+            if (id) {
+                frag += '(' + id + ')';
+            }
+            return frag;
+        },
+        onChoice: function(e,el) {
+            jct.choose(e,el, "funder");
+        },
+        rateLimit: 400,
+        optionsLimit: 10,
+        allowClear: true,
+    });
+
+    jct.clinputs.institution = clinput.init({
+        element: jct.d.gebi("institution-container"),
+        id: "institution",
+        label: "My institution",
+        inputAttributes : {
+            which: "institution",
+            placeholder: "By ROR or name",
+            required: true
+        },
+        options : function(text, callback) {
+            text = text.toLowerCase().replace(' of','').replace('the ','');
+            if (text.length > 1) {
+                let ourcb = (xhr) => {
+                    let js = JSON.parse(xhr.response);
+                    callback(js.data);
+                }
+                jct.jx('/suggest/institution/'+text, false, ourcb);
+            }
+        },
+        optionsTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = '<span class="jct__option_institution_title">' + title + '</span>';
+            if (id) {
+                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span> ';
+            }
+            return frag;
+        },
+        selectedTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = title;
+            if (id) {
+                frag += '(' + id + ')';
+            }
+            return frag;
+        },
+        onChoice: function(e,el) {
+            jct.choose(e,el, "institution");
+        },
+        rateLimit: 400,
+        optionsLimit: 10,
+        allowClear: true,
     });
 
     //how to change it to jct.d.gebc?
