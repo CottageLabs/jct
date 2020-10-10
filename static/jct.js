@@ -73,7 +73,7 @@ let inputs_plugin =`
 `
 let results_plugin =
     `
-        <header>
+        <header class="compliance">
             <h2 data-aos="fade-up" data-aos-duration="2000" id="compliant">
                 <strong>Yes</strong>, this combination is <br><a href="#">compliant</a>.
             </h2>
