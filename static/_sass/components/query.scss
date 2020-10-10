@@ -39,4 +39,22 @@
       fill: $black;
     }
   }
+
+  &--non-compliant {
+    background: $light-grey;
+    color: $black;
+
+    label {
+      color: $black;
+    }
+
+    a {
+      color: $black;
+    }
+
+    .expression__operator path {
+      stroke: $black;
+      fill: $black;
+    }
+  }
 }

@@ -703,6 +703,16 @@ button {
     .query--compliant .expression__operator path {
       stroke: #000;
       fill: #000; }
+  .query--non-compliant {
+    background: #F5F5F5;
+    color: #000; }
+    .query--non-compliant label {
+      color: #000; }
+    .query--non-compliant a {
+      color: #000; }
+    .query--non-compliant .expression__operator path {
+      stroke: #000;
+      fill: #000; }
 
 @media only screen and (min-width: 768px) {
   .query-form--sticky {
