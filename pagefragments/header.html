@@ -1,42 +1,30 @@
-<!DOCTYPE html>
-<body lang="en">
+<!doctype html>
+<html class="no-js" lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>CL dev JCT</title>
+    <title>Journal Checker Tool: Plan S Compliance Validator</title>
     <meta name="description" content="">
-    <meta name="author" content="Cottage Labs">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<link href="/static/favicon.ico" rel="icon" type="image/x-icon">-->
+    <link rel="apple-touch-icon" href="icon.png">
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
 
-
-    <link href="../static/css/style.css" rel='stylesheet' type='text/css'>
-    <script src="https://unpkg.com/feather-icons"></script>
+    <link href="../static/css/main.css" rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="../static/jct.js"></script>
     <script type="text/javascript" src="../static/detailed_results.js"></script>
 
-    <script>
-        let st = undefined;
-        let ft = document.getElementById('funder');
-        _ready = () => {
-            ft = document.getElementById('funder');
-            if (ft !== null) {
-                clearInterval(st);
-                console.log(ft);
-                console.log('ready');
-            } else {
-                console.log('not ready');
+    <meta name="theme-color" content="#282624">
+
+    <noscript>
+        <style type="text/css">
+            [data-aos] {
+                opacity: 1 !important;
+                transform: translate(0) scale(1) !important;
             }
-        }
-        if (ft === null) st = setInterval(_ready,100);
-    </script>
+        </style>
+    </noscript>
 </head>
 
 <body>
@@ -49,3 +37,7 @@
             Journal Checker Tool</a>
     </h2>
 </header>
+
+<main class="container">
+    <div class="row row--centered">
+        <div class="col col--1of2">

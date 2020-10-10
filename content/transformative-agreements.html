@@ -1,47 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>CL dev JCT</title>
+    <title>Journal Checker Tool: Plan S Compliance Validator</title>
     <meta name="description" content="">
-    <meta name="author" content="Cottage Labs">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<link href="/static/favicon.ico" rel="icon" type="image/x-icon">-->
+    <link rel="apple-touch-icon" href="icon.png">
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
 
-
-    <link href="../static/css/style.css" rel='stylesheet' type='text/css'>
-    <script src="https://unpkg.com/feather-icons"></script>
+    <link href="../static/css/main.css" rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="../static/jct.js"></script>
     <script type="text/javascript" src="../static/detailed_results.js"></script>
 
-    <script>
-        let st = undefined;
-        let ft = document.getElementById('funder');
-        _ready = () => {
-            ft = document.getElementById('funder');
-            if (ft !== null) {
-                clearInterval(st);
-                console.log(ft);
-                console.log('ready');
-            } else {
-                console.log('not ready')
+    <meta name="theme-color" content="#282624">
+
+    <noscript>
+        <style type="text/css">
+            [data-aos] {
+                opacity: 1 !important;
+                transform: translate(0) scale(1) !important;
             }
-        }
-        if (ft === null) st = setInterval(_ready,100);
-    </script>
+        </style>
+    </noscript>
 </head>
 
 <body>
+<header>
+    <h2 class="label">
+        <a href="/"><svg width="13" height="20" viewbox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.28479 2.14158C5.43898 2.14158 4.62781 2.47934 4.02973 3.08057C3.43165 3.6818 3.09564 4.49725 3.09564 5.34752V6.07785H0.965235V5.34752C0.965235 3.92928 1.52568 2.56912 2.52329 1.56626C3.5209 0.563403 4.87395 0 6.28479 0C7.69562 0 9.04868 0.563403 10.0463 1.56626C11.0439 2.56912 11.6043 3.92928 11.6043 5.34752V10.3707C12.2009 11.3357 12.5455 12.4746 12.5455 13.6944C12.5455 17.1769 9.73706 20 6.27273 20C2.8084 20 0 17.1769 0 13.6944C0 10.2119 2.8084 7.38877 6.27273 7.38877C7.44213 7.38877 8.5368 7.71045 9.47393 8.27058V5.34752C9.47393 4.49725 9.13793 3.6818 8.53984 3.08057C7.94176 2.47934 7.13059 2.14158 6.28479 2.14158ZM6.27273 9.53034C3.98499 9.53034 2.13041 11.3946 2.13041 13.6944C2.13041 15.9941 3.98499 17.8584 6.27273 17.8584C8.56047 17.8584 10.415 15.9941 10.415 13.6944C10.415 11.3946 8.56047 9.53034 6.27273 9.53034Z" fill="#F47115"></path>
+            <path d="M6.29321 15.4802C7.26388 15.4802 8.05077 14.6892 8.05077 13.7134C8.05077 12.7376 7.26388 11.9466 6.29321 11.9466C5.32254 11.9466 4.53566 12.7376 4.53566 13.7134C4.53566 14.6892 5.32254 15.4802 6.29321 15.4802Z" fill="#F47115"></path>
+        </svg>
+            Journal Checker Tool</a>
+    </h2>
+</header>
 
-<a href="/">Return to Journal Checker</a><h1>Transformative Agreements Public Data</h1>
+<main class="container">
+    <div class="row row--centered">
+        <div class="col col--1of2"><h1>Transformative Agreements Public Data</h1>
 <p>This document describes the structure of the published data for Transformative Agreements.</p>
 <h2>Transformative Agreement Index</h2>
 <p>TAs exposed by JCT are listed <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vStezELi7qnKcyE8OiO2OYx2kqQDOnNsDX1JfAsK487n2uB_Dve5iDTwhUFfJ7eFPDhEjkfhXhqVTGw/pub?gid=1130349201&amp;single=true&amp;output=csv">in this CSV</a></p>
@@ -90,92 +89,51 @@ journals may leave it, all while the main TA agreement is in effect.  As a resul
 the details of when a journal/institution joins/leaves a TA, instead we record the dates when we first/last observed the journal/institution to be part of the
 TA.  This means, for example, that if you see a "Journal First Seen" date of 2020-08-20, this does not mean that the Journal only became part of the TA on that
 date, it only means that that is the first date that we reviewed the TA and observed that journal to be a member.  The journal may have been part of the TA
-since the start date of the agreement, but we cannot necessarily verify that.</p><div class="modal" id="modal_feedback" style="display: none">
-    <div class="modal-content" id="contact">
-        <header class="modal-header">
-            <div class="row">
-                <div class="col col--1of1">
-                    Feedback? Suggestion? Contact us here.
-                    <span class="close">&times;</span>
-                </div>
-            </div>
-        </header>
-        <form id="contact_form">
-            <div class="row row-inputs">
-                <div class="col col--1of1">
-                    <label for="name">Name</label>
-                    <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
-                </div>
-            </div>
-            <div class="row row-inputs">
-                <div class="col col--1of1">
-                    <label for="email">Email</label>
-                    <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
-                </div>
-            </div>
-            <div class="row row-inputs">
-                <div class="col col--1of1">
-                    <label for="message">Comment</label>
-                    <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
-                </div>
-            </div>
-            <input class="contact_submit" type="submit" value="Submit">
+since the start date of the agreement, but we cannot necessarily verify that.</p></div>
+<section class="row row--centered patterned-section" data-aos="fade-up" data-aos-duration="1000">
+    <div class="wave" aria-hidden="true">
+        <svg preserveaspectratio="none" viewbox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" style="width: 125%; height: 75px; transform: scaleX(-1);">
+            <path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" opacity=".25"></path>
+            <path d="M0 0v15.81c13 21.11 27.64 41.05 47.69 56.24C99.41 111.27 165 111 224.58 91.58c31.15-10.15 60.09-26.07 89.67-39.8 40.92-19 84.73-46 130.83-49.67 36.26-2.85 70.9 9.42 98.6 31.56 31.77 25.39 62.32 62 103.63 73 40.44 10.79 81.35-6.69 119.13-24.28s75.16-39 116.92-43.05c59.73-5.85 113.28 22.88 168.9 38.84 30.2 8.66 59 6.17 87.09-7.5 22.43-10.89 48-26.93 60.65-49.24V0z" opacity=".5"></path>
+            <path d="M0 0v5.63C149.93 59 314.09 71.32 475.83 42.57c43-7.64 84.23-20.12 127.61-26.46 59-8.63 112.48 12.24 165.56 35.4C827.93 77.22 886 95.24 951.2 90c86.53-7 172.46-45.71 248.8-84.81V0z"></path>
+        </svg>
 
-        </form>
-        <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
-        <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
     </div>
+    <p class="col col--1of2 alert" data-aos="fade-up" data-aos-duration="1500">
+        The information provided by the <em>Journal Checker Tool</em> represents cOAlition S’s current understanding in relation to the policies of the journals contained within it. We will endeavour to keep it up to date and accurate, but we do not accept any liability in relation to any errors or omissions.
+    </p>
+</section>
 </div>
+</main>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col col--1of2">
+                <p>
+                    Copyright © 2020 European Science Foundation
+                </p>
+                <address>
+                    European Science Foundation<br>
+                    1, quai Lezay – Marnésia<br>
+                    67080 Strasbourg – France
+                </address>
 
+            </div>
+            <div class="col col--1of2 col--right">
+                <button class="button button--secondary">
+                    <svg width="24" height="25" viewbox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.88002 24.4048C4.99391 24.4685 5.11979 24.5 5.24492 24.5C5.4165 24.5 5.58734 24.4416 5.72445 24.3269L10.9109 20.0044H14.2242C19.6018 20.0044 23.9768 15.6286 23.9768 10.2518C23.9768 4.87501 19.6018 0.5 14.225 0.5H9.75255C4.37501 0.5 0 4.87501 0 10.2518C0 13.8438 2.01854 17.1609 5.18872 18.8527L4.50389 23.6443C4.45968 23.9523 4.60953 24.2542 4.88002 24.4048ZM1.49855 10.2518C1.49855 5.70071 5.20071 1.99855 9.75255 1.99855H14.2242C18.7761 1.99855 22.4782 5.69996 22.4782 10.2518C22.4782 14.8036 18.7761 18.5058 14.2242 18.5058H10.6397C10.4644 18.5058 10.295 18.5672 10.1602 18.6789L6.26243 21.9277L6.74721 18.5298C6.79442 18.2016 6.62059 17.8824 6.32013 17.7438C3.39122 16.3891 1.49855 13.449 1.49855 10.2518ZM6.74347 8.01597H17.2333C17.6477 8.01597 17.9826 7.6803 17.9826 7.2667C17.9826 6.8531 17.6477 6.51743 17.2333 6.51743H6.74347C6.32987 6.51743 5.99419 6.8531 5.99419 7.2667C5.99419 7.6803 6.32987 8.01597 6.74347 8.01597ZM6.74347 14.0102H12.7377C13.152 14.0102 13.4869 13.6752 13.4869 13.2609C13.4869 12.8473 13.152 12.5116 12.7377 12.5116H6.74347C6.32987 12.5116 5.99419 12.8473 5.99419 13.2609C5.99419 13.6752 6.32987 14.0102 6.74347 14.0102ZM17.2333 11.0131H6.74347C6.32987 11.0131 5.99419 10.6774 5.99419 10.2638C5.99419 9.8502 6.32987 9.51452 6.74347 9.51452H17.2333C17.6477 9.51452 17.9826 9.8502 17.9826 10.2638C17.9826 10.6774 17.6477 11.0131 17.2333 11.0131Z" fill="black"></path>
+                    </svg>
 
-<hr>
-<ul>
-    <li><a href="/apidocs">API Documentation</a></li>
-    <li><a href="/transformative-journals">Transformative Journals</a></li>
-    <li><a href="/transformative-agreements">Transformative Agreements</a></li>
-    <li><a href="/faq">FAQ</a></li>
-</ul>
-
-<div class="footer row">
-    <a type="button" id="feedback" class="col col--1of4">Send us feedback </a>
-</div>
-
-</body>
-<script>
-
-    // jct.setup();
-
-    // jct.d.gebi('mobmenu').addEventListener("click", function(e) {
-    //     e.preventDefault();
-    //     scroll(0,document.body.scrollHeight);
-    // });
-
-
-    jct.d.gebi('feedback').addEventListener("click", (e) => {
-        e.preventDefault();
-        let modal = jct.d.gebi('modal_feedback')
-        modal.style.display = 'block';
-    });
-
-    // jct.d.gebi('help_modal_button').addEventListener("click", () => {
-    //     let modal = jct.d.gebi('modal_help')
-    //     modal.style.display = 'block';
-    // })
-
-    window.onclick = (e) => {
-        let modals = [].slice.call(jct.d.gebc("modal"));
-        if (modals.includes(e.target)){
-            e.target.style.display = "none";
-        }
-    }
-
-    jct.d.each("close", (el) => {
-        el.addEventListener("click", (e) => {
-            e.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
-        })
-    })
-
-</script>
-<script type="text/javascript" src="../static/contact.js"></script>
-
+                    Send us feedback
+                </button>
+                <p>
+                    <a href="">Transformative Journals</a><br>
+                    <a href="">Transformative Agreements</a><br>
+                    <a href="">API Documentation</a><br>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
 </html>
