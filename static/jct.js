@@ -136,33 +136,11 @@ let _calculate_if_all_data_provided = () => {
     }
 }
 
-jct.choose = (e, el) => {
+jct.choose = (e, el, which) => {
     console.log(el);
-    console.log("choosing!");
-    return;
-    let et;
-    if(el) {
-        et = el;
-    } else {
-        let vis = [];
-        jct.d.each('choose', function(el) {
-            if (el.style.display !== 'none') vis.push(el)
-        });
-        if (vis.length === 1) {
-            et = vis[0];
-        } else {
-            return;
-        }
-    }
-    let which = et.getAttribute('which');
-    let id = et.getAttribute('id');
-    let title = et.getAttribute('title');
+    let id = el["id"];
+    let title = el["title"];
     jct.chosen[which] = {id: id, title: title};
-    jct.d.gebi(which).value = title;
-    jct.d.each('section',(el) => {
-        el.style.display = 'none';
-    });
-    jct.d.each('suggest','innerHTML','');
     if (which === 'journal') {
         jct.d.gebi('funder').focus();
     } else if (which === 'funder') {
@@ -534,7 +512,9 @@ jct.setup = () => {
             // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
-        onChoice: jct.choose,
+        onChoice: function(e,el) {
+            jct.choose(e,el, "journal");
+        },
         rateLimit: 400,
         optionsLimit: 10,
         allowClear: true,

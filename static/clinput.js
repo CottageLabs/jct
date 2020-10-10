@@ -102,9 +102,10 @@ clinput.CLInput = class {
             return;
         }
 
-        let frag = "<ul>";
+        let frag = "<ul class='clinput__options_" + this.id + "'>";
+        let list_style = "list-style-type: none; border: 1px solid"
         for (let s = 0; s < this.options.length; s++) {
-            frag += '<li tabIndex=' + s + ' class="clinput__option_' + this.id + '" data-idx=' + s + '>' + this.optionsTemplate(this.options[s]) + '</li>';
+            frag += '<li tabIndex=' + s + ' class="clinput__option_' + this.id + '" data-idx=' + s + ' style="' + list_style + '">' + this.optionsTemplate(this.options[s]) + '</li>';
         }
         frag += '</ul>';
         optsContainer.innerHTML = frag;
@@ -118,8 +119,8 @@ clinput.CLInput = class {
             entries[i].addEventListener("mouseout", () => {
                 this.setFocusToOption(entries, i);
             });
-            entries[i].addEventListener("click", () => {
-                this.chooseOption(i);
+            entries[i].addEventListener("click", (e) => {
+                this.chooseOption(e,i);
             });
             entries[i].addEventListener("focus", () => {
                 this.highlighted(entries[i], true);
@@ -128,7 +129,6 @@ clinput.CLInput = class {
                 this.highlighted(entries[i], false);
             });
             entries[i].addEventListener("keydown", (e) => {
-                console.log("key pressed!");
                 let arrowPress = (code, entries) => {
                     let idx = parseInt(e.target.getAttribute("data-idx"));
                     if (entries.length !== 0) {
@@ -154,7 +154,8 @@ clinput.CLInput = class {
 
     chooseOption(e,idx){
         let input = document.getElementById(this.id);
-        console.log(this.options);
+        let options = document.getElementsByClassName("clinput__options_" + this.id);
+        options[0].innerHTML = "";
         // input.value = this.options[idx];
         input.value = this.selectedTemplate(this.options[idx]);
         this.onChoice(e,this.options[idx]);
