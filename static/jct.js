@@ -73,7 +73,7 @@ let inputs_plugin =`
 `
 let results_plugin =
     `
-        <header>
+        <header class="compliance">
             <h2 data-aos="fade-up" data-aos-duration="2000" id="compliant">
                 <strong>Yes</strong>, this combination is <br><a href="#">compliant</a>.
             </h2>
@@ -210,7 +210,7 @@ jct.success = (xhr) => {
 
         jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
         // jct.d.gebi("refresh").style.display = 'block';
-        //jct.d.gebi('explain_results').style.display = 'flex';
+        jct.d.gebi('explain_results').style.display = 'initial';
         //negatives only for dev
         jct.d.gebi("results").style.display = 'block';
         if (js.compliant) {
@@ -557,9 +557,9 @@ jct.setup = () => {
 
 jct._sug = (focused) => {
     jct.d.gebi('suggest'+focused).innerHTML="";
-    // jct.d.gebi('detailed_results').innerHTML = "";
-    // jct.d.gebi('detailed_results').style.display = "none";
-    // jct.d.gebi('explain_results').style.display = "none";
+    jct.d.gebi('detailed_results_section').innerHTML = "";
+    jct.d.gebi('explain_results').style.display = "none";
+    jct.d.gebi('detailed_results').style.display = "none";
     jct.d.gebi('paths_results').innerHTML = "";
     //negatives only for dev
     jct.suggesting = focused;
