@@ -32,7 +32,7 @@ jct.explain = (q) => {
 
     let text =
         `
-        <h2>Your query</h2>
+        <h3>Your query</h3>
         
         <p>You asked us to calculate whether you are Plan S compliant under the following conditions:
         
@@ -66,7 +66,7 @@ jct.explain = (q) => {
         </p>
     `
 
-    let detailed_results = jct.d.gebi("detailed_results")
+    let detailed_results = jct.d.gebi("detailed_results_section")
 
     let elem = htmlToElement("<div id='detailed_result_text'>" + text + (compliant_routes_number > 0 ? compliant_routes : "") + (noncomplicant_routes_number > 0 ? noncompliant_routes : "") + "</div>");
     detailed_results.append(elem);

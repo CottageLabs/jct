@@ -484,7 +484,7 @@ jct.setup = () => {
 
 jct._sug = (focused) => {
     jct.d.gebi('suggest'+focused).innerHTML="";
-    jct.d.gebi('detailed_results').innerHTML = "";
+    jct.d.gebi('detailed_results_section').innerHTML = "";
     jct.d.gebi('explain_results').style.display = "none";
     jct.d.gebi('detailed_results').style.display = "none";
     jct.d.gebi('paths_results').innerHTML = "";
