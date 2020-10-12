@@ -742,6 +742,31 @@ button {
     align-content: center;
     margin: auto; }
 
+  .clinput__options {
+    padding: 0;
+    margin: 0;
+    background-color: #000000;
+    border-radius: 35px;
+    list-style: none; }
+
+  .clinput__option {
+    padding: 0;
+    height: auto;
+    word-wrap: break-word; }
+    .clinput__option:hover, .clinput__option:focus, .clinput__option:active {
+      background-color: #F47115;
+      color: #000;
+      border: none;
+      outline: none; }
+
+  .optionsTemplate {
+    display: block;
+    font-size: 0.833em;
+    line-height: 1.5rem;
+    padding: 0.75rem 0 0.75rem 0;
+    margin: 0 1.5rem 0 1.5rem;
+    border-bottom: #F5F5F5 solid 2px; }
+
   .loading__dots {
     display: flex; }
     .loading__dots div {
