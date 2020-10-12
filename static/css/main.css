@@ -742,32 +742,6 @@ button {
     align-content: center;
     margin: auto; }
 
-  .clinput__options {
-    padding: 0;
-    margin-top: 1.5rem;
-    background-color: #000000;
-    border-radius: 35px;
-    list-style: none; }
-
-  .clinput__option {
-    padding: 0;
-    height: auto;
-    word-wrap: break-word; }
-    .clinput__option:hover, .clinput__option:focus, .clinput__option:active {
-      background-color: #F47115;
-      border: none;
-      outline: none; }
-      .clinput__option:hover a, .clinput__option:focus a, .clinput__option:active a {
-        color: #000000; }
-
-  .optionsTemplate {
-    display: block;
-    font-size: 0.833em;
-    line-height: 1.5rem;
-    padding: 0.75rem 0 0.75rem 0;
-    margin: 0 1.5rem 0 1.5rem;
-    border-bottom: #F5F5F5 solid 2px; }
-
   .loading__dots {
     display: flex; }
     .loading__dots div {
@@ -786,6 +760,33 @@ button {
     to {
       opacity: 0.3;
       transform: translate3d(0, -0.5em, 0); } } }
+.clinput__options {
+  padding: 0;
+  margin-top: 1.5rem;
+  background-color: #000000;
+  border-radius: 35px;
+  list-style: none; }
+
+.clinput__option {
+  padding: 0;
+  height: auto;
+  word-wrap: break-word; }
+  .clinput__option:hover, .clinput__option:focus, .clinput__option:active {
+    background-color: #F47115;
+    border: none;
+    outline: none; }
+    .clinput__option:hover a, .clinput__option:focus a, .clinput__option:active a {
+      color: #000000; }
+  .clinput__option a {
+    display: block;
+    font-size: 0.833em;
+    line-height: 1.5rem;
+    padding: 0.75rem 0 0.75rem 0;
+    margin: 0 1.5rem 0 1.5rem;
+    border-bottom: #F5F5F5 solid 2px; }
+  .clinput__option:last-of-type {
+    border-bottom: none; }
+
 .results {
   max-height: 0;
   overflow: hidden; }
