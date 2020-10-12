@@ -1,4 +1,6 @@
 jct.explain = (q) => {
+    let detailed_results = jct.d.gebi("detailed_results_section")
+    detailed_results.innerHTML = "";
     let compliant_routes = `<h2>Compliant Routes</h2>`
     let noncompliant_routes = `<h2>Non-Compliant Routes</h2>`
     let compliant_routes_number = 0;
@@ -66,7 +68,7 @@ jct.explain = (q) => {
         </p>
     `
 
-    let detailed_results = jct.d.gebi("detailed_results_section")
+
 
     let elem = htmlToElement("<div id='detailed_result_text'>" + text + (compliant_routes_number > 0 ? compliant_routes : "") + (noncomplicant_routes_number > 0 ? noncompliant_routes : "") + "</div>");
     detailed_results.append(elem);

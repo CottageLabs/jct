@@ -81,6 +81,7 @@ to {
   padding: 0;
   height: auto;
   word-wrap: break-word;
+  border-radius:  35px;
   &:hover,
   &:focus,
   &:active {
@@ -93,6 +94,7 @@ to {
   }
   a {
     display: block;
+    color: #FFFFFF !important;
     font-size: $typescale-06;
     line-height: $spacing-04;
     padding: $spacing-03  0 $spacing-03  0;
@@ -101,7 +103,10 @@ to {
   }
 
   &:last-of-type {
-    border-bottom: none;
+    a {
+      border-bottom: none;
+    }
+
   }
 
 }
