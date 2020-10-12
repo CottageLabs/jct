@@ -783,6 +783,8 @@ button {
     max-height: 100%; }
     .results--non-compliant header {
       background-color: #F5F5F5; }
+    .results--non-compliant .wave svg {
+      fill: #F5F5F5; }
 
 .show_detailed_results {
   display: block; }

@@ -156,7 +156,6 @@ clinput.CLInput = class {
         let input = document.getElementById(this.id);
         let options = document.getElementsByClassName("clinput__options_" + this.id);
         options[0].innerHTML = "";
-        // input.value = this.options[idx];
         input.value = this.selectedTemplate(this.options[idx]);
         this.onChoice(e,this.options[idx]);
     }

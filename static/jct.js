@@ -176,6 +176,8 @@ jct.progress = (e) => {
     // e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
+    jct.d.gebi('compliant').style.display = 'none';
+    jct.d.gebi('notcompliant').style.display = 'none';
     jct.d.gebi("loading").style.display = "none";
     let js = JSON.parse(xhr.response);
     // if (xhr.response.startsWith('[')) js = js[0];
