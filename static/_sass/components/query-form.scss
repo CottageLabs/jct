@@ -2,6 +2,7 @@
 
 // When sticky (only on desktop)
 @media only screen and (min-width: 768px) {
+
   .query-form--sticky {
     position: fixed;
     top: 0;
@@ -67,3 +68,41 @@ to {
 }
 
 }
+
+.clinput__options {
+  padding: 0;
+  margin-top: $spacing-04;
+  background-color: #000000;
+  border-radius:  35px;
+  list-style: none;
+}
+
+.clinput__option {
+  padding: 0;
+  height: auto;
+  word-wrap: break-word;
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: $orange;
+    border: none;
+    outline: none;
+    a {
+      color: #000000;
+    }
+  }
+  a {
+    display: block;
+    font-size: $typescale-06;
+    line-height: $spacing-04;
+    padding: $spacing-03  0 $spacing-03  0;
+    margin: 0 $spacing-04 0 $spacing-04;
+    border-bottom: $light-grey solid 2px;
+  }
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+}
+

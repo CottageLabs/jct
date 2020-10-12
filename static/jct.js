@@ -176,6 +176,8 @@ jct.progress = (e) => {
     // e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
 }
 jct.success = (xhr) => {
+    jct.d.gebi('compliant').style.display = 'none';
+    jct.d.gebi('notcompliant').style.display = 'none';
     jct.d.gebi("loading").style.display = "none";
     let js = JSON.parse(xhr.response);
     // if (xhr.response.startsWith('[')) js = js[0];
@@ -479,7 +481,7 @@ jct.setup = () => {
             let t = obj.title;
             let issns = obj.issn.join(", ");
             let publisher = obj.publisher;
-            let frag = "";
+            let frag = "<a class=\"optionsTemplate\">";
 
             if (t) {
                 frag += '<span class="jct__option_journal_title">' + t + '</span>';
@@ -487,7 +489,9 @@ jct.setup = () => {
             if (publisher) {
                 frag += ' <span class="jct__option_journal_publisher">(' + publisher + ')</span> ';
             }
-            frag += ' <span class="jct__option_journal_issn">' + issns + '</span> ';
+            frag += ' <span class="jct__option_journal_issn">' + issns + '</span></a> ';
+
+            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
         selectedTemplate : function(obj) {
@@ -550,7 +554,11 @@ jct.setup = () => {
         optionsTemplate : function(obj) {
             let title = obj.title;
             let id = obj.id;
-            return '<span class="jct__option_publisher_title">' + title + '</span>';
+            return '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
+            if (id) {
+                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span></a> ';
+            }
+            return frag;
         },
         selectedTemplate : function(obj) {
             return obj.title;
@@ -586,9 +594,9 @@ jct.setup = () => {
             let title = obj.title;
             let id = obj.id;
 
-            let frag = '<span class="jct__option_institution_title">' + title + '</span>';
+            let frag = '<a class="optionsTemplate"><span class="jct__option_institution_title">' + title + '</span>';
             if (id) {
-                frag += ' <span class="jct__option_publisher_id">(ROR:' + id + ')</span> ';
+                frag += ' <span class="jct__option_publisher_id">(ROR:' + id + ')</span></a> ';
             }
             return frag;
         },

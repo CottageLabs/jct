@@ -155,10 +155,9 @@ clinput.CLInput = class {
             return;
         }
 
-        let frag = "<ul class='clinput__options_" + this.id + "'>";
-        let list_style = "list-style-type: none; border: 1px solid"
+        let frag = "<ul class='clinput__options clinput__options_" + this.id + "'>";
         for (let s = 0; s < this.options.length; s++) {
-            frag += '<li tabIndex=' + s + ' class="clinput__option_' + this.id + '" data-idx=' + s + ' style="' + list_style + '">' + this.optionsTemplate(this.options[s]) + '</li>';
+            frag += '<li tabIndex=' + s + ' class="clinput__option clinput__option_' + this.id + '" data-idx=' + s + '">' + this.optionsTemplate(this.options[s]) + '</li>';
         }
         frag += '</ul>';
         optsContainer.innerHTML = frag;
@@ -176,10 +175,10 @@ clinput.CLInput = class {
                 this.chooseOption(e,i);
             });
             entries[i].addEventListener("focus", () => {
-                this.highlighted(entries[i], true);
+                //this.highlighted(entries[i], true);
             });
             entries[i].addEventListener("blur", () => {
-                this.highlighted(entries[i], false);
+                //this.highlighted(entries[i], false);
             });
             entries[i].addEventListener("keydown", (e) => {
                 let arrowPress = (code, entries) => {
