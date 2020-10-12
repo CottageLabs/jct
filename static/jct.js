@@ -76,10 +76,10 @@ let inputs_plugin =`
 let results_plugin =
     `
         <header class="compliance">
-            <h2 data-aos="fade-up" data-aos-duration="2000" id="compliant">
+            <h2 data-aos="fade-up" data-aos-duration="2000" id="compliant" style="display:none">
                 <strong>Yes</strong>, this combination is <br><a href="#">compliant</a>.
             </h2>
-            <h2 data-aos="fade-up" data-aos-duration="2000" id="notcompliant">
+            <h2 data-aos="fade-up" data-aos-duration="2000" id="notcompliant" style="display:none">
                 <strong>No</strong>, this combination is <br><a href="#">not compliant</a>.
             </h2>
         </header>
@@ -178,37 +178,37 @@ jct.progress = (e) => {
 jct.success = (xhr) => {
     jct.d.gebi("loading").style.display = "none";
     let js = JSON.parse(xhr.response);
-    if (xhr.response.startsWith('[')) js = js[0];
-    if (jct.suggesting) {
-        jct.suggestions(js);
-    } else {
-        jct.latest_response = js.results;
-        let paths_results = jct.d.gebi("paths_results");
-        _emptyElement(paths_results)
-        let detailed_results = jct.d.gebi("detailed_results");
-        // _emptyElement(detailed_results)
+    // if (xhr.response.startsWith('[')) js = js[0];
+    // if (jct.suggesting) {
+    //     jct.suggestions(js);
+    // } else {
+    jct.latest_response = js.results;
+    let paths_results = jct.d.gebi("paths_results");
+    _emptyElement(paths_results)
+    let detailed_results = jct.d.gebi("detailed_results");
+    // _emptyElement(detailed_results)
 
-        jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
-        // jct.d.gebi("refresh").style.display = 'block';
-        jct.d.gebi('explain_results').style.display = 'initial';
-        //negatives only for dev
-        jct.d.gebi("results").style.display = 'block';
-        if (js.compliant) {
-            jct._setComplianceTheme(true);
-            js.results.forEach((r) => {
-                if (r.compliant === "yes") {
-                    jct.add_tile(r.route, jct.chosen)
+    jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
+    // jct.d.gebi("refresh").style.display = 'block';
+    jct.d.gebi('explain_results').style.display = 'initial';
+    //negatives only for dev
+    jct.d.gebi("results").style.display = 'block';
+    if (js.compliant) {
+        jct._setComplianceTheme(true);
+        js.results.forEach((r) => {
+            if (r.compliant === "yes") {
+                jct.add_tile(r.route, jct.chosen)
 
-                }
-            })
-        }
-        else {
-            jct._setComplianceTheme(false);
-        }
-        jct.explain(js)
+            }
+        })
+    }
+    else {
+        jct._setComplianceTheme(false);
+    }
+    jct.explain(js)
 
 // TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
-    }
+//     }
 }
 
 jct._setComplianceTheme = (compliant) => {
@@ -364,37 +364,37 @@ jct.jx = (route,q,after,api) => {
     xhr.onerror = () => { jct.error(); };
 }
 
-jct.suggestions = (suggs, cached) => {
-    jct.d.gebi('compliant').style.display = 'none';
-    jct.d.gebi('notcompliant').style.display = 'none';
-    let sgst = '';
-    let sd = jct.d.gebi('suggest'+jct.suggesting);
-    let typed = jct.d.gebi(jct.suggesting).value.toLowerCase();
-    let update = false;
-    let l = (suggs.data && suggs.data.length > jct.MAX_SUGGS_LENGTHS) ? jct.MAX_SUGGS_LENGTHS : suggs.data.length;
-    for ( let s = 0; s < l; s++ ) {
-        let t = suggs.data[s].title;
-        let tl = t.toLowerCase();
-        sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
-    }
-    if (sgst.length) {
-        sd.innerHTML = sgst;
-        jct.d.each("choose", function(el) { el.addEventListener('click', jct.choose); });
-    }
-}
+// jct.suggestions = (suggs, cached) => {
+//     jct.d.gebi('compliant').style.display = 'none';
+//     jct.d.gebi('notcompliant').style.display = 'none';
+//     let sgst = '';
+//     let sd = jct.d.gebi('suggest'+jct.suggesting);
+//     let typed = jct.d.gebi(jct.suggesting).value.toLowerCase();
+//     let update = false;
+//     let l = (suggs.data && suggs.data.length > jct.MAX_SUGGS_LENGTHS) ? jct.MAX_SUGGS_LENGTHS : suggs.data.length;
+//     for ( let s = 0; s < l; s++ ) {
+//         let t = suggs.data[s].title;
+//         let tl = t.toLowerCase();
+//         sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
+//     }
+//     if (sgst.length) {
+//         sd.innerHTML = sgst;
+//         jct.d.each("choose", function(el) { el.addEventListener('click', jct.choose); });
+//     }
+// }
 
 jct.waiting = false;
-jct.suggest = (focused) => {
-    let typed = jct.d.gebi(focused).value.toLowerCase().replace(' of','').replace('the ','');
-    if (typed.length === 0) {
-        jct.d.each('suggest','innerHTML','');
-    } else {
-        if (typed.length > 1) {
-            jct.suggesting = focused;
-            jct.jx('/suggest/'+focused+'/'+typed);
-        }
-    }
-}
+// jct.suggest = (focused) => {
+//     let typed = jct.d.gebi(focused).value.toLowerCase().replace(' of','').replace('the ','');
+//     if (typed.length === 0) {
+//         jct.d.each('suggest','innerHTML','');
+//     } else {
+//         if (typed.length > 1) {
+//             jct.suggesting = focused;
+//             jct.jx('/suggest/'+focused+'/'+typed);
+//         }
+//     }
+// }
 
 jct.setTimer = () => {
     jct._setComplianceTheme();
@@ -454,7 +454,7 @@ jct.setup = () => {
     // jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
     // jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
     // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
-    // jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
+    jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
 
     let objTemplate =
     jct.clinputs.journal = clinput.init({
