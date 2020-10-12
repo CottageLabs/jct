@@ -40,7 +40,7 @@
 
 .clinput__options {
   padding: 0;
-  margin: 0;
+  margin-top: $spacing-04;
   background-color: #000000;
   border-radius:  35px;
   list-style: none;
@@ -54,9 +54,11 @@
   &:focus,
   &:active {
     background-color: $orange;
-    color: $black;
     border: none;
     outline: none;
+    a {
+      color: #000000;
+    }
   }
 }
 
