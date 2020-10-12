@@ -13,6 +13,9 @@ clinput.CLInput = class {
         this.optionsLimit = params.optionsLimit || 0;
         this.element = params.element;
         this.onChoice = params.onChoice;
+        this.newValueMethod = params.newValue || false;
+        this.lastSearchValue = "";
+        this.selectedObject = false;
 
         let label = params.label;
         let inputAttrs = params.inputAttributes;
@@ -31,8 +34,8 @@ clinput.CLInput = class {
                 <div id="' + this.id + '--options"></div>';
 
         let input = document.getElementById(this.id);
-        input.addEventListener("focus", () => {this.setTimer()})
-        input.addEventListener("blur", () => {this.setTimer()})
+        input.addEventListener("focus", () => {this.activateInput()})
+        // input.addEventListener("blur", () => {this.unsetTimer()})
         input.addEventListener("keydown", (e) => {
             let entries = document.getElementsByClassName("clinput__option_"+this.id);
             let arrowPress = (code, entries) => {
@@ -53,12 +56,56 @@ clinput.CLInput = class {
         }
     }
 
-    setTimer() {
+    activateInput() {
+        let input = document.getElementById(this.id);
+        input.value = this.lastSearchValue;
+
+        if (this.selectedObject) {
+            let lsv = this.lastSearchValue.toLowerCase();
+            let keys = Object.keys(this.selectedObject);
+
+            keycheck:
+            for (let i = 0; i < keys.length; i++) {
+                let key = keys[i];
+                let v = this.selectedObject[key];
+                if (Array.isArray(v)) {
+                    for (var j = 0; j < v.length; j++) {
+                        if (v[j].toLowerCase().includes(lsv)) {
+                            input.value = v;
+                            break keycheck;
+                        }
+                    }
+                } else {
+                    if (v.toLowerCase().includes(lsv)) {
+                        input.value = v;
+                        break keycheck;
+                    }
+                }
+            }
+        }
+
         if (!this.timer) {
             this.timer = window.setInterval(() => {
+                this.clearOptions();
                 this.lookupOptions();
+                // this.unsetTimer();
             }, this.delay);
         }
+    }
+
+    clearOptions() {
+        let input = document.getElementById(this.id);
+        if (document.activeElement === input) {
+            return;
+        }
+
+        let entries = this.element.getElementsByClassName("clinput__option_" + this.id)
+        for (let i = 0; i < entries.length; i++) {
+            if (document.activeElement === entries[i]) {
+                return;
+            }
+        }
+        document.getElementById(this.id + "--options").innerHTML = "";
     }
 
     lookupOptions() {
@@ -77,6 +124,12 @@ clinput.CLInput = class {
             this.options = data;
         } else {
             this.options = data.slice(0, this.optionsLimit);
+        }
+        if (this.newValueMethod) {
+            let nv = this.newValueMethod(this.value);
+            if (nv) {
+                this.options = [nv].concat(this.options);
+            }
         }
         this._renderOptions();
     }
@@ -135,14 +188,17 @@ clinput.CLInput = class {
                         if (code === "ArrowDown") {
                             if (idx < entries.length - 1) {
                                 entries[idx + 1].focus();
+                                e.preventDefault();
                             }
                         } else if (code === "ArrowUp") {
+                            this.selecting = true;
                             if (idx > 0) {
                                 entries[idx - 1].focus();
                             } else {
                                 document.getElementById(this.id).focus();
                             }
                         } else if (code === "Enter") {
+                            this.selecting = true;
                             this.chooseOption(e,idx);
                         }
                     }
@@ -157,7 +213,9 @@ clinput.CLInput = class {
         let options = document.getElementsByClassName("clinput__options_" + this.id);
         options[0].innerHTML = "";
         // input.value = this.options[idx];
+        this.lastSearchValue = input.value;
         input.value = this.selectedTemplate(this.options[idx]);
+        this.selectedObject = this.options[idx];
         this.onChoice(e,this.options[idx]);
     }
 
@@ -171,6 +229,7 @@ clinput.CLInput = class {
     }
 
     highlighted(element, highlight) {
+
         if (highlight) {
             element.style.backgroundColor = "grey";
         }

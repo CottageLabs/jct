@@ -456,7 +456,6 @@ jct.setup = () => {
     // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
     jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
 
-    let objTemplate =
     jct.clinputs.journal = clinput.init({
         element: jct.d.gebi("journal-container"),
         id: "journal",
@@ -480,14 +479,15 @@ jct.setup = () => {
             let t = obj.title;
             let issns = obj.issn.join(", ");
             let publisher = obj.publisher;
+            let frag = "";
 
-            let frag = '<span class="jct__option_journal_title">' + t + '</span>';
+            if (t) {
+                frag += '<span class="jct__option_journal_title">' + t + '</span>';
+            }
             if (publisher) {
                 frag += ' <span class="jct__option_journal_publisher">(' + publisher + ')</span> ';
             }
             frag += ' <span class="jct__option_journal_issn">' + issns + '</span> ';
-
-            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
         selectedTemplate : function(obj) {
@@ -495,12 +495,18 @@ jct.setup = () => {
             let issns = obj.issn;
             let publisher = obj.publisher;
 
-            let frag = t;
+            let frag = "";
+            if (t) {
+                frag += t;
+            }
             if (publisher) {
-                frag += "( " + publisher + " )";
+                frag += " (" + publisher + ")";
             }
             if (issns) {
-                frag += ", issns:  " + issns.join(", ");
+                if (t || publisher) {
+                    frag += ", ";
+                }
+                frag += "ISSN: " + issns.join(", ");
             }
             return frag;
         },
@@ -511,8 +517,9 @@ jct.setup = () => {
         optionsLimit: 10,
         allowClear: true,
         newValue: function(text) {
-            let rx = new RegExp("\d{4}-\d{3}[\dXx]{1}")
-            if (rx.matches(text)) {
+            let rx = /^\d{4}-\d{3}[\dXx]{1}$/
+            let match = text.match(rx);
+            if (match) {
                 return {
                     issn: [text]
                 }
@@ -527,7 +534,7 @@ jct.setup = () => {
         label: "My funder",
         inputAttributes : {
             which: "funder",
-            placeholder: "By Crossref Funders’ ID or name",
+            placeholder: "By funder name",
             required: true
         },
         options : function(text, callback) {
@@ -543,22 +550,10 @@ jct.setup = () => {
         optionsTemplate : function(obj) {
             let title = obj.title;
             let id = obj.id;
-
-            let frag = '<span class="jct__option_publisher_title">' + title + '</span>';
-            if (id) {
-                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span> ';
-            }
-            return frag;
+            return '<span class="jct__option_publisher_title">' + title + '</span>';
         },
         selectedTemplate : function(obj) {
-            let title = obj.title;
-            let id = obj.id;
-
-            let frag = title;
-            if (id) {
-                frag += '(' + id + ')';
-            }
-            return frag;
+            return obj.title;
         },
         onChoice: function(e,el) {
             jct.choose(e,el, "funder");
@@ -593,7 +588,7 @@ jct.setup = () => {
 
             let frag = '<span class="jct__option_institution_title">' + title + '</span>';
             if (id) {
-                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span> ';
+                frag += ' <span class="jct__option_publisher_id">(ROR:' + id + ')</span> ';
             }
             return frag;
         },
@@ -603,7 +598,7 @@ jct.setup = () => {
 
             let frag = title;
             if (id) {
-                frag += '(' + id + ')';
+                frag += ' (ROR:' + id + ')';
             }
             return frag;
         },
