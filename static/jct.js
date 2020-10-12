@@ -9,9 +9,9 @@ let jct = {
 let inputs_plugin =`
     <h2 class="sr-only">Make a query</h2>
         <div class="col col--1of3 expression">
-        <div class="expression__input">
-            <label for="journal">Journal</label>
-            <input type="text" id="journal" name="journal" which="journal" placeholder="By ISSN or title" required>            
+        <div class="expression__input" id="journal-container">
+<!--            <label for="journal">Journal</label>-->
+<!--            <input type="text" id="journal" name="journal" which="journal" placeholder="By ISSN or title" required>            -->
         </div>
         <div class="expression__operator">
             <svg width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -21,9 +21,9 @@ let inputs_plugin =`
     </div>
 
     <div class="col col--1of3 expression">
-        <div class="expression__input">
-            <label for="funder">My funder</label>
-            <input type="text" id="funder" name="funder" which="funder" placeholder="By Crossref Funders’ ID or name" required>
+        <div class="expression__input"  id="funder-container">
+<!--            <label for="funder">My funder</label>-->
+<!--            <input type="text" id="funder" name="funder" which="funder" placeholder="By Crossref Funders’ ID or name" required>-->
         </div>
         <div class="expression__operator">
             <svg width="36" height="36" viewbox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -33,14 +33,16 @@ let inputs_plugin =`
     </div>
 
     <div class="col col--1of3 expression">
-        <div class="expression__input">
-            <label for="institution">My institution</label>
-            <input type="text" id="institution" name="institution" which="institution" placeholder="By ROR or name" required>
-            <br>
-            <div class="expression__checkbox">
-              <input type="checkbox" id="notHE" name="notHE">
-              <label for="notHE">No affiliation</label>
-            </div>
+    <div class="expression__input">
+        <div id="institution-container">
+<!--            <label for="institution">My institution</label>-->
+<!--            <input type="text" id="institution" name="institution" which="institution" placeholder="By ROR or name" required>-->
+        </div>
+        <br>
+        <div class="expression__checkbox">
+          <input type="checkbox" id="notHE" name="notHE">
+          <label for="notHE">No affiliation</label>
+        </div>
         </div>
         <div class="expression__operator">
         <div>
@@ -136,33 +138,11 @@ let _calculate_if_all_data_provided = () => {
     }
 }
 
-jct.choose = (e, el) => {
-    let et;
-    if (e) {
-        e.preventDefault();
-        et = e.target
-    } else if(el) {
-        et = el;
-    } else {
-        let vis = [];
-        jct.d.each('choose', function(el) {
-            if (el.style.display !== 'none') vis.push(el)
-        });
-        if (vis.length === 1) {
-            et = vis[0];
-        } else {
-            return;
-        }
-    }
-    let which = et.getAttribute('which');
-    let id = et.getAttribute('id');
-    let title = et.getAttribute('title');
+jct.choose = (e, el, which) => {
+    console.log(el);
+    let id = el["id"];
+    let title = el["title"];
     jct.chosen[which] = {id: id, title: title};
-    jct.d.gebi(which).value = title;
-    jct.d.each('section',(el) => {
-        el.style.display = 'none';
-    });
-    jct.d.each('suggest','innerHTML','');
     if (which === 'journal') {
         jct.d.gebi('funder').focus();
     } else if (which === 'funder') {
@@ -412,7 +392,6 @@ jct.suggest = (focused) => {
         if (typed.length > 1) {
             jct.suggesting = focused;
             jct.jx('/suggest/'+focused+'/'+typed);
-
         }
     }
 }
@@ -457,6 +436,7 @@ function sent_suggestion_request() {
     }
 }
 
+jct.clinputs = {};
 jct.setup = () => {
     // AOS.init();
     jct.d.gebi("inputs_plugin").innerHTML = inputs_plugin;
@@ -471,10 +451,169 @@ jct.setup = () => {
         notHE: ""
     }
 
-    jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
-    jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
-    jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
-    jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
+    // jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
+    // jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
+    // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
+    // jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
+
+    let objTemplate =
+    jct.clinputs.journal = clinput.init({
+        element: jct.d.gebi("journal-container"),
+        id: "journal",
+        label: "Journal",
+        inputAttributes : {
+            which: "journal",
+            placeholder: "By ISSN or title",
+            required: true
+        },
+        options : function(text, callback) {
+            text = text.toLowerCase().replace(' of','').replace('the ','');
+            if (text.length > 1) {
+                let ourcb = (xhr) => {
+                    let js = JSON.parse(xhr.response);
+                    callback(js.data);
+                }
+                jct.jx('/suggest/journal/'+text, false, ourcb);
+            }
+        },
+        optionsTemplate : function(obj) {
+            let t = obj.title;
+            let issns = obj.issn.join(", ");
+            let publisher = obj.publisher;
+
+            let frag = '<span class="jct__option_journal_title">' + t + '</span>';
+            if (publisher) {
+                frag += ' <span class="jct__option_journal_publisher">(' + publisher + ')</span> ';
+            }
+            frag += ' <span class="jct__option_journal_issn">' + issns + '</span> ';
+
+            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
+            return frag;
+        },
+        selectedTemplate : function(obj) {
+            let t = obj.title;
+            let issns = obj.issn;
+            let publisher = obj.publisher;
+
+            let frag = t;
+            if (publisher) {
+                frag += "( " + publisher + " )";
+            }
+            if (issns) {
+                frag += ", issns:  " + issns.join(", ");
+            }
+            return frag;
+        },
+        onChoice: function(e,el) {
+            jct.choose(e,el, "journal");
+        },
+        rateLimit: 400,
+        optionsLimit: 10,
+        allowClear: true,
+        newValue: function(text) {
+            let rx = new RegExp("\d{4}-\d{3}[\dXx]{1}")
+            if (rx.matches(text)) {
+                return {
+                    issn: [text]
+                }
+            }
+            return false;
+        }
+    });
+
+    jct.clinputs.funder = clinput.init({
+        element: jct.d.gebi("funder-container"),
+        id: "funder",
+        label: "My funder",
+        inputAttributes : {
+            which: "funder",
+            placeholder: "By Crossref Funders’ ID or name",
+            required: true
+        },
+        options : function(text, callback) {
+            text = text.toLowerCase().replace(' of','').replace('the ','');
+            if (text.length > 1) {
+                let ourcb = (xhr) => {
+                    let js = JSON.parse(xhr.response);
+                    callback(js.data);
+                }
+                jct.jx('/suggest/funder/'+text, false, ourcb);
+            }
+        },
+        optionsTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = '<span class="jct__option_publisher_title">' + title + '</span>';
+            if (id) {
+                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span> ';
+            }
+            return frag;
+        },
+        selectedTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = title;
+            if (id) {
+                frag += '(' + id + ')';
+            }
+            return frag;
+        },
+        onChoice: function(e,el) {
+            jct.choose(e,el, "funder");
+        },
+        rateLimit: 400,
+        optionsLimit: 10,
+        allowClear: true,
+    });
+
+    jct.clinputs.institution = clinput.init({
+        element: jct.d.gebi("institution-container"),
+        id: "institution",
+        label: "My institution",
+        inputAttributes : {
+            which: "institution",
+            placeholder: "By ROR or name",
+            required: true
+        },
+        options : function(text, callback) {
+            text = text.toLowerCase().replace(' of','').replace('the ','');
+            if (text.length > 1) {
+                let ourcb = (xhr) => {
+                    let js = JSON.parse(xhr.response);
+                    callback(js.data);
+                }
+                jct.jx('/suggest/institution/'+text, false, ourcb);
+            }
+        },
+        optionsTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = '<span class="jct__option_institution_title">' + title + '</span>';
+            if (id) {
+                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span> ';
+            }
+            return frag;
+        },
+        selectedTemplate : function(obj) {
+            let title = obj.title;
+            let id = obj.id;
+
+            let frag = title;
+            if (id) {
+                frag += '(' + id + ')';
+            }
+            return frag;
+        },
+        onChoice: function(e,el) {
+            jct.choose(e,el, "institution");
+        },
+        rateLimit: 400,
+        optionsLimit: 10,
+        allowClear: true,
+    });
 
     //how to change it to jct.d.gebc?
     document.querySelectorAll(".select_option").forEach(item => {
