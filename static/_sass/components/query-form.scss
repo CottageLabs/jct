@@ -1,113 +1,50 @@
 // Query form
 
-// When sticky (only on desktop)
-@media only screen and (min-width: 768px) {
-
-  .query-form--sticky {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 10;
-    background-color: $yellow;
-
-    .expression {
-      align-items: center;
-    }
-
-    .expression__input label {
-      display: none;
-    }
-
-    .expression__input input,
-    .expression__input select {
-      margin: 0;
-      padding-left: 15px;
-      padding-right: 15px;
-      height: 50px;
-      border-radius: 25px;
-    }
-
-    .expression__operator,
-    .expression:last-child .expression__operator {
-      margin-top: $spacing-03;
-    }
-  }
-
-  .loading {
-    display: flex;
-    align-content: center;
-    margin: auto;
-  }
-
-.loading__dots {
-display: flex;
-
-div {
-  width: 0.5em;
-  height: 0.5em;
-  margin: 1em 0.5em 0 0;
-  background: $orange;
-  border-radius: 50%;
-  animation: 0.75s bounce infinite alternate;
-
-  &:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-
-  &:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-}
-}
-
-@keyframes bounce {
-to {
-  opacity: 0.3;
-  transform: translate3d(0, -0.5em, 0);
-}
-}
-
-}
-
 .clinput__options {
   padding: 0;
-  margin-top: $spacing-04;
-  background-color: #000000;
-  border-radius:  35px;
+  background-color: $black;
+  border-radius: $spacing-03;
   list-style: none;
 }
 
 .clinput__option {
   padding: 0;
   height: auto;
-  word-wrap: break-word;
-  border-radius:  35px;
+  overflow-wrap: break-word;
+  border-radius: $spacing-03;
+  cursor: pointer;
+
+  a {
+    display: block;
+    padding: $spacing-03 0;
+    margin: 0 $spacing-04;
+    color: $white;
+    font-size: $typescale-06;
+    line-height: 1.75;
+    border-bottom: $light-grey solid 1px;
+  }
+
   &:hover,
   &:focus,
   &:active {
-    background-color: $orange;
-    border: none;
-    outline: none;
+    background-color: $yellow;
+    border-radius: 0;
+
     a {
-      color: #000000;
+      color: $black;
+      border: 0;
     }
   }
-  a {
-    display: block;
-    color: #FFFFFF !important;
-    font-size: $typescale-06;
-    line-height: $spacing-04;
-    padding: $spacing-03  0 $spacing-03  0;
-    margin: 0 $spacing-04 0 $spacing-04;
-    border-bottom: $light-grey solid 2px;
+
+  &:first-of-type {
+    border-radius: $spacing-03 $spacing-03 0 0;
   }
 
   &:last-of-type {
+    border-radius: 0 0 $spacing-03 $spacing-03;
+
     a {
-      border-bottom: none;
+      border-bottom: 0s;
     }
-
   }
-
 }
-
