@@ -79,12 +79,10 @@ let results_plugin =
             <h2 data-aos="fade-up" data-aos-duration="2000" id="compliant" style="display:none">
                 <strong>Yes</strong>, this combination is <br><a href="#">compliant</a>.
                 <br/>
-                What options do I have?
             </h2>
             <h2 data-aos="fade-up" data-aos-duration="2000" id="notcompliant" style="display:none">
                 <strong>No</strong>, this combination is <br><a href="#">not compliant</a>.
                 <br/>
-                What can I do now?
             </h2>
         </header>
     `
@@ -211,11 +209,40 @@ jct.success = (xhr) => {
     }
     else {
         jct._setComplianceTheme(false);
+        jct._addNonCompliantOptions();
     }
     jct.explain(js)
 
 // TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
 //     }
+}
+
+jct._addNonCompliantOptions = () => {
+    let html = `
+        <h3 class="col">What can I do now?</h3>
+    
+        <div class="col col--1of3">
+            <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+                <h4 class="label card__heading">Check with a similar journal</h4>
+                <p> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. </p>
+            </article>
+        </div>
+    
+        <div class="col col--1of3">
+            <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+                <h4 class="label card__heading">Check with a different funder</h4>
+                <p>If your research was funded by multiple Plan S funders, please repeat your search using the name of the other funders. The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
+            </article>
+        </div>
+    
+        <div class="col col--1of3">
+            <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+                <h4 class="label card__heading">Check with a different institution</h4>
+                <p>If you or other authors on your research article are affiliated with different institutions, please repeat your search with these alternative institutions. Transformative agreements, are made between publishers and institutions. While your institution does not currently have an agreement with the publisher of this journal, an alternative institution may do.</p>
+            </article>
+        </div>
+`
+    jct.d.gebi("paths_results").innerHTML = html;
 }
 
 jct._setComplianceTheme = (compliant) => {
@@ -280,6 +307,13 @@ jct.add_tile = (tile_type, data) => {
             modal.style.display = 'block';
         })
     }
+    else if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.ta) {
+        jct.d.gebi('open_ta_modal').addEventListener("click", (e) => {
+            e.preventDefault();
+            let modal = jct.d.gebi('modal_ta');
+            modal.style.display = 'block';
+        })
+    }
     else if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.sa){
         jct.d.gebi('sa_modal_button').addEventListener("click", () => {
             let modal = jct.d.gebi('modal_sa')
@@ -314,7 +348,7 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                     </svg>
                 </span>
                 <h4 class="label">Transformative <br>agreement</h4>
-                <p>Conditions may be in place around publishing through this agreement. <a href="#">Make sure to read this information.</a>.</p>
+                <p>Conditions may be in place around publishing through this agreement. <a href="#" id="open_ta_modal">Make sure to read this information.</a>.</p>
                 <p><em>` + journal_title + `</em> is part of a transformative agreement between <em>` + journal.publisher + `</em> and <em>` + institution_title +`</em></p>
             </article>
         </div>
