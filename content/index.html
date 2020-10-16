@@ -120,15 +120,15 @@
     <div class="container">
         <div class="row">
             <div class="col col--1of2">
-                <p>
-                    Copyright © 2020 European Science Foundation
-                </p>
                 <address>
-                    European Science Foundation<br>
-                    1, quai Lezay – Marnésia<br>
+                    cOAlition S Office<br/>
+                    European Science Foundation<br/>
+                    1, quai Lezay – Marnésia<br/>
                     67080 Strasbourg – France
                 </address>
-
+                <p>
+                  Content on this site is licensed under a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">Creative Commons (CC BY) Attribution 4.0 International license</a>.
+                </p>
             </div>
             <div class="col col--1of2 col--right">
                 <button class="button button--secondary" id="feedback">
@@ -149,6 +149,7 @@
     </div>
 </footer>
 
+<!-- Modals -->
 <div class="modal" id="modal_feedback" style="display: none">
     <div class="modal-content" id="contact">
         <header class="modal-header">
@@ -157,6 +158,7 @@
                 <span class="close" aria-label="Close" role="button">&times;</span>
             </h2>
         </header>
+        <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>. If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. We will respond within working 3 days.</p>
         <form id="contact_form">
             <div class="modal-inputs">
                 <label for="name">Name</label>
@@ -191,8 +193,29 @@
             </h2>
         </header>
         <div>
-            <p>This is a tool that checks for Plan S compliance based on the journal, the funder and the institution associated with your research. This is a <a href="https://www.coalition-s.org/" target="_blank ">cOAlition S project</a>.</p>
-            <p>This tool is not currently able to identify routes to Open Access compliance for non-Plan S funders.</p>
+            <p>Plan S aims for full and immediate Open Access to peer-reviewed scholarly publications from research funded by public and private grants. <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> is the coalition of research funders that have committed to implementing Plan S. The goal of cOAlition S is to accelerate the transition to a scholarly publishing system that is characterised by immediate, free online access to, and largely unrestricted use and re-use (full Open Access) of scholarly publications.</p>
+            <p>The Journal Checker Tool enables researchers to check whether they can comply with their funders Plan S aligned OA policy based on the journal, the funder and the institution affiliated with the research to be published. The tool currently only identifies routes to open access compliance for Plan S aligned policies.</p>
+            <p>This is a <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> project.</p>
+            <p>
+              <a href="">Privacy Notice</a> • <a href="">Disclaimer & Copyright</a> • <a href="">Cookie notice</a>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal" id="modal_ta" style="display: none">
+    <div class="modal-content" id="modal_tj_content">
+        <header class="modal-header">
+            <h2>
+                Transformative agreements
+                <span class="close" aria-label="Close" role="button">&times;</span>
+            </h2>
+        </header>
+        <div>
+            <p>Consult your institution's library prior to submitting to this journal.</p>
+            <p>Transformative agreements may have eligibility criteria or limits on publication numbers in place that the Journal Checker Tool is currently not able to check.</p>
+            <p>A common eligibility criteria is that the corresponding author of the paper must be at an institution subscribing to the transformative agreement for the paper to be valid for inclusion. If you are not the corresponding author, please repeat your search with the corresponding author's insitution to help validate your eligibility.</p>
         </div>
 
     </div>
@@ -207,12 +230,13 @@
             </h2>
         </header>
         <div>
-            <p>A Transformative Journal (TJ) is a subscription/hybrid journal that is <strong>actively committed to transitioning to a fully Open Access journal</strong>.</p>
-            <p>In addition, a Transformative Journal must:</p>
+            <p>A <em>Transformative Journal</em> is a subscription/hybrid journal that is committed to transitioning to a fully OA journal. In addition, it must:</p>
             <ul>
                 <li>gradually increase the share of Open Access content; and</li>
                 <li>offset subscription income from payments for publishing services (to avoid double payments).</li>
             </ul>
+
+            <p>Check with your funder if they are willing to pay the article publishing charge for transformative journals.</p>
         </div>
 
     </div>
@@ -222,14 +246,15 @@
     <div class="modal-content" id="modal_self-archiving_content">
         <header class="modal-header">
             <h2>
-                Self-archiving policy
+                Self-archiving
                 <span class="close" aria-label="Close" role="button">&times;</span>
             </h2>
         </header>
         <div>
-            <p>TODO</p>
-        </div>
+            <p>Self-archiving is also referred to as <em>green open access</em>.</p>
 
+            <p>Publish your article via the journals standard route and do not select any open access option (your funder may not cover the cost if you do and it does not enable compliance). Following acceptance of your peer reviewed manuscript, deposit the full text version of the author accepted manuscript (the version that includes changes requested by peer-reviewers) to a repository without embargo and under a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>. Your funder may require you to archive your article in a specific repository.</p>
+        </div>
     </div>
 </div>
 
