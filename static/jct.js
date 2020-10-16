@@ -259,7 +259,7 @@ jct.add_tile = (tile_type, data) => {
             tile = jct.fullyOA_tile(data.journal.title);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.ta:
-            tile = jct.transformative_agreement_tile(data.journal.title, data.institution.title);
+            tile = jct.transformative_agreement_tile(data.journal, data.institution.title);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.tj:
             tile = jct.transformative_journal_tile(data.journal.title);
@@ -283,6 +283,7 @@ jct.add_tile = (tile_type, data) => {
     }
 }
 
+
 jct.fullyOA_tile = (journal_title) => {
     return htmlToElement (`
 <div class="col col--1of4">
@@ -299,7 +300,7 @@ jct.fullyOA_tile = (journal_title) => {
 `)
 }
 
-jct.transformative_agreement_tile = (journal_title, publisher_title) => {
+jct.transformative_agreement_tile = (journal, institution_title) => {
     return htmlToElement(`
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -308,8 +309,7 @@ jct.transformative_agreement_tile = (journal_title, publisher_title) => {
                     </svg>
                 </span>
                 <h4 class="label">Transformative <br>Agreement</h4>
-                <p>You have to do X and consult Y to comply and <a href="#">make sure to read this information</a>.</p>
-                <p><em>Annals of Nuclear Cardiology</em> is part of a transformative agreement between Publisher X and University of Cambridge.</p>
+                <p><em>` + journal.title + `</em> is part of a transformative agreement between` + journal.publisher + `and` + institution_title +`.</p>
             </article>
         </div>
 `)
@@ -324,7 +324,8 @@ jct.transformative_journal_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">Transformative <br>Journal</h4>
-          <p>You have to do X and consult Y to comply and <a href="#">make sure to read this information</a>.</p>
+          <p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
+<!--          <p>You have to do X and consult Y to comply and <a href="#">make sure to read this information</a>.</p>-->
         </article>
         <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="tj_modal_button">
       </div>
@@ -341,7 +342,7 @@ jct.self_archiving_tile = (journal_title) => {
 </span>
           <h4 class="label">Self-archiving <br>Journal</h4>
           <p>Go ahead and publish. No additional actions to take.</p>
-          <p><em>Annals of Nuclear Cardiology</em> is a transformative journal approved by cOAlition S.</p>
+          <p>` + journal_title + ` has a self-archiving policy</p>
           <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="sa_modal_button">
         </article>
       </div>
