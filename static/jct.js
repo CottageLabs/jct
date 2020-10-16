@@ -483,7 +483,7 @@ jct.setup = () => {
             let t = obj.title;
             let issns = obj.issn.join(", ");
             let publisher = obj.publisher;
-            let frag = "<a class=\"optionsTemplate\">";
+            let frag = "<a class='optionsTemplate'>";
 
             if (t) {
                 frag += '<span class="jct__option_journal_title">' + t + '</span>';
@@ -556,7 +556,7 @@ jct.setup = () => {
         optionsTemplate : function(obj) {
             let title = obj.title;
             let id = obj.id;
-            return '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
+            let frag = '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
             if (id) {
                 frag += ' <span class="jct__option_publisher_id">(' + id + ')</span></a> ';
             }
