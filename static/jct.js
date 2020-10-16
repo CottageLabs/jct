@@ -442,7 +442,7 @@ function sent_suggestion_request() {
 
 jct.clinputs = {};
 jct.setup = () => {
-    // AOS.init();
+    AOS.init();
     jct.d.gebi("inputs_plugin").innerHTML = inputs_plugin;
     jct.d.gebi("results_plugin").innerHTML = results_plugin;
     jct.d.gebi("tiles_plugin").innerHTML = tiles_plugin;
