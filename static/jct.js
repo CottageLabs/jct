@@ -139,10 +139,11 @@ let _calculate_if_all_data_provided = () => {
 }
 
 jct.choose = (e, el, which) => {
-    console.log(el);
+    if (which === "journal")
+        console.log(el);
     let id = el["id"];
     let title = el["title"];
-    jct.chosen[which] = {id: id, title: title};
+    jct.chosen[which] = el;
     if (which === 'journal') {
         jct.d.gebi('funder').focus();
     } else if (which === 'funder') {
@@ -309,7 +310,7 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                     </svg>
                 </span>
                 <h4 class="label">Transformative <br>Agreement</h4>
-                <p><em>` + journal.title + `</em> is part of a transformative agreement between` + journal.publisher + `and` + institution_title +`.</p>
+                <p><em>` + journal.title + `</em> is part of a transformative agreement between <em>` + journal.publisher + `</em> and <em>` + institution_title +`</em>.</p>
             </article>
         </div>
 `)
@@ -324,7 +325,7 @@ jct.transformative_journal_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">Transformative <br>Journal</h4>
-          <p class="tile"><b>` + journal_title + `</b> is a transformative journal.</p>
+          <p class="tile"><em>` + journal_title + `</em> is a transformative journal.</p>
 <!--          <p>You have to do X and consult Y to comply and <a href="#">make sure to read this information</a>.</p>-->
         </article>
         <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="tj_modal_button">
@@ -342,7 +343,7 @@ jct.self_archiving_tile = (journal_title) => {
 </span>
           <h4 class="label">Self-archiving <br>Journal</h4>
           <p>Go ahead and publish. No additional actions to take.</p>
-          <p>` + journal_title + ` has a self-archiving policy</p>
+          <p><em>` + journal_title + `</em> has a self-archiving policy</p>
           <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="sa_modal_button">
         </article>
       </div>
