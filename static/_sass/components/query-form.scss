@@ -29,6 +29,7 @@
   &:active {
     background-color: $yellow;
     border-radius: 0;
+    outline: none;
 
     a {
       color: $black;
@@ -44,7 +45,7 @@
     border-radius: 0 0 $spacing-03 $spacing-03;
 
     a {
-      border-bottom: 0s;
+      border-bottom: none;
     }
   }
 }
