@@ -155,7 +155,7 @@
         <header class="modal-header">
             <h2>
                 Feedback? Suggestion? Contact us here.
-                <span class="close" aria-label="Close" role="button">&times;</span>
+                <span class="close" aria-label="Close" role="button" data-id="modal_feedback">&times;</span>
             </h2>
         </header>
         <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>. If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. We will respond within working 3 days.</p>
@@ -189,7 +189,7 @@
         <header class="modal-header">
             <h2>
                 What’s this?
-                <span class="close" aria-label="Close" role="button">&times;</span>
+                <span class="close" aria-label="Close" role="button" data-id="modal_help">&times;</span>
             </h2>
         </header>
         <div>
@@ -209,7 +209,7 @@
         <header class="modal-header">
             <h2>
                 Transformative agreements
-                <span class="close" aria-label="Close" role="button">&times;</span>
+                <span class="close" aria-label="Close" role="button" data-id="modal_ta">&times;</span>
             </h2>
         </header>
         <div>
@@ -226,7 +226,7 @@
         <header class="modal-header">
             <h2>
                 Transformative journals
-                <span class="close" aria-label="Close" role="button">&times;</span>
+                <span class="close" aria-label="Close" role="button" data-id="modal_tj">&times;</span>
             </h2>
         </header>
         <div>
@@ -247,7 +247,7 @@
         <header class="modal-header">
             <h2>
                 Self-archiving
-                <span class="close" aria-label="Close" role="button">&times;</span>
+                <span class="close" aria-label="Close" role="button" data-id="modal_sa">&times;</span>
             </h2>
         </header>
         <div>
@@ -304,7 +304,9 @@
 
     jct.d.each("close", (el) => {
         el.addEventListener("click", (e) => {
-            e.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
+            let id = e.target.getAttribute("data-id");
+            let modal = document.getElementById(id);
+            modal.style.display = "none";
         })
     })
 
