@@ -4,6 +4,7 @@
 <p>Via GET:</p>
 <pre><code>GET /calculate?issn=[issn]&amp;ror=[ror]&amp;funder=[funder]
 </code></pre>
+
 <p>Via POST:</p>
 <pre><code>  POST /calculate
 
@@ -13,11 +14,12 @@
     &quot;ror&quot; : [&quot;&lt;the ror ids&gt;&quot;]
   }
 </code></pre>
+
 <p>The server will execute the algorithm, and gather responses for all routes 
 before responding to the request.</p>
 <h3>Per-Route response data</h3>
 <p>For each route, there is a general response format:</p>
-<pre><code class="language-json">{
+<pre><code class="json">{
   &quot;started&quot; : &quot;&lt;timestamp at which execution started for this route&gt;&quot;,
   &quot;ended&quot; : &quot;&lt;timestamp at which execution completed for this route&gt;&quot;,
   &quot;took&quot; : &quot;&lt;time in ms between start and end&gt;&quot;,
@@ -39,6 +41,7 @@ before responding to the request.</p>
   ]
 }
 </code></pre>
+
 <p>Type IDs:</p>
 <ul>
 <li><code>fully_oa</code> - Fully OA route</li>
@@ -92,9 +95,10 @@ before responding to the request.</p>
   ]
 }
 </code></pre>
+
 <p>In the above example there is no <code>url</code> parameter to visit, but if the record were in DOAJ, for example, the URL would be the URL to the ToC in the DOAJ <code>https://doaj.org/toc/&lt;ISSN&gt;</code>.</p>
 <h3>Overall response format</h3>
-<pre><code class="language-json">{
+<pre><code class="json">{
   &quot;request&quot; : {
     &quot;started&quot; : &quot;&lt;start timestamp of the request&gt;&quot;,
     &quot;ended&quot; : &quot;&lt;end timestamp of the request&gt;&quot;,
@@ -110,23 +114,27 @@ before responding to the request.</p>
   ]  
 }
 </code></pre>
+
 <h2>Transformative Journals</h2>
 <p>Determine if a record is a transformative journal:</p>
 <pre><code>GET /tj/{issn}
 </code></pre>
+
 <p>Response format:</p>
-<pre><code class="language-json">{
+<pre><code class="json">{
   &quot;timestamp&quot; : &quot;&lt;timestamp of request&gt;&quot;,
   &quot;issn&quot; : &quot;&lt;issn requested&gt;&quot;,
   &quot;transformative_journal&quot; : true
 }
 </code></pre>
+
 <p>OR <code>404</code> if record not found</p>
 <h2>Transformative Agreements</h2>
 <pre><code>GET /ta?issn={issn}&amp;ror={ror}
 </code></pre>
+
 <p>Response format:</p>
-<pre><code class="language-json">{
+<pre><code class="json">{
   &quot;request&quot; : {
     &quot;timestamp&quot; : &quot;&lt;timestamp of request&gt;&quot;,
     &quot;issn&quot; : &quot;&lt;issn in the TA&gt;&quot;,
@@ -146,4 +154,5 @@ before responding to the request.</p>
    ]
 }
 </code></pre>
+
 <p>OR <code>404</code> if no TA exists for that combination.</p>

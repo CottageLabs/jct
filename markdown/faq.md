@@ -65,3 +65,20 @@ transformative arrangements globally in all countries and share data from such a
 cOAlition S strongly encourages institutions and consortia to develop new transformative 
 agreements and will only financially support agreements after 1 of January 2021 where they 
 adhere to the [ESAC Guidelines](https://esac-initiative.org).
+
+
+# Q: I have found 2 journals with the same name in the suggestion list, which one do I pick
+
+The journals should provide you with additional information that will allow you to differentiate them.
+
+* After the journal name you should find the publisher in brackets (if we know the publisher)
+* After the journal name and publisher name you will see up to two identifiers for the journal, these are its ISSNs.
+
+If you are unsure about your preferred journal's ISSN, you should be able to find it on their website
+
+
+# Q: I can't find my institution by its acronym
+
+We don't necessarily know all the acronyms and name variants for all institutions.  Try 
+looking for your institution by its full name or any other names it is known by.
+
