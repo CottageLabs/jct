@@ -222,8 +222,6 @@ jct._addNonCompliantOptions = () => {
     let html = `
         <h3 class="col">What can I do now?</h3>
 
-
-    
         <div class="col col--1of3">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
                 <h4 class="label card__heading">Check with a similar journal</h4>
@@ -231,8 +229,6 @@ jct._addNonCompliantOptions = () => {
             </article>
         </div>
 
-
-    
         <div class="col col--1of3">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
                 <h4 class="label card__heading">Check with a different funder</h4>
@@ -240,8 +236,6 @@ jct._addNonCompliantOptions = () => {
             </article>
         </div>
 
-
-    
         <div class="col col--1of3">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
                 <h4 class="label card__heading">Check with a different institution</h4>
