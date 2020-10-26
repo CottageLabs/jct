@@ -190,12 +190,13 @@ jct.success = (xhr) => {
     jct.latest_response = js.results;
     let paths_results = jct.d.gebi("paths_results");
     _emptyElement(paths_results)
-    let detailed_results = jct.d.gebi("detailed_results");
+    // let detailed_results = jct.d.gebi("detailed_results");
     // _emptyElement(detailed_results)
 
     jct.d.gebi(js.compliant ? 'compliant' : 'notcompliant').style.display = 'block';
     // jct.d.gebi("refresh").style.display = 'block';
     jct.d.gebi('explain_results').style.display = 'initial';
+    jct.d.hide_detailed_results();
     //negatives only for dev
     jct.d.gebi("results").style.display = 'block';
     if (js.compliant) {
@@ -220,6 +221,8 @@ jct.success = (xhr) => {
 jct._addNonCompliantOptions = () => {
     let html = `
         <h3 class="col">What can I do now?</h3>
+
+
     
         <div class="col col--1of3">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
@@ -227,6 +230,8 @@ jct._addNonCompliantOptions = () => {
                 <p> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. </p>
             </article>
         </div>
+
+
     
         <div class="col col--1of3">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
@@ -234,6 +239,8 @@ jct._addNonCompliantOptions = () => {
                 <p>If your research was funded by multiple Plan S funders, please repeat your search using the name of the other funders. The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
             </article>
         </div>
+
+
     
         <div class="col col--1of3">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
@@ -685,4 +692,25 @@ let htmlToElement = (html) => {
     html = html.trim(); // Never return a text node of whitespace as the result
     template.innerHTML = html;
     return template.content.firstChild;
+}
+
+jct.d.show_detailed_results = () => {
+    jct.d.gebi("explain_results").innerHTML = 'Hide explanation';
+    jct.d.gebi('detailed_results').style.display = "flex";
+    jct.d.gebi('print').style.display = 'initial';
+}
+
+jct.d.hide_detailed_results = () => {
+    jct.d.gebi("explain_results").innerHTML = 'Explain this result';
+    jct.d.gebi('detailed_results').style.display = "none";
+    jct.d.gebi('print').style.display = 'none';
+}
+
+jct.d.toggle_detailed_results = () => {
+    let section = jct.d.gebi('detailed_results');
+    if (section.style.display === "none") {
+        jct.d.show_detailed_results();
+    } else {
+        jct.d.hide_detailed_results();
+    }
 }
