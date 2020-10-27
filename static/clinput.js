@@ -199,6 +199,10 @@ clinput.CLInput = class {
                         } else if (code === "Enter") {
                             this.selecting = true;
                             this.chooseOption(e,idx);
+                        } else if (code === "Tab") {
+                            this.selecting = true;
+                            this.chooseOption(e,idx);
+                            e.preventDefault();
                         }
                     }
                 };
