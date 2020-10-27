@@ -597,9 +597,6 @@ jct.setup = () => {
             let title = obj.title;
             let id = obj.id;
             let frag = '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
-            if (id) {
-                frag += ' <span class="jct__option_publisher_id">(' + id + ')</span></a> ';
-            }
             return frag;
         },
         selectedTemplate : function(obj) {
