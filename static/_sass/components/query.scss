@@ -3,7 +3,7 @@
 .query {
   height: auto;
   padding-top: $gutter;
-  padding-bottom: $gutter;
+  padding-bottom: 0;
   background: $dark-grey;
   min-height: 75vh;
   color: $white;
@@ -11,10 +11,6 @@
 
   h2 {
     margin-top: 0;
-  }
-
-  h1 {
-    margin-bottom: 2.5em;
   }
 
   a {
