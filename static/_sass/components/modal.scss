@@ -14,11 +14,19 @@
 
 /* Modal Content/Box */
 .modal-content {
-  margin: 5vh auto; /* 15% from the top and centered */
+  margin: 5vh auto;
   padding: $modal-narrow $modal-wide;
-  width: 50vw; /* Could be more or less, depending on screen size */
   background-color: $light-grey;
   border-radius: $spacing-03;
+  width: 95vw;
+
+  @media only screen and (min-width: 768px) {
+    width: 75vw;
+  }
+
+  @media only screen and (min-width: 1024px) {
+    width: 50vw;
+  }
 }
 
 .modal-header {
