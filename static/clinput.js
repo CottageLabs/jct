@@ -118,6 +118,9 @@ clinput.CLInput = class {
 
     lookupOptions() {
         let input = document.getElementById(this.id);
+        if (document.activeElement !== input) {
+            return;
+        }
         if (this.value !== input.value && input.value.length > 0) {
             this.value = input.value;
             this.options_method(this.value, (data) => {this.optionsReceived(data)});
@@ -133,7 +136,7 @@ clinput.CLInput = class {
         } else {
             this.options = data.slice(0, this.optionsLimit);
         }
-        if (this.newValueMethod) {
+        if (this.newValueMethod && this.options.length === 0) {
             let nv = this.newValueMethod(this.value);
             if (nv) {
                 this.options = [nv].concat(this.options);

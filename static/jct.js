@@ -549,7 +549,11 @@ jct.setup = () => {
             if (publisher) {
                 frag += ' <span class="jct__option_journal_publisher">(' + publisher + ')</span> ';
             }
-            frag += ' <span class="jct__option_journal_issn">' + issns + '</span></a> ';
+            let issnPrefix = "";
+            if (!t && !publisher) {
+                issnPrefix = "ISSN: ";
+            }
+            frag += ' <span class="jct__option_journal_issn">' + issnPrefix + issns + '</span></a> ';
 
             // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
