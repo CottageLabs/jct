@@ -34,7 +34,8 @@ clinput.CLInput = class {
                 <div id="' + this.id + '--options"></div>';
 
         let input = document.getElementById(this.id);
-        input.addEventListener("focus", () => {this.activateInput()})
+        input.addEventListener("focus", () => {this.activateInput()});
+        input.addEventListener("blur", () => {this.recordSearchValue()});
         // input.addEventListener("blur", () => {this.unsetTimer()})
         input.addEventListener("keydown", (e) => {
             let entries = document.getElementsByClassName("clinput__option_"+this.id);
@@ -56,9 +57,16 @@ clinput.CLInput = class {
         }
     }
 
+    recordSearchValue() {
+        let input = document.getElementById(this.id);
+        this.lastSearchValue = input.value;
+        this.selectedObject = false;
+    }
+
     activateInput() {
         let input = document.getElementById(this.id);
         input.value = this.lastSearchValue;
+        this.value = "";
 
         if (this.selectedObject) {
             let lsv = this.lastSearchValue.toLowerCase();
