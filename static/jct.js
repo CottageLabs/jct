@@ -330,6 +330,15 @@ jct.add_tile = (tile_type, data) => {
             modal.style.display = 'block';
         })
     }
+    let preferreds = document.getElementsByClassName("open_preferred_modal");
+    for (let i = 0; i < preferreds.length; i++) {
+        let preferred = preferreds[i];
+        preferred.addEventListener("click", (e) => {
+            e.preventDefault();
+            let modal = jct.d.gebi("modal_preferred");
+            modal.style.display = "block";
+        });
+    }
 }
 
 
@@ -342,7 +351,7 @@ jct.fullyOA_tile = (journal_title) => {
             </svg>
         </span>
         <h4 class="label card__heading">
-          <em>Preferred</em><br/>
+          <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
           Full <br>open access
         </h4>
         <p>Go ahead and publish. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
@@ -361,7 +370,7 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                     </svg>
                 </span>
                 <h4 class="label">
-                  <em>Preferred</em><br/>
+                  <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
                   Transformative <br>agreement
                 </h4>
                 <p>Conditions may be in place around publishing through this agreement. <a href="#" id="open_ta_modal">Make sure to read this information</a>.</p>
@@ -380,7 +389,7 @@ jct.transformative_journal_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">
-            <em>Preferred</em><br/>
+            <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
             Transformative <br>journal
           </h4>
           <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
