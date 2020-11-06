@@ -351,7 +351,7 @@ jct.fullyOA_tile = (journal_title) => {
             </svg>
         </span>
         <h4 class="label card__heading">
-          <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
+          <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/><br/>
           Full <br>open access
         </h4>
         <p>Go ahead and publish. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
@@ -370,7 +370,7 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                     </svg>
                 </span>
                 <h4 class="label">
-                  <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
+                  <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Transformative <br>agreement
                 </h4>
                 <p>Conditions may be in place around publishing through this agreement. <a href="#" id="open_ta_modal">Make sure to read this information</a>.</p>
@@ -389,7 +389,7 @@ jct.transformative_journal_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">
-            <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
+            <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/><br/>
             Transformative <br>journal
           </h4>
           <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
