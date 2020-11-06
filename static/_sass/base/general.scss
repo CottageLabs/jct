@@ -115,11 +115,15 @@ section {
 }
 
 footer {
-  padding-top: 5vw;
-  padding-bottom: 5vw;
-  min-height: 50vh;
+  padding-top: 2.5vw;
+  padding-bottom: 2.5vw;
   background: $dark-grey;
   color: $white;
+  @include typescale-06;
+
+  a {
+    text-decoration: none;
+  }
 
   .button {
     background: $white;
