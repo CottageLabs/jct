@@ -119,7 +119,7 @@ footer {
   padding-bottom: 2.5vw;
   background: $dark-grey;
   color: $white;
-  @include typescale-06;
+  font-size: $typescale-06;
 
   a {
     text-decoration: none;
