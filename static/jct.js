@@ -47,14 +47,6 @@ let inputs_plugin =`
         <div class="expression__operator">
         <div>
             <svg width="70" height="70" viewbox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="35" cy="35" r="32.5" stroke="#FABE5E" stroke-width="2.5">
-                    <animate attributename="r" from="10" to="35" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                    <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                </circle>
-                <circle cx="35" cy="35" r="22.5" fill="#FABE5E">
-                    <animate attributename="r" from="1" to="30" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                    <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                </circle>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M22.5 22C21.1193 22 20 23.1193 20 24.5C20 25.8807 21.1193 27 22.5 27H47.5C48.8807 27 50 25.8807 50 24.5C50 23.1193 48.8807 22 47.5 22H22.5ZM22.5 42C21.1193 42 20 43.1193 20 44.5C20 45.8807 21.1193 47 22.5 47H47.5C48.8807 47 50 45.8807 50 44.5C50 43.1193 48.8807 42 47.5 42H22.5Z" fill="white"></path>
             </svg>
         </div>
