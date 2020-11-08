@@ -226,22 +226,22 @@ jct._addNonCompliantOptions = () => {
 
         <div class="col col--1of4">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
-                <h4 class="label card__heading">Check with a similar journal</h4>
-                <p>If you know of other journals within your field, please repeat your search with one of these alternative journals to see if it provides a route to Plan S compliance.</p>
+                <h4 class="label card__heading">Check with an alternative journal</h4>
+                <p>Repeat your search with an alternative journals to see if it provides a route to compliance with your funder’s Plan S aligned open access policy.</p>
             </article>
         </div>
 
         <div class="col col--1of4">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
                 <h4 class="label card__heading">Check with a different funder</h4>
-                <p>If your research was funded by multiple Plan S funders, please repeat your search using the name of the other funders. The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
+                <p>If your research was funded by multiple Plan S funders, repeat your search using the name of one of the other funders. The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
             </article>
         </div>
 
         <div class="col col--1of4">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
                 <h4 class="label card__heading">Check with a different institution</h4>
-                <p>If you or other authors on your research article are affiliated with different institutions, please repeat your search with these alternative institutions. Transformative agreements, are made between publishers and institutions. While your institution does not currently have an agreement with the publisher of this journal, an alternative institution may do.</p>
+                <p>If you or other authors on your research article are affiliated with different institutions, repeat your search with these alternative institutions. Transformative agreements, are made between publishers and (consortia of) institutions. While the institution you searched does not currently have an agreement with the publisher of this journal, one of your collaborator’s institutions may do.</p>
             </article>
         </div>
 
@@ -354,8 +354,8 @@ jct.fullyOA_tile = (journal_title) => {
           <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/><br/>
           Full <br>open access
         </h4>
-        <p>Go ahead and publish. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
-        <p><em>` + journal_title + `</em> is fully open access</p>
+        <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+        <p><em>` + journal_title + `</em> is a fully open access journal.</p>
     </article>
 </div>
 `)
@@ -409,8 +409,8 @@ jct.self_archiving_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">Self-archiving</h4>
-          <p>Publish without selecting open access, deposit author accepted manuscript in repository.</p>
-          <p><em>` + journal_title + `</em> has a self-archiving policy</p>
+          <p>Following acceptance deposit your author accepted manuscript in a repository without emabrgo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
+          <p><em>` + journal_title + `</em> has a Plan S aligned self-archiving policy.</p>
           <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="sa_modal_button">
         </article>
       </div>
