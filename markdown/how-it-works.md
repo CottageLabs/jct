@@ -10,7 +10,7 @@ The JCT is divided into two components - a *backend* and a *frontend*.
 
 **Front-end:** the front-end component is the part that most users see, providing the search form and results screen, as well as documents such as FAQs etc.
 
-
+**Codebase:** https://github.com/CottageLabs/jct
 
 ## <a name="data_sources"></a>Data Sources
 
