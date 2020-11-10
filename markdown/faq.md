@@ -83,3 +83,10 @@ If you are unsure about your preferred journal's ISSN, you should be able to fin
 
 We don't necessarily know all the acronyms and name variants for all institutions.  Try
 looking for your institution by its full name or any other names it is known by.
+
+
+## I can't find my publication via its ISBN
+
+The JCT only supports checks on serials that are identified by ISSN.  If the book or conference series has an ISSN
+you can try searching with that.  If it does not, you will not be able to determine your Plan S compliance via this
+tool.
