@@ -197,8 +197,7 @@ jct.success = (xhr) => {
         jct._setComplianceTheme(true);
         js.results.forEach((r) => {
             if (r.compliant === "yes") {
-                jct.add_tile(r.route, jct.chosen)
-
+                jct.add_tile(r, jct.chosen)
             }
         })
     }
@@ -286,8 +285,10 @@ jct._setComplianceTheme = (compliant) => {
     }
 }
 
-jct.add_tile = (tile_type, data) => {
+jct.add_tile = (result, data) => {
+    let tile_type = result.route;
     let tile;
+    let has_sa_rights_retention;
     switch(tile_type) {
         case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
             tile = jct.fullyOA_tile(data.journal.title);
@@ -299,7 +300,12 @@ jct.add_tile = (tile_type, data) => {
             tile = jct.transformative_journal_tile(data.journal.title);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.sa:
-            tile = jct.self_archiving_tile(data.journal.title);
+            has_sa_rights_retention = jct.sa_rights_retention_check(result);
+            if (has_sa_rights_retention) {
+                tile = jct.sa_rights_retention_tile(data.journal.title);
+            } else {
+                tile = jct.self_archiving_tile(data.journal.title);
+            }
             break;
     }
     jct.d.gebi("paths_results").append(tile);
@@ -317,10 +323,18 @@ jct.add_tile = (tile_type, data) => {
         })
     }
     else if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.sa){
-        jct.d.gebi('sa_modal_button').addEventListener("click", () => {
-            let modal = jct.d.gebi('modal_sa')
-            modal.style.display = 'block';
-        })
+        if (has_sa_rights_retention) {
+            jct.d.gebi('open_sa_rr_modal').addEventListener("click", (e) => {
+                e.preventDefault();
+                let modal = jct.d.gebi('modal_sa_rr');
+                modal.style.display = 'block';
+            })
+        } else {
+            jct.d.gebi('sa_modal_button').addEventListener("click", () => {
+                let modal = jct.d.gebi('modal_sa')
+                modal.style.display = 'block';
+            })
+        }
     }
     let preferreds = document.getElementsByClassName("open_preferred_modal");
     for (let i = 0; i < preferreds.length; i++) {
@@ -333,6 +347,25 @@ jct.add_tile = (tile_type, data) => {
     }
 }
 
+jct.sa_rights_retention_check = (result) => {
+    // check if qualification with id rights_retention_author_advice exists
+    // in the result
+    console.log("Checking for rights retention");
+    let has_rights_retention = false;
+    if ("qualifications" in result) {
+        console.log("has qualifications");
+        console.log(result.qualifications);
+        result.qualifications.forEach((q) => {
+            console.log("rights_retention_author_advice");
+            console.log("rights_retention_author_advice" in q);
+            if ("rights_retention_author_advice" in q) {
+                has_rights_retention = true;
+            }
+        })
+    }
+    console.log("Result:" + has_rights_retention);
+    return has_rights_retention;
+}
 
 jct.fullyOA_tile = (journal_title) => {
     return htmlToElement (`
@@ -408,6 +441,24 @@ jct.self_archiving_tile = (journal_title) => {
       </div>
 `)
 }
+
+jct.sa_rights_retention_tile = (journal_title) => {
+    return htmlToElement (`
+        <div class="col col--1of4">
+        <article class="card" data-aos="fade-up" data-aos-duration="2000">
+          <span class="card__icon"><svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
+</svg>
+</span>
+          <h4 class="label">Self-archiving using rights retention</h4>
+          <p>You have the right to self-archive the author accepted manuscript should you choose.
+          More information on how available <a href="#" id="open_sa_rr_modal">here</a>.</p>
+        </article>
+      </div>
+`)
+}
+
+
 
 jct.jx = (route,q,after,api) => {
     let url = api ? api : jct.api;
