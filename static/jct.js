@@ -47,14 +47,6 @@ let inputs_plugin =`
         <div class="expression__operator">
         <div>
             <svg width="70" height="70" viewbox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="35" cy="35" r="32.5" stroke="#FABE5E" stroke-width="2.5">
-                    <animate attributename="r" from="10" to="35" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                    <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                </circle>
-                <circle cx="35" cy="35" r="22.5" fill="#FABE5E">
-                    <animate attributename="r" from="1" to="30" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                    <animate attributename="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatcount="indefinite"></animate>
-                </circle>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M22.5 22C21.1193 22 20 23.1193 20 24.5C20 25.8807 21.1193 27 22.5 27H47.5C48.8807 27 50 25.8807 50 24.5C50 23.1193 48.8807 22 47.5 22H22.5ZM22.5 42C21.1193 42 20 43.1193 20 44.5C20 45.8807 21.1193 47 22.5 47H47.5C48.8807 47 50 45.8807 50 44.5C50 43.1193 48.8807 42 47.5 42H22.5Z" fill="white"></path>
             </svg>
         </div>
@@ -225,22 +217,22 @@ jct._addNonCompliantOptions = () => {
 
         <div class="col col--1of4">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
-                <h4 class="label card__heading">Check with a similar journal</h4>
-                <p>If you know of other journals within your field, please repeat your search with one of these alternative journals to see if it provides a route to Plan S compliance.</p>
+                <h4 class="label card__heading">Check with an alternative journal</h4>
+                <p>Repeat your search with an alternative journals to see if it provides a route to compliance with your funder’s Plan S aligned open access policy.</p>
             </article>
         </div>
 
         <div class="col col--1of4">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
                 <h4 class="label card__heading">Check with a different funder</h4>
-                <p>If your research was funded by multiple Plan S funders, please repeat your search using the name of the other funders. The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
+                <p>If your research was funded by multiple Plan S funders, repeat your search using the name of one of the other funders. The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
             </article>
         </div>
 
         <div class="col col--1of4">
             <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
                 <h4 class="label card__heading">Check with a different institution</h4>
-                <p>If you or other authors on your research article are affiliated with different institutions, please repeat your search with these alternative institutions. Transformative agreements, are made between publishers and institutions. While your institution does not currently have an agreement with the publisher of this journal, an alternative institution may do.</p>
+                <p>If you or other authors on your research article are affiliated with different institutions, repeat your search with these alternative institutions. Transformative agreements, are made between publishers and (consortia of) institutions. While the institution you searched does not currently have an agreement with the publisher of this journal, one of your collaborator’s institutions may do.</p>
             </article>
         </div>
 
@@ -384,11 +376,11 @@ jct.fullyOA_tile = (journal_title) => {
             </svg>
         </span>
         <h4 class="label card__heading">
-          <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
+          <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/><br/>
           Full <br>open access
         </h4>
-        <p>Go ahead and publish. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
-        <p><em>` + journal_title + `</em> is fully open access</p>
+        <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+        <p><em>` + journal_title + `</em> is a fully open access journal.</p>
     </article>
 </div>
 `)
@@ -403,7 +395,7 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                     </svg>
                 </span>
                 <h4 class="label">
-                  <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
+                  <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Transformative <br>agreement
                 </h4>
                 <p>Conditions may be in place around publishing through this agreement. <a href="#" id="open_ta_modal">Make sure to read this information</a>.</p>
@@ -422,7 +414,7 @@ jct.transformative_journal_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">
-            <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/>
+            <a href="#" class="open_preferred_modal"><em>Preferred</em></a><br/><br/>
             Transformative <br>journal
           </h4>
           <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
@@ -442,8 +434,8 @@ jct.self_archiving_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">Self-archiving</h4>
-          <p>Publish without selecting open access, deposit author accepted manuscript in repository.</p>
-          <p><em>` + journal_title + `</em> has a self-archiving policy</p>
+          <p>Following acceptance deposit your author accepted manuscript in a repository without emabrgo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
+          <p><em>` + journal_title + `</em> has a Plan S aligned self-archiving policy.</p>
           <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="sa_modal_button">
         </article>
       </div>
