@@ -66,7 +66,7 @@
         <h1>
           Is this compliant with
           <br>
-          <a href="https://www.coalition-s.org/">Plan S</a>
+          <a href="#" id="open_help_modal">Plan S</a>
           ?
         </h1>
         <div class="row row-inputs" id="inputs_plugin"></div>
@@ -306,6 +306,12 @@
 
   jct.d.gebi("explain_results").addEventListener("click", (e) => {
     jct.d.toggle_detailed_results();
+  })
+
+  jct.d.gebi('open_help_modal').addEventListener("click", (e) => {
+    e.preventDefault();
+    let modal = jct.d.gebi('modal_help');
+    modal.style.display = 'block';
   })
 
   </script>
