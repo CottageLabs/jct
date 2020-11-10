@@ -584,7 +584,8 @@ jct.setup = () => {
         inputAttributes : {
             which: "journal",
             placeholder: "By ISSN or title",
-            required: true
+            required: true,
+            autocomplete: "off"
         },
         options : function(text, callback) {
             text = text.toLowerCase().replace(' of','').replace('the ','');
@@ -662,7 +663,8 @@ jct.setup = () => {
         inputAttributes : {
             which: "funder",
             placeholder: "By funder name",
-            required: true
+            required: true,
+            autocomplete: "off"
         },
         options : function(text, callback) {
             text = text.toLowerCase().replace(' of','').replace('the ','');
@@ -698,7 +700,8 @@ jct.setup = () => {
         inputAttributes : {
             which: "institution",
             placeholder: "By ROR or name",
-            required: true
+            required: true,
+            autocomplete: "off"
         },
         options : function(text, callback) {
             text = text.toLowerCase().replace(' of','').replace('the ','');
