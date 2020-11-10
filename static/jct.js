@@ -77,12 +77,12 @@ let results_plugin =
     `
         <header class="compliance">
             <h2 data-aos="fade-up" data-aos-duration="2000" id="compliant" style="display:none">
-                <strong>Yes</strong>, this combination is <br>compliant.
+                <strong>Yes</strong>, this combination is <br><u>compliant</u>.
                 <br/><br/>
                 What options do I have?
             </h2>
             <h2 data-aos="fade-up" data-aos-duration="2000" id="notcompliant" style="display:none">
-                <strong>No</strong>, this combination is <br>not compliant.
+                <strong>No</strong>, this combination is <br><u>not compliant</u>.
                 <br/><br/>
                 What can I do now?
             </h2>
