@@ -62,9 +62,16 @@ let inputs_plugin =`
     </div>
     <div class="col col--1of3 suggest" id="suggestinstitution">
     </div>
-    <ul class="loading" id="loading"><li class='loading__dots' style="display: none"><div></div><div></div><div></div><span class='sr-only'>Loading choices…</span></li></ul>
-
+    <div class="loading" id="loading" style="display:none">
+      <div class="loading__dots">
+        <div></div>
+        <div></div>
+        <div></div>
+        <span class="sr-only">Loading choices…</span>
+      </div>
+    </div>
 `
+
 let results_plugin =
     `
         <header class="compliance">
