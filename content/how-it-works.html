@@ -50,164 +50,94 @@
 <main class="container">
     <div class="row row--centered">
         <div class="col col--1of2">
-<h1>JCT Public API</h1>
-<h2>Request a compliance calculation</h2>
-<p>To carry out a compliance calculation, you can make the request in one of 2 ways.</p>
-<p>Via GET:</p>
-<pre><code>GET /calculate?issn=[issn]&amp;ror=[ror]&amp;funder=[funder]
-</code></pre>
-
-<p>Via POST:</p>
-<pre><code>  POST /calculate
-
-  {
-    &quot;issn&quot; : &quot;&lt;a journal issn&gt;&quot;,
-    &quot;funder&quot; : [&quot;&lt;the funders&gt;&quot;],
-    &quot;ror&quot; : [&quot;&lt;the ror ids&gt;&quot;]
-  }
-</code></pre>
-
-<p>The server will execute the algorithm, and gather responses for all routes 
-before responding to the request.</p>
-<h3>Per-Route response data</h3>
-<p>For each route, there is a general response format:</p>
-<pre><code class="json">{
-  &quot;started&quot; : &quot;&lt;timestamp at which execution started for this route&gt;&quot;,
-  &quot;ended&quot; : &quot;&lt;timestamp at which execution completed for this route&gt;&quot;,
-  &quot;took&quot; : &quot;&lt;time in ms between start and end&gt;&quot;,
-  &quot;route&quot; : &quot;&lt;the type id of the route (see below)&gt;&quot;,
-  &quot;compliant&quot; : &quot;&lt;the compliance type id of the route (see below)&quot;,
-  &quot;qualifications&quot; : [
-    {&quot;&lt;qualification id (see below)&quot; : {&lt;qualification specific data (if needed)&gt;}
-  ],
-  &quot;issn&quot; : &quot;&lt;the issn checked for this result, if there is one&gt;&quot;,
-  &quot;funder&quot; : &quot;&lt;the funder checked on this result, if there is one&gt;&quot;,
-  &quot;ror&quot; : &quot;the ror relevant to this result, if there is one&gt;&quot;,
-  &quot;log&quot; : [
-    {
-      &quot;action&quot; : &quot;&lt;description of the action (see below for details)&gt;&quot;,
-      &quot;result&quot; : &quot;&lt;the outcome of the action (optional, depending on circumstance)&gt;&quot;,
-      &quot;url&quot; : &quot;&lt;url to data supporting the result, if available&gt;&quot;
-    },
-    ...
-  ]
-}
-</code></pre>
-
-<p>Type IDs:</p>
+<h1>How the Journal Checker Tool works</h1>
+<p>The Journal Checker Tool (JCT) is provided by cOAlition S to authors to support them in finding Plan S compliant 
+"routes" through which to publish their articles. The tool allows an author to enter the name of a funder, an 
+institution and the journal to which they plan to submit an article, and checks if this combination of funder, 
+institution and journal offers any route to compliance with Plan S.</p>
+<h2><a name="architecture"></a>Architecture</h2>
+<p>The JCT is divided into two components - a <em>backend</em> and a <em>frontend</em>.</p>
+<p><strong>Back-end:</strong> the back-end component harvests and <a href="#caches">caches</a> data from a number of significant 
+<a href="#data_sources">data sources</a>, handles search requests via an API, and executes several <a href="#algorithms">algorithms</a> 
+used to determine compliance with the Plan S policies. The back-end is designed in such a way that it may be used in 
+other, third-party webservices as an <a href="#embeddable-plugin">embeddable-plugin</a>.</p>
+<p><strong>Front-end:</strong> the front-end component is the part that most users see, providing the search form and results screen, 
+as well as documents such as FAQs etc.</p>
+<p><strong>Codebase:</strong> <a href="https://github.com/CottageLabs/jct">https://github.com/CottageLabs/jct</a></p>
+<h2><a name="data_sources"></a>Data Sources</h2>
+<p>A number of data sources are used by the JCT to aid its calculation of Plan S compliance:</p>
 <ul>
-<li><code>fully_oa</code> - Fully OA route</li>
-<li><code>self_archiving</code> - Self Archiving route</li>
-<li><code>ta</code> - Transformative Agreement route</li>
-<li><code>tj</code> - Transformative Journal route</li>
+<li><a href="https://doaj.org/">DOAJ (Directory of Open Access Journals)</a></li>
+<li><a href="https://openaccessbutton.org/">Open Access Button</a></li>
+<li><a href="https://esac-initiative.org/about/transformative-agreements/agreement-registry/">ESAC Agreement Registry</a></li>
+<li><a href="https://www.crossref.org/">Crossref</a></li>
+<li><a href="https://ror.org">ROR</a></li>
 </ul>
-<p>Compliance IDs:</p>
+<h2><a name="caches"></a>Caches</h2>
+<p>The data used in the JCT calculation is both very large (millions of records) and distributed across the global 
+network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of 
+some of this data. These caches are "refreshed" according to the schedule below. Refreshing the caches picks up new 
+records as well as updates to existing records.</p>
+<p><mark>TODO: cache update schedule</mark></p>
+<h2><a name="api"></a>API</h2>
+<p>The API to the the back-end component of the JCT is used by the front-end component, as well as by the 
+<a href="#embeddable-plugin">embeddable plugin</a>. This API is also made openly available so that others may use it directly. 
+The API is <a href="/apidocs">documented here</a>.</p>
+<h2><a name="embeddable-plugin"></a>Embeddable Plugin</h2>
+<p><mark>TODO: LINK AND DESCRIPTION</mark></p>
+<h2><a name="algorithms"></a>Algorithms</h2>
+<p>The JCT makes its calculations according to a defined algorithm.</p>
+<p><img src="/static/img/algorithm_main.png"></p>
+<h3>Inputs</h3>
+<p>A request against the compliance algorithm (such as via the Web API) can provide the following constraining parameters:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Parameter</strong></th>
+<th>Cardinality</th>
+<th><strong>Data type</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Journal</td>
+<td>1</td>
+<td>ISSN</td>
+</tr>
+<tr>
+<td>Funder</td>
+<td>0..*</td>
+<td>CrossRef ID</td>
+</tr>
+<tr>
+<td>Institution</td>
+<td>0..*</td>
+<td>ROR ID</td>
+</tr>
+</tbody>
+</table>
+<p>Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there 
+are compliance routes documented here which do not <em>require</em> either Funder or Institution. Nonetheless, Funder and 
+Institution data is essential to give the user a complete picture of the compliance space for their context. The 
+algorithm is specified to allow these <em>partial</em> queries in order to allow us to build predictive or reactive responses 
+to users as they start to assemble their queries via the UI.</p>
+<h3>Outputs</h3>
+<p>The output of the algorithm consists of a set of 4 or more compliance analyses for the various input combinations. 
+Each of these analyses contains:</p>
 <ul>
-<li><code>yes</code> - Route offers compliance</li>
-<li><code>no</code> - Route does not offer compliance</li>
-<li><code>unknown</code> - Not known if route offers compliance</li>
+<li>The ISSN of the Journal the analysis refers to</li>
+<li>The Crossref IDs of the Funders the analysis refers to</li>
+<li>The ROR IDs of the Institutions the analysis refers to</li>
+<li>The compliance route for which this answer is relevant</li>
+<li>Whether this analysis determines the set of Funder, Institution and Journal here to be compliant. One of 3 possible outcomes is available:</li>
+<li><em>Compliant</em> - the algorithm has determined that the input would comply with Plan S at the time the query was executed</li>
+<li><em>Non-Compliant</em> - the algorithm has determined that the input does not comply with Plan S at the time the query was executed</li>
+<li><em>Unknown</em> - there was insufficient information in the data source(s) to determine whether the input complies with Plan S or not at the time the query was executed</li>
+<li>Qualifications for compliance - any guidance that the user needs to understand their compliance result in the context of the query.</li>
+<li>An audit trail for the decision - a record of the checks that took place in order to come to this conclusion</li>
 </ul>
-<p>Qualification IDs:</p>
-<ul>
-<li><code>doaj_under_review</code> - the journal is in the DOAJ "in progress" or "under review" list, not the public DOAJ<ul>
-<li>no qualification specific data required</li>
-</ul>
-</li>
-<li><code>rights_retention_author_advice</code> - the journal does not have an SA policy and does not appear in the rights retention data source<ul>
-<li>no qualification specific data required</li>
-</ul>
-</li>
-<li><code>rights_rentention_funder_implementation</code> - the journal does not have an SA policy and the funder has a rights retention policy that starts in the future.  There should be one record of this per funder that meets the conditions, and the following qualification specific data is requried:<ul>
-<li><code>funder: &lt;funder name&gt;</code></li>
-<li><code>date: &lt;date policy comes into force (YYYY-MM-DD)</code></li>
-</ul>
-</li>
-<li><code>corresponding_authors</code> - the TA is only open to corresponding authors<ul>
-<li>no qualification specific data required</li>
-</ul>
-</li>
-<li><code>journal</code> - if a TA is currently in force, the journal start_date and end_date of being in the TA will be provided<ul>
-<li><code>start_date: &lt;start date (human format)&gt;</code></li>
-<li><code>end_date: &lt;end date (human format)&gt;</code></li>
-</ul>
-</li>
-<li><code>institution</code> - if a TA is currently in force, the institution start_date and end_date of being in the TA will be provided<ul>
-<li><code>start_date: &lt;start date (human format)&gt;</code></li>
-<li><code>end_date: &lt;end date (human format)&gt;</code></li>
-</ul>
-</li>
-</ul>
-<p>Log:</p>
-<p>The log provides a description of an action and its result, in human-readable English, in order.</p>
-<p>For example, items such as this may be present:</p>
-<pre><code>{
-  &quot;log&quot; : [
-    {&quot;action&quot; : &quot;Lookup in DOAJ&quot;, &quot;result&quot; : &quot;ISSN not in public DOAJ&quot;},
-    {&quot;action&quot; : &quot;Lookup in DOAJ&quot;, &quot;result&quot; : &quot;ISSN 'in progress' at DOAJ&quot;},
-  ]
-}
-</code></pre>
-
-<p>In the above example there is no <code>url</code> parameter to visit, but if the record were in DOAJ, for example, the URL would be the URL to the ToC in the DOAJ <code>https://doaj.org/toc/&lt;ISSN&gt;</code>.</p>
-<h3>Overall response format</h3>
-<pre><code class="json">{
-  &quot;request&quot; : {
-    &quot;started&quot; : &quot;&lt;start timestamp of the request&gt;&quot;,
-    &quot;ended&quot; : &quot;&lt;end timestamp of the request&gt;&quot;,
-    &quot;took&quot; : &quot;&lt;the time in ms between request start and end (on the server, not including travel time)&gt;&quot;,
-    &quot;journal&quot; : [{&quot;id&quot;: &quot;&lt;journal issn&gt;&quot;, &quot;title&quot;: &quot;journal title&quot;, ...}],
-    &quot;funder&quot; : [{&quot;id&quot;: &quot;&lt;funder ID&gt;&quot;, &quot;title&quot;: &quot;funder title&quot;, ...}],
-    &quot;institution&quot; : [{&quot;id&quot;: &quot;&lt;institution ROR&gt;&quot;, &quot;title&quot;: &quot;institution title&quot;, ...}],
-    &quot;checks&quot;: [&quot;permission&quot;,&quot;doaj&quot;,&quot;ta&quot;,&quot;tj&quot;]
-  },
-  &quot;compliant&quot; : true/false, # (if there is any compliant: &quot;yes&quot; result, this is true. Otherwise false.
-  &quot;results&quot; : [
-    &lt;route responses as per the above&gt;
-  ]  
-}
-</code></pre>
-
-<h2>Transformative Journals</h2>
-<p>Determine if a record is a transformative journal:</p>
-<pre><code>GET /tj/{issn}
-</code></pre>
-
-<p>Response format:</p>
-<pre><code class="json">{
-  &quot;timestamp&quot; : &quot;&lt;timestamp of request&gt;&quot;,
-  &quot;issn&quot; : &quot;&lt;issn requested&gt;&quot;,
-  &quot;transformative_journal&quot; : true
-}
-</code></pre>
-
-<p>OR <code>404</code> if record not found</p>
-<h2>Transformative Agreements</h2>
-<pre><code>GET /ta?issn={issn}&amp;ror={ror}
-</code></pre>
-
-<p>Response format:</p>
-<pre><code class="json">{
-  &quot;request&quot; : {
-    &quot;timestamp&quot; : &quot;&lt;timestamp of request&gt;&quot;,
-    &quot;issn&quot; : &quot;&lt;issn in the TA&gt;&quot;,
-    &quot;ror&quot; : &quot;&lt;ror in the TA&gt;&quot;
-  },
-  &quot;results&quot; : 
-    [
-      {
-        &quot;active&quot;: {
-          &quot;from_date&quot; : &quot;&lt;date this TA is active for the issn/ror&quot;,
-          &quot;to_date&quot; : &quot;&lt;date this TA ended for the issn/ror&quot;
-        },
-        &quot;plan_s_compliant&quot; : true|false
-        &quot;ta_id&quot; : &quot;&lt;id for the TA, possibly the ESAC one?&gt;&quot;
-        &quot;ta_url&quot; : &quot;&lt;a url to visit about the TA&gt;&quot;
-      }
-   ]
-}
-</code></pre>
-
-<p>OR <code>404</code> if no TA exists for that combination.</p></div>
+<p>There will be no attempt to indicate a priority or preference for any compliance route, as the best route to compliance may be different per user.
+Note also that the presence of 4 or more results does not imply that all these results need to be shown to the user. It will be up to the UI and the API to decide whether they expose Non-Compliant/Unknown results, and if so in what way.</p></div>
 <section class="row row--centered patterned-section" data-aos="fade-up" data-aos-duration="1000">
     <div class="wave" aria-hidden="true">
         <svg preserveaspectratio="none" viewbox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" style="width: 125%; height: 75px; transform: scaleX(-1);">

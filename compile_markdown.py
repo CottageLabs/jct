@@ -1,11 +1,11 @@
 import markdown, os
 
-files = ["apidocs", "transformative-agreements", "transformative-journals", "faq"]
+files = ["apidocs", "transformative-agreements", "transformative-journals", "faq", "how-it-works"]
 
 for f in files:
     print("rendering",f)
     with open(os.path.join("markdown", f + ".md")) as md:
-        html = markdown.markdown(md.read(), extensions=["markdown.extensions.fenced_code"])
+        html = markdown.markdown(md.read(), extensions=["markdown.extensions.fenced_code", "tables"])
     with open(os.path.join("pagefragments", f + ".html"), "w") as out:
         out.write(html)
     with open(os.path.join("pagefragments", f + ".html")) as frag, \

@@ -1,16 +1,23 @@
 # How the Journal Checker Tool works
 
-The Journal Checker Tool (JCT) is provided by cOAlition S to authors to support them in finding Plan S compliant "routes" through which to publish their articles. The tool allows an author to enter the name of a funder, an institution and the journal to which they plan to submit an article, and checks if this combination of funder, institution and journal offers any route to compliance with Plan S.
+The Journal Checker Tool (JCT) is provided by cOAlition S to authors to support them in finding Plan S compliant 
+"routes" through which to publish their articles. The tool allows an author to enter the name of a funder, an 
+institution and the journal to which they plan to submit an article, and checks if this combination of funder, 
+institution and journal offers any route to compliance with Plan S.
 
 ## <a name="architecture"></a>Architecture
 
 The JCT is divided into two components - a *backend* and a *frontend*.
 
-**Back-end:** the back-end component harvests and [caches](#caches) data from a number of significant [data sources](#data_sources), handles search requests via an API, and executes several [algorithms](#algorithms) used to determine compliance with the Plan S policies. The back-end is designed in such a way that it may be used in other, third-party webservices as an [embeddable-plugin](#embeddable-plugin).
+**Back-end:** the back-end component harvests and [caches](#caches) data from a number of significant 
+[data sources](#data_sources), handles search requests via an API, and executes several [algorithms](#algorithms) 
+used to determine compliance with the Plan S policies. The back-end is designed in such a way that it may be used in 
+other, third-party webservices as an [embeddable-plugin](#embeddable-plugin).
 
-**Front-end:** the front-end component is the part that most users see, providing the search form and results screen, as well as documents such as FAQs etc.
+**Front-end:** the front-end component is the part that most users see, providing the search form and results screen, 
+as well as documents such as FAQs etc.
 
-**Codebase:** https://github.com/CottageLabs/jct
+**Codebase:** [https://github.com/CottageLabs/jct](https://github.com/CottageLabs/jct)
 
 ## <a name="data_sources"></a>Data Sources
 
@@ -26,7 +33,10 @@ A number of data sources are used by the JCT to aid its calculation of Plan S co
 
 ## <a name="caches"></a>Caches
 
-The data used in the JCT calculation is both very large (millions of records) and distributed across the global network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of some of this data. These caches are "refreshed" according to the schedule below. Refreshing the caches picks up new records as well as updates to existing records.
+The data used in the JCT calculation is both very large (millions of records) and distributed across the global 
+network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of 
+some of this data. These caches are "refreshed" according to the schedule below. Refreshing the caches picks up new 
+records as well as updates to existing records.
 
 <mark>TODO: cache update schedule</mark>
 
@@ -34,7 +44,9 @@ The data used in the JCT calculation is both very large (millions of records) an
 
 ## <a name="api"></a>API
 
-The API to the the back-end component of the JCT is used by the front-end component, as well as by the [embeddable plugin](#embeddable-plugin). This API is also made openly available so that others may use it directly. The API is [documented here](/apidocs).
+The API to the the back-end component of the JCT is used by the front-end component, as well as by the 
+[embeddable plugin](#embeddable-plugin). This API is also made openly available so that others may use it directly. 
+The API is [documented here](/apidocs).
 
 
 
@@ -48,7 +60,7 @@ The API to the the back-end component of the JCT is used by the front-end compon
 
 The JCT makes its calculations according to a defined algorithm.
 
-![algorithm_main](./images/algorithm_main.png)
+<img src="/static/img/algorithm_main.png">
 
 ### Inputs
 
@@ -60,11 +72,16 @@ A request against the compliance algorithm (such as via the Web API) can provide
 | Funder        | 0..*        | CrossRef ID   |
 | Institution   | 0..*        | ROR ID        |
 
-Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there are compliance routes documented here which do not *require* either Funder or Institution. Nonetheless, Funder and Institution data is essential to give the user a complete picture of the compliance space for their context. The algorithm is specified to allow these *partial* queries in order to allow us to build predictive or reactive responses to users as they start to assemble their queries via the UI.
+Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there 
+are compliance routes documented here which do not *require* either Funder or Institution. Nonetheless, Funder and 
+Institution data is essential to give the user a complete picture of the compliance space for their context. The 
+algorithm is specified to allow these *partial* queries in order to allow us to build predictive or reactive responses 
+to users as they start to assemble their queries via the UI.
 
 ### Outputs
 
-The output of the algorithm consists of a set of 4 or more compliance analyses for the various input combinations. Each of these analyses contains:
+The output of the algorithm consists of a set of 4 or more compliance analyses for the various input combinations. 
+Each of these analyses contains:
 
 * The ISSN of the Journal the analysis refers to
 * The Crossref IDs of the Funders the analysis refers to
