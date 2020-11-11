@@ -78,8 +78,9 @@ clinput.CLInput = class {
                 let v = this.selectedObject[key];
                 if (Array.isArray(v)) {
                     for (var j = 0; j < v.length; j++) {
-                        if (v[j].toLowerCase().includes(lsv)) {
-                            input.value = v;
+                        let ve = v[j];
+                        if (ve.toLowerCase().includes(lsv)) {
+                            input.value = ve;
                             break keycheck;
                         }
                     }
