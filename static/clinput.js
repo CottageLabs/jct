@@ -63,9 +63,15 @@ clinput.CLInput = class {
         this.selectedObject = false;
     }
 
+    _setInputValue(val) {
+        let input = document.getElementById(this.id);
+        input.value = val;
+        input.setAttribute("title", val);
+    }
+
     activateInput() {
         let input = document.getElementById(this.id);
-        input.value = this.lastSearchValue;
+        this._setInputValue(this.lastSearchValue);
         this.value = "";
 
         if (this.selectedObject) {
@@ -80,13 +86,13 @@ clinput.CLInput = class {
                     for (var j = 0; j < v.length; j++) {
                         let ve = v[j];
                         if (ve.toLowerCase().includes(lsv)) {
-                            input.value = ve;
+                            this._setInputValue(ve);
                             break keycheck;
                         }
                     }
                 } else {
                     if (v.toLowerCase().includes(lsv)) {
-                        input.value = v;
+                        this._setInputValue(v);
                         break keycheck;
                     }
                 }
@@ -227,9 +233,8 @@ clinput.CLInput = class {
         let input = document.getElementById(this.id);
         let options = document.getElementsByClassName("clinput__options_" + this.id);
         options[0].innerHTML = "";
-        // input.value = this.options[idx];
         this.lastSearchValue = input.value;
-        input.value = this.selectedTemplate(this.options[idx]);
+        this._setInputValue(this.selectedTemplate(this.options[idx]));
         this.selectedObject = this.options[idx];
         this.onChoice(e,this.options[idx]);
     }
