@@ -35,7 +35,6 @@ jct.d.gebi("contact_form")
             }
         });
 
-    console.log(data)
     let xhr = new XMLHttpRequest();
     xhr.open('POST', jct.api + '/feedback');
     xhr.onload = () => {

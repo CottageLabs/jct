@@ -142,8 +142,6 @@ let _calculate_if_all_data_provided = () => {
 }
 
 jct.choose = (e, el, which) => {
-    if (which === "journal")
-        console.log(el);
     let id = el["id"];
     let title = el["title"];
     jct.chosen[which] = el;
@@ -173,8 +171,6 @@ jct.COMPLIANCE_ROUTES_LONG = {
 
 jct.error = (xhr) => {
     jct.latest_response = xhr;
-    console.log("error")
-    console.log(xhr.status + ': ' + xhr.statusText);
 }
 jct.progress = (e) => {
     // e && e.lengthComputable ? console.log(e.loaded + ' of ' + e.total + 'bytes') : console.log(e.loaded);
@@ -357,20 +353,14 @@ jct.add_tile = (result, data) => {
 jct.sa_rights_retention_check = (result) => {
     // check if qualification with id rights_retention_author_advice exists
     // in the result
-    console.log("Checking for rights retention");
     let has_rights_retention = false;
     if ("qualifications" in result) {
-        console.log("has qualifications");
-        console.log(result.qualifications);
         result.qualifications.forEach((q) => {
-            console.log("rights_retention_author_advice");
-            console.log("rights_retention_author_advice" in q);
             if ("rights_retention_author_advice" in q) {
                 has_rights_retention = true;
             }
         })
     }
-    console.log("Result:" + has_rights_retention);
     return has_rights_retention;
 }
 
