@@ -50,12 +50,6 @@ The API is [documented here](/apidocs).
 
 
 
-## <a name="embeddable-plugin"></a>Embeddable Plugin
-
-<mark>TODO: LINK AND DESCRIPTION</mark>
-
-
-
 ## <a name="algorithms"></a>Algorithms
 
 The JCT makes its calculations according to a defined algorithm.
@@ -94,5 +88,5 @@ Each of these analyses contains:
 * Qualifications for compliance - any guidance that the user needs to understand their compliance result in the context of the query.
 * An audit trail for the decision - a record of the checks that took place in order to come to this conclusion
 
-There will be no attempt to indicate a priority or preference for any compliance route, as the best route to compliance may be different per user.
+The best route to compliance may be different for each user.
 Note also that the presence of 4 or more results does not imply that all these results need to be shown to the user. It will be up to the UI and the API to decide whether they expose Non-Compliant/Unknown results, and if so in what way.
