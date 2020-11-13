@@ -151,6 +151,7 @@ jct.choose = (e, el, which) => {
         jct.d.gebi('institution').focus();
     } else {
         jct.d.gebi('institution').blur();
+        jct.d.gebi('notHE').checked = false;
     }
     _calculate_if_all_data_provided();
 }
@@ -565,12 +566,6 @@ jct.setup = () => {
     // jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
     // jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
     // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
-    jct.d.gebi("notHE").addEventListener("click", _calculate_if_all_data_provided)
-    jct.d.gebi("notHE").addEventListener("click", (event) => {
-        if (event.target.checked) {
-            jct.clinputs.institition.clear()
-        }
-    })
 
     jct.clinputs.journal = clinput.init({
         element: jct.d.gebi("journal-container"),
@@ -740,6 +735,14 @@ jct.setup = () => {
     document.querySelectorAll(".select_option").forEach(item => {
         item.addEventListener("click", jct.choose);
     });
+
+    jct.d.gebi("notHE").addEventListener("click", (event) => {
+        if (event.target.checked && jct.chosen.institution) {
+            jct.clinputs.institution.clear();
+            jct.chosen.institution = "";
+        }
+        _calculate_if_all_data_provided();
+    })
 }
 
 jct._sug = (focused) => {
