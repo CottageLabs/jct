@@ -36,7 +36,6 @@ clinput.CLInput = class {
         let input = document.getElementById(this.id);
         input.addEventListener("focus", () => {this.activateInput()});
         input.addEventListener("blur", () => {this.recordSearchValue()});
-        // input.addEventListener("blur", () => {this.unsetTimer()})
         input.addEventListener("keydown", (e) => {
             let entries = document.getElementsByClassName("clinput__option_"+this.id);
             let arrowPress = (code, entries) => {
@@ -59,8 +58,17 @@ clinput.CLInput = class {
 
     recordSearchValue() {
         let input = document.getElementById(this.id);
-        this.lastSearchValue = input.value;
-        this.selectedObject = false;
+        let newVal = input.value;
+        if (newVal !== this.lastSearchValue) {
+            this.lastSearchValue = input.value;
+            this.selectedObject = false;
+        }
+
+        if (this.selectedObject) {
+            this.showSelectedObject()
+        } else {
+            this._setInputValue("");
+        }
     }
 
     _setInputValue(val) {
@@ -193,10 +201,10 @@ clinput.CLInput = class {
                 this.chooseOption(e,i);
             });
             entries[i].addEventListener("focus", () => {
-                //this.highlighted(entries[i], true);
+                this._setInputValue(this.lastSearchValue);
             });
             entries[i].addEventListener("blur", () => {
-                //this.highlighted(entries[i], false);
+                this.recordSearchValue();
             });
             entries[i].addEventListener("keydown", (e) => {
                 let arrowPress = (code, entries) => {
@@ -234,8 +242,8 @@ clinput.CLInput = class {
         let options = document.getElementsByClassName("clinput__options_" + this.id);
         options[0].innerHTML = "";
         this.lastSearchValue = input.value;
-        this._setInputValue(this.selectedTemplate(this.options[idx]));
         this.selectedObject = this.options[idx];
+        this.showSelectedObject();
         this.onChoice(e,this.options[idx]);
     }
 
@@ -248,14 +256,8 @@ clinput.CLInput = class {
         }
     }
 
-    highlighted(element, highlight) {
-
-        if (highlight) {
-            element.style.backgroundColor = "grey";
-        }
-        else {
-            element.style.backgroundColor = "transparent";
-        }
+    showSelectedObject() {
+        this._setInputValue(this.selectedTemplate(this.selectedObject));
     }
 }
 
