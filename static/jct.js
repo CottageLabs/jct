@@ -431,7 +431,7 @@ jct.self_archiving_tile = (journal_title) => {
 </svg>
 </span>
           <h4 class="label">Self-archiving</h4>
-          <p>Following acceptance deposit your author accepted manuscript in a repository without emabrgo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
+          <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
           <p><em>` + journal_title + `</em> has a Plan S aligned self-archiving policy.</p>
           <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="sa_modal_button">
         </article>
