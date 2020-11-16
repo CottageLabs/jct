@@ -181,10 +181,8 @@ jct.success = (xhr) => {
     jct.d.gebi('notcompliant').style.display = 'none';
     jct.d.gebi("loading").style.display = "none";
     let js = JSON.parse(xhr.response);
-    // if (xhr.response.startsWith('[')) js = js[0];
-    // if (jct.suggesting) {
-    //     jct.suggestions(js);
-    // } else {
+    if (!jct.result_equals_chosen(js.request))
+        return;
     jct.latest_response = js.results;
     let paths_results = jct.d.gebi("paths_results");
     _emptyElement(paths_results)
@@ -210,9 +208,6 @@ jct.success = (xhr) => {
         jct._addNonCompliantOptions();
     }
     jct.explain(js)
-
-// TODO may want to add further info to the compliant/notcompliant or result box about the compliance details
-//     }
 }
 
 jct._addNonCompliantOptions = () => {
@@ -786,4 +781,19 @@ jct.d.toggle_detailed_results = () => {
     } else {
         jct.d.hide_detailed_results();
     }
+}
+
+jct.result_equals_chosen = (js) => {
+    // jct.chosen holds the current chosen object
+    // js is the result request
+    // The journal and funder should exist and ids should be equal
+    j_matches = (jct.chosen.journal && js.journal) ?
+                (jct.chosen.journal.id === js.journal[0].id) : false;
+    f_matches = (jct.chosen.funder && js.funder) ?
+                (jct.chosen.funder.id === js.funder[0].id) : false;
+    // The institution may not exist in case of notHE.
+    // If the objects exist, the ids should be equal
+    i_matches = (jct.chosen.institution && js.institution) ?
+                (jct.chosen.institution.id === js.institution[0].id) : true;
+    return ( j_matches && i_matches && f_matches );
 }
