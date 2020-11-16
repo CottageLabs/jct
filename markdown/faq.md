@@ -90,8 +90,11 @@ The journals should provide you with additional information that will allow you 
 
 If you are unsure about your preferred journal's ISSN, you should be able to find it on their website
 
-
 ## I can't find my institution by its acronym
 
 We don't necessarily know all the acronyms and name variants for all institutions.  Try
 looking for your institution by its full name or any other names it is known by.
+
+## How does the JCT calculate its results?
+
+You can read a little more about how the JCT works - how it is configured, the data sources it relies on, the algorithms it uses, its API and data outputs - on the [*How the Journal Checker Tool works*](/how-it-works) page.
