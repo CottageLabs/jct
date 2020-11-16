@@ -77,6 +77,12 @@ clinput.CLInput = class {
         input.setAttribute("title", val);
     }
 
+    clear() {
+        this._setInputValue("");
+        this.selectedObject = false;
+        this.lastSearchValue = "";
+    }
+
     activateInput() {
         let input = document.getElementById(this.id);
         this._setInputValue(this.lastSearchValue);
