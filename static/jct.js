@@ -1,5 +1,5 @@
 let jct = {
-    api: 'https://api.jct.cottagelabs.com',
+    api: JCT_API_endpoint,
     delay: 500,
     cache: {},
     chosen: {},
