@@ -15,22 +15,39 @@ The JCT is divided into two components - a *backend* and a *frontend*.
 
 ## <a name="data_sources"></a>Data Sources
 
-A number of data sources are used by the JCT to aid its calculation of Plan S compliance:
+A number of data sources are used by the JCT to inform its calculation of Plan S compliance.
 
-* [DOAJ (Directory of Open Access Journals)](https://doaj.org/)
-* [Open Access Button](https://openaccessbutton.org/)
-* [ESAC Agreement Registry](https://esac-initiative.org/about/transformative-agreements/agreement-registry/)
-* [Crossref](https://www.crossref.org/)
-* [ROR](https://ror.org)
+### DOAJ (Directory of Open Access Journals)
+
+[DOAJ](https://doaj.org/) provides a high quality, manually curated list of fully OA journals, and is therefore perfectly suited to the *full OA* compliance check for Plan S. DOAJ provides a curated data feed to JCT.
+
+### Open Access Button
+
+Open Access Button Permission System provides clear information on how 85% of papers can be self-archived. Information provided includes which versions can be shared, licenses allowed, computed deposit statements and embargoes. Open Access Button provides a curated data feed to JCT.
+
+### ESAC Agreement Registry
+
+[The ESAC Agreement Registry](https://esac-initiative.org/about/transformative-agreements/agreement-registry/) is a community-curated registry of *[Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/)* (TAs) between publishers on the one hand and consortia representing academic institutions on the other. The Plan S policy for recognising a TA requires that it be registered in ESAC. Therefore, the JCT derives its list of recognised TAs from the ESAC website.
+
+### ROR (Research Organisation Registry)
+
+JCT uses the [ROR](https://ror.org) identifier to uniquely identify academic institutions in the system.
+
+### Other data sources
+
+JCT makes use of other data sources to supply information about journals and institutions - including:
+
+* [Crossref](https://www.crossref.org/) 
+* [ISSN Portal](https://portal.issn.org)
+* [GRID](https://www.grid.ac)
+* [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page)
 
 
 
 ## <a name="caches"></a>Caches
 
 The data used in the JCT calculation is both very large (millions of records) and distributed across the global 
-network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of some of this data. These caches are "refreshed" according to the schedule below. Refreshing the caches picks up new records as well as updates to existing records.
-
-<mark>TODO: cache update schedule</mark>
+network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of some of this data. These caches are "refreshed" regularly. Refreshing the caches picks up new records as well as updates to existing records.
 
 
 
