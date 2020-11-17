@@ -28,7 +28,7 @@ not a member of cOAlition S and, in this case, the Plan S compliance rules do no
 ## My institution is not listed - what should I do?
 
 If you cannot find your institution in the list of known institutions, you can
-select the checkbox labelled "Not part of HE" to perform a compliance check without
+select the checkbox labelled "No affiliation" to perform a compliance check without
 taking into account your institution.
 
 You may be able to locate your institution under one of its name variants,
