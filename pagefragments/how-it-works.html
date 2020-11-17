@@ -1,32 +1,32 @@
 <h1>How the Journal Checker Tool works</h1>
-<p>The Journal Checker Tool (JCT) is provided by cOAlition S to authors to support them in finding Plan S compliant 
-"routes" through which to publish their articles. The tool allows an author to enter the name of a funder, an 
-institution and the journal to which they plan to submit an article, and checks if this combination of funder, 
-institution and journal offers any route to compliance with Plan S.</p>
+<p>The Journal Checker Tool (JCT) is provided by cOAlition S to authors to support them in finding Plan S compliant "routes" through which to publish their articles. The tool allows an author to enter the name of a funder, an institution and the journal to which they plan to submit an article, and checks if this combination of funder, institution and journal offers any route to compliance with Plan S.</p>
 <h2><a name="architecture"></a>Architecture</h2>
 <p>The JCT is divided into two components - a <em>backend</em> and a <em>frontend</em>.</p>
 <p><strong>Back-end:</strong> the back-end component harvests and <a href="#caches">caches</a> data from a number of significant 
-<a href="#data_sources">data sources</a>, handles search requests via an API, and executes several <a href="#algorithms">algorithms</a> 
-used to determine compliance with the Plan S policies. The back-end is designed in such a way that it may be used in 
-other, third-party webservices as an <a href="#embeddable-plugin">embeddable-plugin</a>.</p>
-<p><strong>Front-end:</strong> the front-end component is the part that most users see, providing the search form and results screen, 
-as well as documents such as FAQs etc.</p>
+<a href="#data_sources">data sources</a>, handles search requests via an API, and executes several <a href="#algorithms">algorithms</a> used to determine compliance with the Plan S policies. The back-end is designed in such a way that it may be used in other, third-party webservices as an <a href="#embeddable-plugin">embeddable-plugin</a>.</p>
+<p><strong>Front-end:</strong> the front-end component is the part that most users see, providing the search form and results screen, as well as documents such as FAQs etc.</p>
 <p><strong>Codebase:</strong> <a href="https://github.com/CottageLabs/jct">https://github.com/CottageLabs/jct</a></p>
 <h2><a name="data_sources"></a>Data Sources</h2>
-<p>A number of data sources are used by the JCT to aid its calculation of Plan S compliance:</p>
+<p>A number of data sources are used by the JCT to inform its calculation of Plan S compliance.</p>
+<h3>DOAJ (Directory of Open Access Journals)</h3>
+<p><a href="https://doaj.org/">DOAJ</a> provides a high quality, manually curated list of fully OA journals, and is therefore perfectly suited to the <em>full OA</em> compliance check for Plan S. DOAJ provides a curated data feed to JCT.</p>
+<h3>Open Access Button</h3>
+<p>Open Access Button Permission System provides clear information on how 85% of papers can be self-archived. Information provided includes which versions can be shared, licenses allowed, computed deposit statements and embargoes. Open Access Button provides a curated data feed to JCT.</p>
+<h3>ESAC Agreement Registry</h3>
+<p><a href="https://esac-initiative.org/about/transformative-agreements/agreement-registry/">The ESAC Agreement Registry</a> is a community-curated registry of <em><a href="https://esac-initiative.org/about/transformative-agreements/">Transformative Agreements</a></em> (TAs) between publishers on the one hand and consortia representing academic institutions on the other. The Plan S policy for recognising a TA requires that it be registered in ESAC. Therefore, the JCT derives its list of recognised TAs from the ESAC website.</p>
+<h3>ROR (Research Organisation Registry)</h3>
+<p>JCT uses the <a href="https://ror.org">ROR</a> identifier to uniquely identify academic institutions in the system.</p>
+<h3>Other data sources</h3>
+<p>JCT makes use of other data sources to supply information about journals and institutions - including:</p>
 <ul>
-<li><a href="https://doaj.org/">DOAJ (Directory of Open Access Journals)</a></li>
-<li><a href="https://openaccessbutton.org/">Open Access Button</a></li>
-<li><a href="https://esac-initiative.org/about/transformative-agreements/agreement-registry/">ESAC Agreement Registry</a></li>
-<li><a href="https://www.crossref.org/">Crossref</a></li>
-<li><a href="https://ror.org">ROR</a></li>
+<li><a href="https://www.crossref.org/">Crossref</a> </li>
+<li><a href="https://portal.issn.org">ISSN Portal</a></li>
+<li><a href="https://www.grid.ac">GRID</a></li>
+<li><a href="https://www.wikidata.org/wiki/Wikidata:Main_Page">Wikidata</a></li>
 </ul>
 <h2><a name="caches"></a>Caches</h2>
 <p>The data used in the JCT calculation is both very large (millions of records) and distributed across the global 
-network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of 
-some of this data. These caches are "refreshed" according to the schedule below. Refreshing the caches picks up new 
-records as well as updates to existing records.</p>
-<p><mark>TODO: cache update schedule</mark></p>
+network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of some of this data. These caches are "refreshed" regularly. Refreshing the caches picks up new records as well as updates to existing records.</p>
 <h2><a name="api"></a>API</h2>
 <p>The API to the the back-end component of the JCT is used by the front-end component, as well as by the 
 <a href="#embeddable-plugin">embeddable plugin</a>. This API is also made openly available so that others may use it directly. 
@@ -62,11 +62,7 @@ The API is <a href="/apidocs">documented here</a>.</p>
 </tr>
 </tbody>
 </table>
-<p>Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there 
-are compliance routes documented here which do not <em>require</em> either Funder or Institution. Nonetheless, Funder and 
-Institution data is essential to give the user a complete picture of the compliance space for their context. The 
-algorithm is specified to allow these <em>partial</em> queries in order to allow us to build predictive or reactive responses 
-to users as they start to assemble their queries via the UI.</p>
+<p>Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there  are compliance routes documented here which do not <em>require</em> either Funder or Institution. Nonetheless, Funder and Institution data is essential to give the user a complete picture of the compliance space for their context. The algorithm is specified to allow these <em>partial</em> queries in order to allow us to build predictive or reactive responses to users as they start to assemble their queries via the UI.</p>
 <h3>Outputs</h3>
 <p>The output of the algorithm consists of a set of 4 or more compliance analyses for the various input combinations. 
 Each of these analyses contains:</p>
