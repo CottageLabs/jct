@@ -31,9 +31,6 @@ For each route, there is a general response format:
 
 ```json
 {
-  "started" : "<timestamp at which execution started for this route>",
-  "ended" : "<timestamp at which execution completed for this route>",
-  "took" : "<time in ms between start and end>",
   "route" : "<the type id of the route (see below)>",
   "compliant" : "<the compliance type id of the route (see below)",
   "qualifications" : [
@@ -109,12 +106,20 @@ In the above example there is no `url` parameter to visit, but if the record wer
     "started" : "<start timestamp of the request>",
     "ended" : "<end timestamp of the request>",
     "took" : "<the time in ms between request start and end (on the server, not including travel time)>",
-    "journal" : [{"id": "<journal issn>", "title": "journal title", ...}],
+    "journal" : [
+      {
+        "id": "<journal issn>", 
+        "title": "journal title", 
+        "issn" : ["<all of the matching issn's for this journal>"]
+      },
+      ...
+    ],
     "funder" : [{"id": "<funder ID>", "title": "funder title", ...}],
     "institution" : [{"id": "<institution ROR>", "title": "institution title", ...}],
     "checks": ["permission","doaj","ta","tj"]
   },
-  "compliant" : true/false, # (if there is any compliant: "yes" result, this is true. Otherwise false.
+  "compliant" : true/false, # (if there is any compliant: "yes" result, this is true. Otherwise false.),
+  "retention" : true/false, # (If a check was made for retention.),
   "results" : [
     <route responses as per the above>
   ]  
