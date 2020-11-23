@@ -787,13 +787,13 @@ jct.result_equals_chosen = (js) => {
     // jct.chosen holds the current chosen object
     // js is the result request
     // The journal and funder should exist and ids should be equal
-    j_matches = (jct.chosen.journal && js.journal) ?
+    j_matches = (jct.chosen.journal && js.journal && js.journal[0]) ?
                 (jct.chosen.journal.id === js.journal[0].id) : false;
-    f_matches = (jct.chosen.funder && js.funder) ?
+    f_matches = (jct.chosen.funder && js.funder && js.funder[0]) ?
                 (jct.chosen.funder.id === js.funder[0].id) : false;
     // The institution may not exist in case of notHE.
     // If the objects exist, the ids should be equal
-    i_matches = (jct.chosen.institution && js.institution) ?
+    i_matches = (jct.chosen.institution && js.institution && js.institution[0]) ?
                 (jct.chosen.institution.id === js.institution[0].id) : true;
     return ( j_matches && i_matches && f_matches );
 }
