@@ -73,9 +73,6 @@ before responding to the request.</p>
 <h3>Per-Route response data</h3>
 <p>For each route, there is a general response format:</p>
 <pre><code class="json">{
-  &quot;started&quot; : &quot;&lt;timestamp at which execution started for this route&gt;&quot;,
-  &quot;ended&quot; : &quot;&lt;timestamp at which execution completed for this route&gt;&quot;,
-  &quot;took&quot; : &quot;&lt;time in ms between start and end&gt;&quot;,
   &quot;route&quot; : &quot;&lt;the type id of the route (see below)&gt;&quot;,
   &quot;compliant&quot; : &quot;&lt;the compliance type id of the route (see below)&quot;,
   &quot;qualifications&quot; : [
@@ -156,12 +153,20 @@ before responding to the request.</p>
     &quot;started&quot; : &quot;&lt;start timestamp of the request&gt;&quot;,
     &quot;ended&quot; : &quot;&lt;end timestamp of the request&gt;&quot;,
     &quot;took&quot; : &quot;&lt;the time in ms between request start and end (on the server, not including travel time)&gt;&quot;,
-    &quot;journal&quot; : [{&quot;id&quot;: &quot;&lt;journal issn&gt;&quot;, &quot;title&quot;: &quot;journal title&quot;, ...}],
+    &quot;journal&quot; : [
+      {
+        &quot;id&quot;: &quot;&lt;journal issn&gt;&quot;, 
+        &quot;title&quot;: &quot;journal title&quot;, 
+        &quot;issn&quot; : [&quot;&lt;all of the matching issn's for this journal&gt;&quot;]
+      },
+      ...
+    ],
     &quot;funder&quot; : [{&quot;id&quot;: &quot;&lt;funder ID&gt;&quot;, &quot;title&quot;: &quot;funder title&quot;, ...}],
     &quot;institution&quot; : [{&quot;id&quot;: &quot;&lt;institution ROR&gt;&quot;, &quot;title&quot;: &quot;institution title&quot;, ...}],
     &quot;checks&quot;: [&quot;permission&quot;,&quot;doaj&quot;,&quot;ta&quot;,&quot;tj&quot;]
   },
-  &quot;compliant&quot; : true/false, # (if there is any compliant: &quot;yes&quot; result, this is true. Otherwise false.
+  &quot;compliant&quot; : true/false, # (if there is any compliant: &quot;yes&quot; result, this is true. Otherwise false.),
+  &quot;retention&quot; : true/false, # (If a check was made for retention.),
   &quot;results&quot; : [
     &lt;route responses as per the above&gt;
   ]  
