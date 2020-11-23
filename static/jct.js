@@ -786,13 +786,14 @@ jct.d.toggle_detailed_results = () => {
 jct.result_equals_chosen = (js) => {
     // jct.chosen holds the current chosen object
     // js is the result request
-    // The journal and funder should exist and ids should be equal
+    // The chosen journal id should exist in the list of ISSNs returned by the request. If no data, going with true
     j_matches = (jct.chosen.journal && js.journal && js.journal[0]) ?
-                (js.journal[0].issn.includes(jct.chosen.journal.id)) : false;
+                (js.journal[0].issn.includes(jct.chosen.journal.id)) : true;
+    // The funder ids should be equal. If no data, going with true
     f_matches = (jct.chosen.funder && js.funder && js.funder[0]) ?
-                (jct.chosen.funder.id === js.funder[0].id) : false;
+                (jct.chosen.funder.id === js.funder[0].id) : true;
     // The institution may not exist in case of notHE.
-    // If the objects exist, the ids should be equal
+    // The institution ids should be equal. If no data, going with true
     i_matches = (jct.chosen.institution && js.institution && js.institution[0]) ?
                 (jct.chosen.institution.id === js.institution[0].id) : true;
     return ( j_matches && i_matches && f_matches );
