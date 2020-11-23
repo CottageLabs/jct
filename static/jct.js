@@ -788,7 +788,7 @@ jct.result_equals_chosen = (js) => {
     // js is the result request
     // The journal and funder should exist and ids should be equal
     j_matches = (jct.chosen.journal && js.journal && js.journal[0]) ?
-                (jct.chosen.journal.id === js.journal[0].id) : false;
+                (js.journal[0].issn.includes(jct.chosen.journal.id)) : false;
     f_matches = (jct.chosen.funder && js.funder && js.funder[0]) ?
                 (jct.chosen.funder.id === js.funder[0].id) : false;
     // The institution may not exist in case of notHE.
