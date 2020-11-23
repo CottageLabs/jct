@@ -135,7 +135,7 @@ let _calculate_if_all_data_provided = () => {
         }
         //for dev purposes
         //qr.retention = true;
-        qr.checks = "permission,doaj,ta,tj"
+        // qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
         jct.d.gebi("loading").style.display = "block";
     }
@@ -454,54 +454,24 @@ jct.sa_rights_retention_tile = (journal_title) => {
 
 
 jct.jx = (route,q,after,api) => {
-    let url = api ? api : jct.api;
-    if (!url.endsWith('/')) url += '/';
-    if (route) url += route.startsWith('/') ? route.replace('/','') : route;
-    if (typeof q === 'string') {
-        url += (url.indexOf('?') === -1 ? '?' : '&') + (q.indexOf('=') === -1 ? 'q=' : '') + q;
-    } else if (typeof q === 'object' ) {
-        if (url.indexOf('?') === -1) url += '?';
-        for ( let p in q ) url += p + '=' + q[p] + '&'
+    let base_url = api ? api : jct.api;
+    let url;
+    if (route) {
+        url = new URL(route, base_url);
+    } else {
+        url = new URL(base_url);
     }
+    let searchParams = new URLSearchParams(q);
+    for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
+    xhr.open('GET', url.href);
     xhr.send();
     xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
     xhr.onprogress = (e) => { jct.progress(e); };
     xhr.onerror = () => { jct.error(); };
 }
 
-// jct.suggestions = (suggs, cached) => {
-//     jct.d.gebi('compliant').style.display = 'none';
-//     jct.d.gebi('notcompliant').style.display = 'none';
-//     let sgst = '';
-//     let sd = jct.d.gebi('suggest'+jct.suggesting);
-//     let typed = jct.d.gebi(jct.suggesting).value.toLowerCase();
-//     let update = false;
-//     let l = (suggs.data && suggs.data.length > jct.MAX_SUGGS_LENGTHS) ? jct.MAX_SUGGS_LENGTHS : suggs.data.length;
-//     for ( let s = 0; s < l; s++ ) {
-//         let t = suggs.data[s].title;
-//         let tl = t.toLowerCase();
-//         sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
-//     }
-//     if (sgst.length) {
-//         sd.innerHTML = sgst;
-//         jct.d.each("choose", function(el) { el.addEventListener('click', jct.choose); });
-//     }
-// }
-
 jct.waiting = false;
-// jct.suggest = (focused) => {
-//     let typed = jct.d.gebi(focused).value.toLowerCase().replace(' of','').replace('the ','');
-//     if (typed.length === 0) {
-//         jct.d.each('suggest','innerHTML','');
-//     } else {
-//         if (typed.length > 1) {
-//             jct.suggesting = focused;
-//             jct.jx('/suggest/'+focused+'/'+typed);
-//         }
-//     }
-// }
 
 jct.setTimer = () => {
     jct._setComplianceTheme();
@@ -557,10 +527,6 @@ jct.setup = () => {
         Institution: "",
         notHE: ""
     }
-
-    // jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
-    // jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
-    // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
 
     jct.clinputs.journal = clinput.init({
         element: jct.d.gebi("journal-container"),
