@@ -105,7 +105,7 @@ clinput.CLInput = class {
                         }
                     }
                 } else {
-                    if (v.toLowerCase().includes(lsv)) {
+                    if (v && v.toLowerCase().includes(lsv)) {
                         this._setInputValue(v);
                         break keycheck;
                     }
