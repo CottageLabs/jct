@@ -115,7 +115,6 @@ jct.explain = (q) => {
                 break;
         }
     })
-    let issns = q.request.journal[0].issn.join(", ");
 
     let text =
         `
@@ -127,7 +126,7 @@ jct.explain = (q) => {
             <li>Journal: </li>
             <ul class="second">
                 <li> ` + q.request.journal[0].title +
-                ` (ISSN: ` + issns + `)</li>
+                ` (ISSN: ` + q.request.journal[0].id + `)</li>
                 <li> Publisher: ` + (q.request.journal[0].publisher !== undefined ? q.request.journal[0].publisher : "Not known") + `</li>
             </ul>
             <li>Funder: ` + q.request.funder[0].title + `</li>`
