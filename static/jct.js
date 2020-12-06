@@ -553,10 +553,10 @@ jct._calculate_if_all_data_provided = () => {
     jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("jct_notHE").checked)) {
         jct.suggesting = false;
-        let qr = {journal: jct.chosen.journal.id};
+        let qr = {issn: jct.chosen.journal.id};
         qr.funder = jct.chosen.funder.id;
         if (jct.chosen.institution) {
-            qr.institution = jct.chosen.institution.id;
+            qr.ror = jct.chosen.institution.id;
         }
         jct.jx('/calculate', qr);
         jct.d.gebi("jct_loading").style.display = "block";
