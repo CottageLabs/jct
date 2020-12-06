@@ -67,7 +67,7 @@ clinput.CLInput = class {
         if (this.selectedObject) {
             this.showSelectedObject()
         } else {
-            this._setInputValue("");
+            this._setInputValue(this.lastSearchValue);
         }
     }
 
