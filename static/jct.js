@@ -458,8 +458,10 @@ jct.jx = (route,q,after,api) => {
     } else {
         url = new URL(base_url);
     }
-    let searchParams = new URLSearchParams(q);
-    for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
+    if (!q === false) {
+        let searchParams = new URLSearchParams(q);
+        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
+    }
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url.href);
     xhr.send();
