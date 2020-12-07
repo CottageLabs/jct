@@ -470,14 +470,12 @@ jct.feedback_modal_html = `
             </p>
          </div>
     </div>
-
 `;
 
 // ----------------------------------------
 // Function add modal containers
 // ----------------------------------------
-jct.add_modal_containers = (only_feedback=false) => {
-    let modal_div = jct.d.gebi("jct_modal_container");
+jct.add_modal_containers = (modal_div, only_feedback=false) => {
     let modal_container_html = jct.feedback_modal_html;
     if (only_feedback === false) {
         modal_container_html += jct.ta_modal_html +
@@ -487,51 +485,52 @@ jct.add_modal_containers = (only_feedback=false) => {
             jct.preferred_modal_html +
             jct.help_modal_html;
     }
-    if (modal_div.children.length == 0) {
-        modal_div.innerHTML = modal_container_html;
-    }
+    modal_div.innerHTML = modal_container_html;
 }
 
 // ----------------------------------------
 // Function to setup modal on the page
 // ----------------------------------------
 jct.setup_modals = (only_feedback=false) => {
-    // Add the modal html and event handlers
-    jct.add_modal_containers(only_feedback);
+    let modal_div = jct.d.gebi("jct_modal_container");
+    if (modal_div.children.length == 0) {
+        // Add the modal html and event handlers
+        jct.add_modal_containers(modal_div, only_feedback);
 
-    if (jct.d.gebi('jct_open_help_modal')) {
-        jct.d.gebi('jct_open_help_modal').addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal = jct.d.gebi('jct_modal_help');
-            modal.style.display = 'block';
-        })
-    }
-
-    if (jct.d.gebi('feedback')) {
-        jct.d.gebi('feedback').addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal = jct.d.gebi('jct_modal_feedback')
-            jct.d.gebi('message').value = "";
-            jct.d.gebi('feedback_success').style.display = "none";
-            jct.d.gebi('feedback_error').style.display = "none";
-            modal.style.display = 'block';
-        });
-    }
-
-    window.onclick = (e) => {
-        let modals = [].slice.call(jct.d.gebc("modal"));
-        if (modals.includes(e.target)){
-            e.target.style.display = "none";
+        if (jct.d.gebi('jct_open_help_modal')) {
+            jct.d.gebi('jct_open_help_modal').addEventListener("click", (e) => {
+                e.preventDefault();
+                let modal = jct.d.gebi('jct_modal_help');
+                modal.style.display = 'block';
+            })
         }
-    }
 
-    jct.d.each("jct_modal_close", (el) => {
-        el.addEventListener("click", (e) => {
-            let id = e.target.getAttribute("data-id");
-            let modal = document.getElementById(id);
-            modal.style.display = "none";
+        if (jct.d.gebi('feedback')) {
+            jct.d.gebi('feedback').addEventListener("click", (e) => {
+                e.preventDefault();
+                let modal = jct.d.gebi('jct_modal_feedback')
+                jct.d.gebi('message').value = "";
+                jct.d.gebi('feedback_success').style.display = "none";
+                jct.d.gebi('feedback_error').style.display = "none";
+                modal.style.display = 'block';
+            });
+        }
+
+        window.onclick = (e) => {
+            let modals = [].slice.call(jct.d.gebc("modal"));
+            if (modals.includes(e.target)){
+                e.target.style.display = "none";
+            }
+        }
+
+        jct.d.each("jct_modal_close", (el) => {
+            el.addEventListener("click", (e) => {
+                let id = e.target.getAttribute("data-id");
+                let modal = document.getElementById(id);
+                modal.style.display = "none";
+            })
         })
-    })
+    }
 }
 
 // ----------------------------------------
