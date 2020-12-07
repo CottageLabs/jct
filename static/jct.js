@@ -550,7 +550,7 @@ jct.d.each = (cls, key, val) => {
         if (typeof key === 'function') {
             key(els[i]);
         } else {
-            els[i][key] = val; // TODO make this handle multiple depths of keys
+            els[i][key] = val;
         }
     }
 };
@@ -850,21 +850,6 @@ jct.result_equals_chosen = (js) => {
                 (jct.chosen.institution.id === js.institution[0].id) : true;
     return ( j_matches && i_matches && f_matches );
 }
-
-// ----------------------------------------
-// helper function to iterate over all
-// ----------------------------------------
-jct.d.each = (cls, key, val) => {
-    if (cls.indexOf('.') === 0) cls = cls.replace('.','');
-    let els = jct.d.gebc(cls);
-    for ( let i = 0; i < els.length; i++ ) {
-        if (typeof key === 'function') {
-            key(els[i]);
-        } else {
-            els[i][key] = val; // TODO make this handle multiple depths of keys
-        }
-    }
-};
 
 // ----------------------------------------
 // ToDo: Not sure if this is used.
