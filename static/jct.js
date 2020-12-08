@@ -908,7 +908,6 @@ jct.result_equals_chosen = (js) => {
 // ----------------------------------------
 jct.clinputs = {};
 jct.setup = () => {
-    AOS.init();
     jct.setup_modals();
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
