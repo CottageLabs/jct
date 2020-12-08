@@ -497,23 +497,14 @@ jct.setup_modals = (only_feedback=false) => {
         // Add the modal html and event handlers
         jct.add_modal_containers(modal_div, only_feedback);
 
+        jct.setup_feedback_modal();
+
         if (jct.d.gebi('jct_open_help_modal')) {
             jct.d.gebi('jct_open_help_modal').addEventListener("click", (e) => {
                 e.preventDefault();
                 let modal = jct.d.gebi('jct_modal_help');
                 modal.style.display = 'block';
             })
-        }
-
-        if (jct.d.gebi('feedback')) {
-            jct.d.gebi('feedback').addEventListener("click", (e) => {
-                e.preventDefault();
-                let modal = jct.d.gebi('jct_modal_feedback')
-                jct.d.gebi('message').value = "";
-                jct.d.gebi('feedback_success').style.display = "none";
-                jct.d.gebi('feedback_error').style.display = "none";
-                modal.style.display = 'block';
-            });
         }
 
         window.onclick = (e) => {
