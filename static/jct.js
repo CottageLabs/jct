@@ -993,7 +993,8 @@ jct.setup = () => {
             let match = text.match(rx);
             if (match) {
                 return {
-                    issn: [text]
+                    issn: [text],
+                    id: text
                 }
             }
             return false;

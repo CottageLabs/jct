@@ -65,14 +65,16 @@ jct.explain = (q) => {
         <p>`  + statement + `</p>
         <p>`  + explanation + `</p>`
 
-        r.log.forEach((log) => {
-            route += "<ul><li>" + log.action + "</li>"
-            route += "<ul><li>" + log.result + "</li>"
-            if (log.url) {
-                route += "<li>" + log.url + "</li>"
-            }
-            route += "</ul></ul>"
-        })
+        if (r.log) {
+            r.log.forEach((log) => {
+                route += "<ul><li>" + log.action + "</li>"
+                route += "<ul><li>" + log.result + "</li>"
+                if (log.url) {
+                    route += "<li>" + log.url + "</li>"
+                }
+                route += "</ul></ul>"
+            })
+        }
 
         if (r.compliant === "yes") {
             compliant_routes_number++;
@@ -115,7 +117,14 @@ jct.explain = (q) => {
                 break;
         }
     })
-    let issns = q.request.journal[0].issn.join(", ");
+    let issns = jct.chosen.journal.issn.join(", ");
+    let publisher = jct.chosen.journal.publisher !== undefined ? jct.chosen.journal.publisher : "Not known";
+
+    let journal = "Unknown Title"
+    if (jct.chosen.journal.title) {
+        journal = jct.chosen.journal.title;
+    }
+    journal += " (ISSN: " + issns + ")";
 
     let text =
         `
@@ -126,17 +135,16 @@ jct.explain = (q) => {
         <ul>
             <li>Journal: </li>
             <ul class="second">
-                <li> ` + q.request.journal[0].title +
-                ` (ISSN: ` + issns + `)</li>
-                <li> Publisher: ` + (q.request.journal[0].publisher !== undefined ? q.request.journal[0].publisher : "Not known") + `</li>
+                <li> ` + journal + `</li>
+                <li> Publisher: ` + publisher + `</li>
             </ul>
-            <li>Funder: ` + q.request.funder[0].title + `</li>`
+            <li>Funder: ` + jct.chosen.funder.title + `</li>`
 
-    if ((q.request.institution.length > 0)){
+    if (jct.chosen.institution){
         text +=
             `
-            <li>Institution: ` + q.request.institution[0].title +
-                    ` (ROR: ` + q.request.institution[0].id + `)</li>`
+            <li>Institution: ` + jct.chosen.institution.title +
+                    ` (ROR: ` + jct.chosen.institution.id + `)</li>`
     }
     else {
         text += `<li>Not part of Higher Education</li>`
