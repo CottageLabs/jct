@@ -65,14 +65,16 @@ jct.explain = (q) => {
         <p>`  + statement + `</p>
         <p>`  + explanation + `</p>`
 
-        r.log.forEach((log) => {
-            route += "<ul><li>" + log.action + "</li>"
-            route += "<ul><li>" + log.result + "</li>"
-            if (log.url) {
-                route += "<li>" + log.url + "</li>"
-            }
-            route += "</ul></ul>"
-        })
+        if (r.log) {
+            r.log.forEach((log) => {
+                route += "<ul><li>" + log.action + "</li>"
+                route += "<ul><li>" + log.result + "</li>"
+                if (log.url) {
+                    route += "<li>" + log.url + "</li>"
+                }
+                route += "</ul></ul>"
+            })
+        }
 
         if (r.compliant === "yes") {
             compliant_routes_number++;
@@ -118,6 +120,12 @@ jct.explain = (q) => {
     let issns = jct.chosen.journal.issn.join(", ");
     let publisher = jct.chosen.journal.publisher !== undefined ? jct.chosen.journal.publisher : "Not known";
 
+    let journal = "Unknown Title"
+    if (jct.chosen.journal.title) {
+        journal = jct.chosen.journal.title;
+    }
+    journal += " (ISSN: " + issns + ")";
+
     let text =
         `
         <h3>Your query</h3>
@@ -127,8 +135,7 @@ jct.explain = (q) => {
         <ul>
             <li>Journal: </li>
             <ul class="second">
-                <li> ` + jct.chosen.journal.title +
-                ` (ISSN: ` + issns + `)</li>
+                <li> ` + journal + `</li>
                 <li> Publisher: ` + publisher + `</li>
             </ul>
             <li>Funder: ` + jct.chosen.funder.title + `</li>`
