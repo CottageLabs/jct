@@ -1,6 +1,6 @@
 import markdown, os, io
 
-files = ["apidocs", "transformative-agreements", "transformative-journals", "faq", "how-it-works", "notices"]
+files = ["apidocs", "transformative-agreements", "transformative-journals", "faq", "how-it-works", "notices", "widget"]
 
 for f in files:
     print("rendering",f)
