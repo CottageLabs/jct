@@ -115,7 +115,8 @@ jct.explain = (q) => {
                 break;
         }
     })
-    let issns = q.request.journal[0].issn.join(", ");
+    let issns = jct.chosen.journal.issn.join(", ");
+    let publisher = jct.chosen.journal.publisher !== undefined ? jct.chosen.journal.publisher : "Not known";
 
     let text =
         `
@@ -126,17 +127,17 @@ jct.explain = (q) => {
         <ul>
             <li>Journal: </li>
             <ul class="second">
-                <li> ` + q.request.journal[0].title +
+                <li> ` + jct.chosen.journal.title +
                 ` (ISSN: ` + issns + `)</li>
-                <li> Publisher: ` + (q.request.journal[0].publisher !== undefined ? q.request.journal[0].publisher : "Not known") + `</li>
+                <li> Publisher: ` + publisher + `</li>
             </ul>
-            <li>Funder: ` + q.request.funder[0].title + `</li>`
+            <li>Funder: ` + jct.chosen.funder.title + `</li>`
 
-    if ((q.request.institution.length > 0)){
+    if (jct.chosen.institution){
         text +=
             `
-            <li>Institution: ` + q.request.institution[0].title +
-                    ` (ROR: ` + q.request.institution[0].id + `)</li>`
+            <li>Institution: ` + jct.chosen.institution.title +
+                    ` (ROR: ` + jct.chosen.institution.id + `)</li>`
     }
     else {
         text += `<li>Not part of Higher Education</li>`
