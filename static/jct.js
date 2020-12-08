@@ -128,14 +128,11 @@ let _calculate_if_all_data_provided = () => {
     jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("notHE").checked)) {
         jct.suggesting = false;
-        let qr = {journal: jct.chosen.journal.id};
+        let qr = {issn: jct.chosen.journal.id};
         qr.funder = jct.chosen.funder.id;
         if (jct.chosen.institution) {
-            qr.institution = jct.chosen.institution.id;
+            qr.ror = jct.chosen.institution.id;
         }
-        //for dev purposes
-        //qr.retention = true;
-        // qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
         jct.d.gebi("loading").style.display = "block";
     }
@@ -461,8 +458,10 @@ jct.jx = (route,q,after,api) => {
     } else {
         url = new URL(base_url);
     }
-    let searchParams = new URLSearchParams(q);
-    for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
+    if (!q === false) {
+        let searchParams = new URLSearchParams(q);
+        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
+    }
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url.href);
     xhr.send();
