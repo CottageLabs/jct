@@ -90,6 +90,9 @@ A request against the compliance algorithm (such as via the Web API) can provide
 | Institution   | 0..*        | ROR ID        |
 
 Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there  are compliance routes documented here which do not *require* either Funder or Institution. Nonetheless, Funder and Institution data is essential to give the user a complete picture of the compliance space for their context.
+
+The ISSN is required. This constraint means that we can calculate compliance for journals **only if they are identified with an ISSN**.
+
 ### Outputs
 
 The output of the algorithm consists of a set of 4 or more compliance analyses for the various input combinations. 

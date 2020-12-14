@@ -52,34 +52,55 @@
     <div class="row row--centered">
         <div class="col col--1of2">
 <h1>JCT Public API</h1>
+<p>The api is available at <a href="https://api.journalcheckertool.org">https://api.journalcheckertool.org</a>.</p>
+<hr />
+<p><strong>NOTE</strong></p>
+<p>We are offering access to the early version of the api to enable programmatic access to the data. 
+This early version will be unsupported. Therefore we recommend that you do not integrate this API 
+into your production systems until we transition out of beta. <br><br>
+The API is rate limited to 10 requests per second, with burst up to 6000, with delay. Exceeding the limit will result in 429.</p>
+<hr />
 <h2>Request a compliance calculation</h2>
-<p>To carry out a compliance calculation, you can make the request in one of 2 ways.</p>
-<p>Via GET:</p>
+<p>To carry out a compliance calculation, you can make a get request, as detailed below.</p>
 <pre><code>GET /calculate?issn=[issn]&amp;ror=[ror]&amp;funder=[funder]
-</code></pre>
-
-<p>Via POST:</p>
-<pre><code>  POST /calculate
-
-  {
-    &quot;issn&quot; : &quot;&lt;a journal issn&gt;&quot;,
-    &quot;funder&quot; : [&quot;&lt;the funders&gt;&quot;],
-    &quot;ror&quot; : [&quot;&lt;the ror ids&gt;&quot;]
-  }
 </code></pre>
 
 <p>The server will execute the algorithm, and gather responses for all routes 
 before responding to the request.</p>
+<h3>Overall response format</h3>
+<pre><code class="json">{
+  &quot;request&quot; : {
+    &quot;started&quot; : &quot;&lt;start timestamp of the request&gt;&quot;,
+    &quot;ended&quot; : &quot;&lt;end timestamp of the request&gt;&quot;,
+    &quot;took&quot; : &quot;&lt;the time in ms between request start and end (on the server, not including travel time)&gt;&quot;,
+    &quot;journal&quot; : [
+      {
+        &quot;id&quot;: &quot;&lt;journal issn&gt;&quot;, 
+        &quot;title&quot;: &quot;journal title&quot;, 
+        &quot;issn&quot; : [&quot;&lt;all of the matching issn's for this journal&gt;&quot;]
+      },
+      ...
+    ],
+    &quot;funder&quot; : [{&quot;id&quot;: &quot;&lt;funder ID&gt;&quot;, &quot;title&quot;: &quot;funder title&quot;, ...}],
+    &quot;institution&quot; : [{&quot;id&quot;: &quot;&lt;institution ROR&gt;&quot;, &quot;title&quot;: &quot;institution title&quot;, ...}],
+    &quot;checks&quot;: [&quot;permission&quot;,&quot;doaj&quot;,&quot;ta&quot;,&quot;tj&quot;]
+  },
+  &quot;compliant&quot; : &quot;&lt;true/false&gt; # (if there is any compliant: 'yes' result, this is true. Otherwise false.)&quot;,
+  &quot;retention&quot; : &quot;&lt;true/false&gt; # (If a check was made for retention.)&quot;,
+  &quot;results&quot; : [
+    &lt;route responses as per the above&gt;
+  ]  
+}
+</code></pre>
+
 <h3>Per-Route response data</h3>
 <p>For each route, there is a general response format:</p>
 <pre><code class="json">{
-  &quot;started&quot; : &quot;&lt;timestamp at which execution started for this route&gt;&quot;,
-  &quot;ended&quot; : &quot;&lt;timestamp at which execution completed for this route&gt;&quot;,
-  &quot;took&quot; : &quot;&lt;time in ms between start and end&gt;&quot;,
   &quot;route&quot; : &quot;&lt;the type id of the route (see below)&gt;&quot;,
   &quot;compliant&quot; : &quot;&lt;the compliance type id of the route (see below)&quot;,
   &quot;qualifications&quot; : [
-    {&quot;&lt;qualification id (see below)&quot; : {&lt;qualification specific data (if needed)&gt;}
+    {&quot;&lt;qualification id&gt; (see below)&quot; : {&lt;qualification specific data (if needed)&gt;},
+    ...
   ],
   &quot;issn&quot; : &quot;&lt;the issn checked for this result, if there is one&gt;&quot;,
   &quot;funder&quot; : &quot;&lt;the funder checked on this result, if there is one&gt;&quot;,
@@ -150,32 +171,13 @@ before responding to the request.</p>
 </code></pre>
 
 <p>In the above example there is no <code>url</code> parameter to visit, but if the record were in DOAJ, for example, the URL would be the URL to the ToC in the DOAJ <code>https://doaj.org/toc/&lt;ISSN&gt;</code>.</p>
-<h3>Overall response format</h3>
-<pre><code class="json">{
-  &quot;request&quot; : {
-    &quot;started&quot; : &quot;&lt;start timestamp of the request&gt;&quot;,
-    &quot;ended&quot; : &quot;&lt;end timestamp of the request&gt;&quot;,
-    &quot;took&quot; : &quot;&lt;the time in ms between request start and end (on the server, not including travel time)&gt;&quot;,
-    &quot;journal&quot; : [{&quot;id&quot;: &quot;&lt;journal issn&gt;&quot;, &quot;title&quot;: &quot;journal title&quot;, ...}],
-    &quot;funder&quot; : [{&quot;id&quot;: &quot;&lt;funder ID&gt;&quot;, &quot;title&quot;: &quot;funder title&quot;, ...}],
-    &quot;institution&quot; : [{&quot;id&quot;: &quot;&lt;institution ROR&gt;&quot;, &quot;title&quot;: &quot;institution title&quot;, ...}],
-    &quot;checks&quot;: [&quot;permission&quot;,&quot;doaj&quot;,&quot;ta&quot;,&quot;tj&quot;]
-  },
-  &quot;compliant&quot; : true/false, # (if there is any compliant: &quot;yes&quot; result, this is true. Otherwise false.
-  &quot;results&quot; : [
-    &lt;route responses as per the above&gt;
-  ]  
-}
-</code></pre>
-
 <h2>Transformative Journals</h2>
-<p>Determine if a record is a transformative journal:</p>
+<p>Determine if a journal is a transformative journal, using the issn:</p>
 <pre><code>GET /tj/{issn}
 </code></pre>
 
 <p>Response format:</p>
 <pre><code class="json">{
-  &quot;timestamp&quot; : &quot;&lt;timestamp of request&gt;&quot;,
   &quot;issn&quot; : &quot;&lt;issn requested&gt;&quot;,
   &quot;transformative_journal&quot; : true
 }
@@ -188,22 +190,23 @@ before responding to the request.</p>
 
 <p>Response format:</p>
 <pre><code class="json">{
-  &quot;request&quot; : {
-    &quot;timestamp&quot; : &quot;&lt;timestamp of request&gt;&quot;,
-    &quot;issn&quot; : &quot;&lt;issn in the TA&gt;&quot;,
-    &quot;ror&quot; : &quot;&lt;ror in the TA&gt;&quot;
-  },
-  &quot;results&quot; : 
-    [
-      {
-        &quot;active&quot;: {
-          &quot;from_date&quot; : &quot;&lt;date this TA is active for the issn/ror&quot;,
-          &quot;to_date&quot; : &quot;&lt;date this TA ended for the issn/ror&quot;
-        },
-        &quot;plan_s_compliant&quot; : true|false
-        &quot;ta_id&quot; : &quot;&lt;id for the TA, possibly the ESAC one?&gt;&quot;
-        &quot;ta_url&quot; : &quot;&lt;a url to visit about the TA&gt;&quot;
-      }
+  &quot;started&quot; : &quot;&lt;start timestamp of the request&gt;&quot;,
+  &quot;ended&quot; : &quot;&lt;end timestamp of the request&gt;&quot;,
+  &quot;took&quot; : &quot;&lt;the time in ms between request start and end (on the server, not including travel time)&gt;&quot;,
+  &quot;route&quot; : &quot;&lt;ta&gt; # indicating a check for transformative agreement was done in the api&quot;,
+  &quot;compliant&quot; : &quot;&lt;true/false&gt; # (if there is an agreement, this is true. Otherwise false.)&quot;,
+  &quot;qualifications&quot; : [{
+      {&quot;&lt;qualification id&gt; (see below)&quot; : {&lt;qualification specific data (if needed)&gt;},
+    }
+    ...
+   ],
+  &quot;issn&quot; : &quot;&lt;issn in the TA&gt;&quot;,
+  &quot;ror&quot; : &quot;&lt;ror in the TA&gt;&quot;,
+  &quot;log&quot; : [
+    {
+      &quot;action&quot; : &quot;&lt;description of the action (see above for details.)&gt;&quot;,
+      &quot;result&quot; : &quot;&lt;the outcome of the action (optional, depending on circumstance)&gt;&quot;
+    }
    ]
 }
 </code></pre>
@@ -237,7 +240,7 @@ before responding to the request.</p>
                   67080 Strasbourg – France
               </address>
               <p>
-                Content on this site is licensed under a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">Creative Commons (CC BY) Attribution 4.0 International license</a>.
+                Content on this site is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/" target="blank" rel="noferrer noopener">Creative Commons (CC BY) Attribution 4.0 International license</a>.
               </p>
             </div>
             <div class="col col--1of2 col--right">

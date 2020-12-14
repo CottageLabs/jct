@@ -128,14 +128,11 @@ let _calculate_if_all_data_provided = () => {
     jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("notHE").checked)) {
         jct.suggesting = false;
-        let qr = {journal: jct.chosen.journal.id};
+        let qr = {issn: jct.chosen.journal.id};
         qr.funder = jct.chosen.funder.id;
         if (jct.chosen.institution) {
-            qr.institution = jct.chosen.institution.id;
+            qr.ror = jct.chosen.institution.id;
         }
-        //for dev purposes
-        //qr.retention = true;
-        qr.checks = "permission,doaj,ta,tj"
         jct.jx('/calculate', qr);
         jct.d.gebi("loading").style.display = "block";
     }
@@ -454,54 +451,26 @@ jct.sa_rights_retention_tile = (journal_title) => {
 
 
 jct.jx = (route,q,after,api) => {
-    let url = api ? api : jct.api;
-    if (!url.endsWith('/')) url += '/';
-    if (route) url += route.startsWith('/') ? route.replace('/','') : route;
-    if (typeof q === 'string') {
-        url += (url.indexOf('?') === -1 ? '?' : '&') + (q.indexOf('=') === -1 ? 'q=' : '') + q;
-    } else if (typeof q === 'object' ) {
-        if (url.indexOf('?') === -1) url += '?';
-        for ( let p in q ) url += p + '=' + q[p] + '&'
+    let base_url = api ? api : jct.api;
+    let url;
+    if (route) {
+        url = new URL(route, base_url);
+    } else {
+        url = new URL(base_url);
+    }
+    if (!q === false) {
+        let searchParams = new URLSearchParams(q);
+        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
     }
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
+    xhr.open('GET', url.href);
     xhr.send();
     xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
     xhr.onprogress = (e) => { jct.progress(e); };
     xhr.onerror = () => { jct.error(); };
 }
 
-// jct.suggestions = (suggs, cached) => {
-//     jct.d.gebi('compliant').style.display = 'none';
-//     jct.d.gebi('notcompliant').style.display = 'none';
-//     let sgst = '';
-//     let sd = jct.d.gebi('suggest'+jct.suggesting);
-//     let typed = jct.d.gebi(jct.suggesting).value.toLowerCase();
-//     let update = false;
-//     let l = (suggs.data && suggs.data.length > jct.MAX_SUGGS_LENGTHS) ? jct.MAX_SUGGS_LENGTHS : suggs.data.length;
-//     for ( let s = 0; s < l; s++ ) {
-//         let t = suggs.data[s].title;
-//         let tl = t.toLowerCase();
-//         sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
-//     }
-//     if (sgst.length) {
-//         sd.innerHTML = sgst;
-//         jct.d.each("choose", function(el) { el.addEventListener('click', jct.choose); });
-//     }
-// }
-
 jct.waiting = false;
-// jct.suggest = (focused) => {
-//     let typed = jct.d.gebi(focused).value.toLowerCase().replace(' of','').replace('the ','');
-//     if (typed.length === 0) {
-//         jct.d.each('suggest','innerHTML','');
-//     } else {
-//         if (typed.length > 1) {
-//             jct.suggesting = focused;
-//             jct.jx('/suggest/'+focused+'/'+typed);
-//         }
-//     }
-// }
 
 jct.setTimer = () => {
     jct._setComplianceTheme();
@@ -557,10 +526,6 @@ jct.setup = () => {
         Institution: "",
         notHE: ""
     }
-
-    // jct.d.gebi("funder").addEventListener("focus", jct.setTimer);
-    // jct.d.gebi("journal").addEventListener("focus", jct.setTimer);
-    // jct.d.gebi("institution").addEventListener("focus", jct.setTimer);
 
     jct.clinputs.journal = clinput.init({
         element: jct.d.gebi("journal-container"),
@@ -634,7 +599,8 @@ jct.setup = () => {
             let match = text.match(rx);
             if (match) {
                 return {
-                    issn: [text]
+                    issn: [text],
+                    id: text
                 }
             }
             return false;
@@ -786,14 +752,15 @@ jct.d.toggle_detailed_results = () => {
 jct.result_equals_chosen = (js) => {
     // jct.chosen holds the current chosen object
     // js is the result request
-    // The journal and funder should exist and ids should be equal
-    j_matches = (jct.chosen.journal && js.journal) ?
-                (jct.chosen.journal.id === js.journal[0].id) : false;
-    f_matches = (jct.chosen.funder && js.funder) ?
-                (jct.chosen.funder.id === js.funder[0].id) : false;
+    // The chosen journal id should exist in the list of ISSNs returned by the request. If no data, going with true
+    j_matches = (jct.chosen.journal && js.journal && js.journal[0]) ?
+                (js.journal[0].issn.includes(jct.chosen.journal.id)) : true;
+    // The funder ids should be equal. If no data, going with true
+    f_matches = (jct.chosen.funder && js.funder && js.funder[0]) ?
+                (jct.chosen.funder.id === js.funder[0].id) : true;
     // The institution may not exist in case of notHE.
-    // If the objects exist, the ids should be equal
-    i_matches = (jct.chosen.institution && js.institution) ?
+    // The institution ids should be equal. If no data, going with true
+    i_matches = (jct.chosen.institution && js.institution && js.institution[0]) ?
                 (jct.chosen.institution.id === js.institution[0].id) : true;
     return ( j_matches && i_matches && f_matches );
 }

@@ -1,29 +1,56 @@
 # JCT Public API
 
+The api is available at [https://api.journalcheckertool.org](https://api.journalcheckertool.org).
+
+
+---
+**NOTE**
+
+We are offering access to the early version of the api to enable programmatic access to the data. 
+This early version will be unsupported. Therefore we recommend that you do not integrate this API 
+into your production systems until we transition out of beta. <br><br>
+The API is rate limited to 10 requests per second, with burst up to 6000, with delay. Exceeding the limit will result in 429.
+---
+    
+
 ## Request a compliance calculation
 
-To carry out a compliance calculation, you can make the request in one of 2 ways.
-
-Via GET:
+To carry out a compliance calculation, you can make a get request, as detailed below.
 
 ```
 GET /calculate?issn=[issn]&ror=[ror]&funder=[funder]
 ```
 
-Via POST:
-
-```
-  POST /calculate
-
-  {
-    "issn" : "<a journal issn>",
-    "funder" : ["<the funders>"],
-    "ror" : ["<the ror ids>"]
-  }
-```
-
 The server will execute the algorithm, and gather responses for all routes 
 before responding to the request.
+
+### Overall response format
+
+```json
+{
+  "request" : {
+    "started" : "<start timestamp of the request>",
+    "ended" : "<end timestamp of the request>",
+    "took" : "<the time in ms between request start and end (on the server, not including travel time)>",
+    "journal" : [
+      {
+        "id": "<journal issn>", 
+        "title": "journal title", 
+        "issn" : ["<all of the matching issn's for this journal>"]
+      },
+      ...
+    ],
+    "funder" : [{"id": "<funder ID>", "title": "funder title", ...}],
+    "institution" : [{"id": "<institution ROR>", "title": "institution title", ...}],
+    "checks": ["permission","doaj","ta","tj"]
+  },
+  "compliant" : "<true/false> # (if there is any compliant: 'yes' result, this is true. Otherwise false.)",
+  "retention" : "<true/false> # (If a check was made for retention.)",
+  "results" : [
+    <route responses as per the above>
+  ]  
+}
+```
 
 ### Per-Route response data
 
@@ -31,13 +58,11 @@ For each route, there is a general response format:
 
 ```json
 {
-  "started" : "<timestamp at which execution started for this route>",
-  "ended" : "<timestamp at which execution completed for this route>",
-  "took" : "<time in ms between start and end>",
   "route" : "<the type id of the route (see below)>",
   "compliant" : "<the compliance type id of the route (see below)",
   "qualifications" : [
-    {"<qualification id (see below)" : {<qualification specific data (if needed)>}
+    {"<qualification id> (see below)" : {<qualification specific data (if needed)>},
+    ...
   ],
   "issn" : "<the issn checked for this result, if there is one>",
   "funder" : "<the funder checked on this result, if there is one>",
@@ -101,29 +126,10 @@ For example, items such as this may be present:
 
 In the above example there is no `url` parameter to visit, but if the record were in DOAJ, for example, the URL would be the URL to the ToC in the DOAJ `https://doaj.org/toc/<ISSN>`.
 
-### Overall response format
-
-```json
-{
-  "request" : {
-    "started" : "<start timestamp of the request>",
-    "ended" : "<end timestamp of the request>",
-    "took" : "<the time in ms between request start and end (on the server, not including travel time)>",
-    "journal" : [{"id": "<journal issn>", "title": "journal title", ...}],
-    "funder" : [{"id": "<funder ID>", "title": "funder title", ...}],
-    "institution" : [{"id": "<institution ROR>", "title": "institution title", ...}],
-    "checks": ["permission","doaj","ta","tj"]
-  },
-  "compliant" : true/false, # (if there is any compliant: "yes" result, this is true. Otherwise false.
-  "results" : [
-    <route responses as per the above>
-  ]  
-}
-```
 
 ## Transformative Journals
 
-Determine if a record is a transformative journal:
+Determine if a journal is a transformative journal, using the issn:
 
 ```
 GET /tj/{issn}
@@ -133,7 +139,6 @@ Response format:
 
 ```json
 {
-  "timestamp" : "<timestamp of request>",
   "issn" : "<issn requested>",
   "transformative_journal" : true
 }
@@ -151,22 +156,23 @@ Response format:
 
 ```json
 {
-  "request" : {
-    "timestamp" : "<timestamp of request>",
-    "issn" : "<issn in the TA>",
-    "ror" : "<ror in the TA>"
-  },
-  "results" : 
-    [
-      {
-        "active": {
-          "from_date" : "<date this TA is active for the issn/ror",
-          "to_date" : "<date this TA ended for the issn/ror"
-        },
-        "plan_s_compliant" : true|false
-        "ta_id" : "<id for the TA, possibly the ESAC one?>"
-        "ta_url" : "<a url to visit about the TA>"
-      }
+  "started" : "<start timestamp of the request>",
+  "ended" : "<end timestamp of the request>",
+  "took" : "<the time in ms between request start and end (on the server, not including travel time)>",
+  "route" : "<ta> # indicating a check for transformative agreement was done in the api",
+  "compliant" : "<true/false> # (if there is an agreement, this is true. Otherwise false.)",
+  "qualifications" : [{
+      {"<qualification id> (see below)" : {<qualification specific data (if needed)>},
+    }
+    ...
+   ],
+  "issn" : "<issn in the TA>",
+  "ror" : "<ror in the TA>",
+  "log" : [
+    {
+      "action" : "<description of the action (see above for details.)>",
+      "result" : "<the outcome of the action (optional, depending on circumstance)>"
+    }
    ]
 }
 ```
