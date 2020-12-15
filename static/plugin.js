@@ -90,7 +90,6 @@ jct.set_defaults = () => {
             not_he_element.click();
         }
     } else if (jct_query_options && jct_query_options.institution) {
-        console.log('Setting institution');
         jct.set_each_default('institution', jct_query_options.institution);
     }
     jct._calculate_if_all_data_provided();
