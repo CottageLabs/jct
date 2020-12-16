@@ -39,7 +39,7 @@ jct.add_plugin_containers = () => {
                     </button>
                 </div>
             </div>
-            <section>
+            <section class="row row--centered">
                 <p class="col col--1of2 alert">
                   The information provided by the <em>Journal Checker Tool</em> represents cOAlition S’s current
                   understanding in relation to the policies of the journals contained within it. We will endeavour to
@@ -57,21 +57,17 @@ jct.add_plugin_containers = () => {
     `;
 
     let plugin_div = jct.d.gebi("jct_plugin");
-    if (plugin_div.children.length == 0) {
+    if (plugin_div.children.length === 0) {
         plugin_div.innerHTML = query_container_html + results_container_html + modal_container_html;
     }
 }
 
 jct.set_each_default = (type, value) => {
-    let activate_ui = (data) => {
-        if (data && data.length > 0) {
-            jct.clinputs[type].optionsReceived(data);
-            jct.clinputs[type].chooseOption('e',0);
-            jct.d.gebi(jct.clinputs[type].id).blur();
-        }
+    let doChoose = (selectedObject) => {
+        jct.chosen[type] = selectedObject;
+        jct._calculate_if_all_data_provided();
     }
-    // Get the correct option from jct
-    jct.clinputs[type].options_method(value, activate_ui);
+    jct.clinputs[type].setChoice(value, doChoose);
 }
 
 // ----------------------------------------
@@ -92,7 +88,6 @@ jct.set_defaults = () => {
     } else if (jct_query_options && jct_query_options.institution) {
         jct.set_each_default('institution', jct_query_options.institution);
     }
-    jct._calculate_if_all_data_provided();
 }
 
 // ----------------------------------------

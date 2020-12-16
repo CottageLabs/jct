@@ -493,7 +493,7 @@ jct.add_modal_containers = (modal_div, only_feedback=false) => {
 // ----------------------------------------
 jct.setup_modals = (only_feedback=false) => {
     let modal_div = jct.d.gebi("jct_modal_container");
-    if (modal_div.children.length == 0) {
+    if (modal_div.children.length === 0) {
         // Add the modal html and event handlers
         jct.add_modal_containers(modal_div, only_feedback);
 

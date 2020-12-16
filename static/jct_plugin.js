@@ -58,6 +58,17 @@ clinput.CLInput = class {
         });
     }
 
+    setChoice(value, callback) {
+        this.options_method(value, (data) => {
+            this.optionsReceived(data, true)
+            if (this.options.length > 0) {
+                this.selectedObject = this.options[0];
+                this.showSelectedObject();
+            }
+            callback(this.selectedObject);
+        });
+    }
+
     unsetTimer() {
         if (this.timer) {
             clearInterval(this.timer);
@@ -160,7 +171,10 @@ clinput.CLInput = class {
         }
     }
 
-    optionsReceived(data) {
+    optionsReceived(data, silent) {
+        if (silent === undefined) {
+            silent = false;
+        }
         if (!this.optionsLimit) {
             this.options = data;
         } else {
@@ -172,7 +186,9 @@ clinput.CLInput = class {
                 this.options = [nv].concat(this.options);
             }
         }
-        this._renderOptions();
+        if (!silent) {
+            this._renderOptions();
+        }
     }
 
     _dispatchForCode(event, callback, entries){
@@ -778,7 +794,7 @@ jct.add_modal_containers = (modal_div, only_feedback=false) => {
 // ----------------------------------------
 jct.setup_modals = (only_feedback=false) => {
     let modal_div = jct.d.gebi("jct_modal_container");
-    if (modal_div.children.length == 0) {
+    if (modal_div.children.length === 0) {
         // Add the modal html and event handlers
         jct.add_modal_containers(modal_div, only_feedback);
 
@@ -1693,7 +1709,7 @@ jct.add_plugin_containers = () => {
                     </button>
                 </div>
             </div>
-            <section>
+            <section class="row row--centered">
                 <p class="col col--1of2 alert">
                   The information provided by the <em>Journal Checker Tool</em> represents cOAlition S’s current
                   understanding in relation to the policies of the journals contained within it. We will endeavour to
@@ -1711,21 +1727,17 @@ jct.add_plugin_containers = () => {
     `;
 
     let plugin_div = jct.d.gebi("jct_plugin");
-    if (plugin_div.children.length == 0) {
+    if (plugin_div.children.length === 0) {
         plugin_div.innerHTML = query_container_html + results_container_html + modal_container_html;
     }
 }
 
 jct.set_each_default = (type, value) => {
-    let activate_ui = (data) => {
-        if (data && data.length > 0) {
-            jct.clinputs[type].optionsReceived(data);
-            jct.clinputs[type].chooseOption('e',0);
-            jct.d.gebi(jct.clinputs[type].id).blur();
-        }
+    let doChoose = (selectedObject) => {
+        jct.chosen[type] = selectedObject;
+        jct._calculate_if_all_data_provided();
     }
-    // Get the correct option from jct
-    jct.clinputs[type].options_method(value, activate_ui);
+    jct.clinputs[type].setChoice(value, doChoose);
 }
 
 // ----------------------------------------
@@ -1746,7 +1758,6 @@ jct.set_defaults = () => {
     } else if (jct_query_options && jct_query_options.institution) {
         jct.set_each_default('institution', jct_query_options.institution);
     }
-    jct._calculate_if_all_data_provided();
 }
 
 // ----------------------------------------

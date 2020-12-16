@@ -49,6 +49,17 @@ clinput.CLInput = class {
         });
     }
 
+    setChoice(value, callback) {
+        this.options_method(value, (data) => {
+            this.optionsReceived(data, true)
+            if (this.options.length > 0) {
+                this.selectedObject = this.options[0];
+                this.showSelectedObject();
+            }
+            callback(this.selectedObject);
+        });
+    }
+
     unsetTimer() {
         if (this.timer) {
             clearInterval(this.timer);
@@ -151,7 +162,10 @@ clinput.CLInput = class {
         }
     }
 
-    optionsReceived(data) {
+    optionsReceived(data, silent) {
+        if (silent === undefined) {
+            silent = false;
+        }
         if (!this.optionsLimit) {
             this.options = data;
         } else {
@@ -163,7 +177,9 @@ clinput.CLInput = class {
                 this.options = [nv].concat(this.options);
             }
         }
-        this._renderOptions();
+        if (!silent) {
+            this._renderOptions();
+        }
     }
 
     _dispatchForCode(event, callback, entries){
