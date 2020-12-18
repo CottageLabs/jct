@@ -1,0 +1,32 @@
+#jct_plugin {
+  width: 300px;
+  font-family: open sans,sans-serif;
+  font-size: 18px;
+  margin: 0 auto;
+
+  @import
+    "../_sass/vendors/normalize",
+
+    "../_sass/base/utilities",
+    "../_sass/base/typescale",
+    "../_sass/base/palette",
+    "../_sass/base/plugin_spacing",
+    "../_sass/base/plugin_grid",
+    "../_sass/base/variables",
+    "../_sass/base/general",
+
+    "../_sass/components/alert",
+    "../_sass/components/button",
+    "../_sass/components/plugin_expression",
+    "../_sass/components/header-logo",
+    "../_sass/components/label",
+    "../_sass/components/loading",
+    "../_sass/components/modal",
+    "../_sass/components/wave",
+    "../_sass/components/card",
+    "../_sass/components/patterned-section",
+    "../_sass/components/sr-only",
+    "../_sass/components/plugin_query",
+    "../_sass/components/clinput",
+    "../_sass/components/plugin_results";
+}
