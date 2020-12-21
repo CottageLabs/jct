@@ -670,5 +670,9 @@
     margin-bottom: 0.375rem; }
   #jct_plugin .button {
     margin-bottom: 0.375rem; }
+  #jct_plugin #jct_results_plugin {
+    margin-bottom: 20px; }
+  #jct_plugin .loading {
+    padding-bottom: 20px; }
 
 /*# sourceMappingURL=plugin.css.map */
