@@ -5,8 +5,8 @@
   padding: 0 $gutter * 2;
 
   label {
-    margin-top: $spacing-05;
-    margin-bottom: $spacing-03;
+    margin-top: $spacing-03;
+    margin-bottom: 0;
   }
 
   input, select {
@@ -32,7 +32,7 @@
   }
 
   &__checkbox {
-    margin: $spacing-03 0;
+    margin: $spacing-01 0;
 
     label {
       margin: 0;

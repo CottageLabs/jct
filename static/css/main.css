@@ -668,7 +668,8 @@ button {
     background: #F47115;
     background: linear-gradient(140deg, #F47115 20%, #FABE5E 100%); }
     .card__icon svg {
-      margin: 0 auto; }
+      margin: 0 auto;
+      width: 22px; }
   .card h4 {
     margin-top: 1.5rem;
     padding-left: 15px;

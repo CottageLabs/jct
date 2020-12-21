@@ -1,9 +1,4 @@
 #jct_plugin {
-  width: 300px;
-  font-family: open sans,sans-serif;
-  font-size: 18px;
-  margin: 0 auto;
-
   @import
     "../_sass/vendors/normalize",
 
@@ -15,7 +10,7 @@
     "../_sass/base/variables",
     "../_sass/base/general",
 
-    "../_sass/components/alert",
+    "../_sass/components/plugin_alert",
     "../_sass/components/button",
     "../_sass/components/plugin_expression",
     "../_sass/components/header-logo",
@@ -29,4 +24,34 @@
     "../_sass/components/plugin_query",
     "../_sass/components/clinput",
     "../_sass/components/plugin_results";
+
+  width: 300px;
+  font-family: open sans,sans-serif;
+  font-size: 12px;
+  margin: 0 auto;
+
+  .query {
+    h2 {
+      margin-bottom: 0;
+    }
+
+    input {
+      height: 50px;
+
+      &[name="notHE"] {
+        height: 0;
+      }
+    }
+  }
+
+  .card {
+    h4 {
+      margin-top: $spacing-02;
+      margin-bottom: $spacing-02;
+    }
+  }
+
+  .button {
+    margin-bottom: $spacing-02;
+  }
 }

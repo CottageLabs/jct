@@ -1,0 +1,61 @@
+/*
+Error: Undefined variable: "$spacing-02".
+        on line 4 of plugin_alert.scss
+
+1: // Alerts & warnings that stand out
+2: 
+3: .alert {
+4:   padding: $spacing-02;
+5:   margin: $spacing-04 $gutter;
+6:   background: $orange;
+7:   background: $gradient-reverse;
+8:   border-radius: $spacing-03;
+9:   text-align: center;
+
+Backtrace:
+plugin_alert.scss:4
+/usr/lib/ruby/vendor_ruby/sass/script/tree/variable.rb:49:in `_perform'
+/usr/lib/ruby/vendor_ruby/sass/script/tree/node.rb:50:in `perform'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:395:in `visit_prop'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:158:in `block in visit'
+/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
+/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
+/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:158:in `visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `block (2 levels) in visit_rule'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `map'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:431:in `block in visit_rule'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:179:in `with_environment'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:429:in `visit_rule'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:158:in `block in visit'
+/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `block in with_base'
+/usr/lib/ruby/vendor_ruby/sass/stack.rb:115:in `with_frame'
+/usr/lib/ruby/vendor_ruby/sass/stack.rb:79:in `with_base'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:158:in `visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `map'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:52:in `visit_children'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:167:in `block in visit_children'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:179:in `with_environment'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:166:in `visit_children'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `block in visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:186:in `visit_root'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/base.rb:36:in `visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:157:in `visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/visitors/perform.rb:8:in `visit'
+/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:36:in `css_tree'
+/usr/lib/ruby/vendor_ruby/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+/usr/lib/ruby/vendor_ruby/sass/engine.rb:378:in `_render_with_sourcemap'
+/usr/lib/ruby/vendor_ruby/sass/engine.rb:295:in `render_with_sourcemap'
+/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:410:in `run'
+/usr/lib/ruby/vendor_ruby/sass/exec/sass_scss.rb:63:in `process_result'
+/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:52:in `parse'
+/usr/lib/ruby/vendor_ruby/sass/exec/base.rb:19:in `parse!'
+/usr/bin/sass:8:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Undefined variable: \"$spacing-02\".\A         on line 4 of plugin_alert.scss\A \A 1: // Alerts & warnings that stand out\A 2: \A 3: .alert {\A 4:   padding: $spacing-02;\A 5:   margin: $spacing-04 $gutter;\A 6:   background: $orange;\A 7:   background: $gradient-reverse;\A 8:   border-radius: $spacing-03;\A 9:   text-align: center;"; }
