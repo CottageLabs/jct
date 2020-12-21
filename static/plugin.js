@@ -67,14 +67,6 @@ jct.add_plugin_containers = () => {
     }
 }
 
-jct.set_each_default = (type, value) => {
-    let doChoose = (selectedObject) => {
-        jct.chosen[type] = selectedObject;
-        jct._calculate_if_all_data_provided();
-    }
-    jct.clinputs[type].setChoice(value, doChoose);
-}
-
 // ----------------------------------------
 // Function to initialize the plugin with values
 // ----------------------------------------
@@ -100,6 +92,6 @@ jct.set_defaults = () => {
 // ----------------------------------------
 jct.setup_plugin = () => {
     jct.add_plugin_containers();
-    jct.setup();
+    jct.setup(false);
     jct.set_defaults();
 }

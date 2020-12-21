@@ -860,6 +860,18 @@ jct.result_equals_chosen = (js) => {
 }
 
 // ----------------------------------------
+// function to apply default values to the select boxes
+// and which runs the compliance check if all boxes are set
+// ----------------------------------------
+jct.set_each_default = (type, value) => {
+    let doChoose = (selectedObject) => {
+        jct.chosen[type] = selectedObject;
+        jct._calculate_if_all_data_provided();
+    }
+    jct.clinputs[type].setChoice(value, doChoose);
+}
+
+// ----------------------------------------
 // ToDo: Not sure if this is used.
 // ----------------------------------------
 //jct.setTimer = () => {
@@ -924,7 +936,7 @@ jct.result_equals_chosen = (js) => {
 // This maninly initializes clinput, CL's implementation of select 2
 // ----------------------------------------
 jct.clinputs = {};
-jct.setup = () => {
+jct.setup = (manageUrl=true) => {
     jct.setup_modals();
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
@@ -1126,5 +1138,26 @@ jct.setup = () => {
         explainResults.addEventListener("click", (e) => {
             jct.d.toggle_detailed_results();
         })
+    }
+
+    // if we've been given URL params, read them then reset the url
+    if (manageUrl) {
+        let urlParams = new URLSearchParams(window.location.search);
+        let setDefault = false;
+        if (urlParams.get("issn")) {
+            jct.set_each_default('journal', urlParams.get("issn"));
+            setDefault = true;
+        }
+        if (urlParams.get("funder")) {
+            jct.set_each_default("funder", urlParams.get("funder"));
+            setDefault = true;
+        }
+        if (urlParams.get("ror")) {
+            jct.set_each_default("institution", urlParams.get("institution"));
+            setDefault = true;
+        }
+        if (setDefault) {
+            window.history.replaceState("", "", "/");
+        }
     }
 }
