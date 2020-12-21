@@ -611,7 +611,10 @@ jct.success = (xhr) => {
     jct._emptyElement(paths_results)
 
     jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
-    jct.d.gebi('jct_explain_results').style.display = 'initial';
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        jct.d.gebi('jct_explain_results').style.display = 'initial';
+    }
     jct.d.hide_detailed_results();
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
@@ -798,18 +801,30 @@ jct.htmlToElement = (html) => {
 // function to show detailed results
 // ----------------------------------------
 jct.d.show_detailed_results = () => {
-    jct.d.gebi("jct_explain_results").innerHTML = 'Hide explanation';
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Hide explanation';
+    }
     jct.d.gebi('jct_detailed_results').style.display = "flex";
-    jct.d.gebi('jct_print').style.display = 'initial';
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'initial';
+    }
 }
 
 // ----------------------------------------
 // function to hide detailed results
 // ----------------------------------------
 jct.d.hide_detailed_results = () => {
-    jct.d.gebi("jct_explain_results").innerHTML = 'Explain this result';
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Explain this result';
+    }
     jct.d.gebi('jct_detailed_results').style.display = "none";
-    jct.d.gebi('jct_print').style.display = 'none';
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'none';
+    }
 }
 
 // ----------------------------------------
@@ -1106,7 +1121,10 @@ jct.setup = () => {
         location.reload();
     })
 
-    jct.d.gebi("jct_explain_results").addEventListener("click", (e) => {
-        jct.d.toggle_detailed_results();
-    })
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.addEventListener("click", (e) => {
+            jct.d.toggle_detailed_results();
+        })
+    }
 }

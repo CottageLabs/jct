@@ -2,6 +2,10 @@
 
 $btn-height: 70px;
 
+a.button {
+  display: inline-block;
+}
+
 .button,
 button {
   @include unstyled-input;

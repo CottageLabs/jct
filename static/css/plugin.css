@@ -199,6 +199,8 @@
     max-width: 100%; }
   #jct_plugin .col--right {
     text-align: left; }
+  #jct_plugin .col--centered {
+    text-align: center; }
   #jct_plugin .col--group {
     padding: 0; }
   #jct_plugin .col--1of1,
@@ -310,6 +312,8 @@
     border-radius: 0.75rem;
     text-align: center;
     font-size: 0.833em; }
+  #jct_plugin a.button {
+    display: inline-block; }
   #jct_plugin .button,
   #jct_plugin button {
     border: none;

@@ -417,6 +417,9 @@ footer {
   text-align: center;
   font-size: 0.833em; }
 
+a.button {
+  display: inline-block; }
+
 .button,
 button {
   border: none;
