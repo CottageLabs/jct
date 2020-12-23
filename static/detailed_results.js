@@ -185,11 +185,18 @@ jct.explain = (q) => {
         }
         url += "/";
 
-        let jid, fid, iid = false;
+        let jid, fid, iid, not_he = false;
         try {
             jid = jct.chosen.journal.id;
+        } catch {}
+        try {
             fid = jct.chosen.funder.id;
+        } catch {}
+        try {
             iid = jct.chosen.institution.id;
+        } catch {}
+        try {
+            not_he = jct.d.gebi('jct_notHE').checked;
         } catch {}
 
         let args = [];
@@ -201,6 +208,9 @@ jct.explain = (q) => {
         }
         if (iid) {
             args.push("ror=" + iid);
+        }
+        if (not_he) {
+            args.push("not_he=" + not_he);
         }
 
         if (args.length > 0) {

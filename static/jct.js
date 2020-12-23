@@ -1153,7 +1153,14 @@ jct.setup = (manageUrl=true) => {
             setDefault = true;
         }
         if (urlParams.get("ror")) {
-            jct.set_each_default("institution", urlParams.get("institution"));
+            jct.set_each_default("institution", urlParams.get("ror"));
+            setDefault = true;
+        }
+        if (urlParams.get("not_he") && urlParams.get("not_he") === "true") {
+            let not_he_element = jct.d.gebi('jct_notHE');
+            if (not_he_element.checked === false) {
+                not_he_element.click();
+            }
             setDefault = true;
         }
         if (setDefault) {

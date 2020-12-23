@@ -1455,7 +1455,14 @@ jct.setup = (manageUrl=true) => {
             setDefault = true;
         }
         if (urlParams.get("ror")) {
-            jct.set_each_default("institution", urlParams.get("institution"));
+            jct.set_each_default("institution", urlParams.get("ror"));
+            setDefault = true;
+        }
+        if (urlParams.get("not_he") && urlParams.get("not_he") === "true") {
+            let not_he_element = jct.d.gebi('jct_notHE');
+            if (not_he_element.checked === false) {
+                not_he_element.click();
+            }
             setDefault = true;
         }
         if (setDefault) {
@@ -1655,11 +1662,18 @@ jct.explain = (q) => {
         }
         url += "/";
 
-        let jid, fid, iid = false;
+        let jid, fid, iid, not_he = false;
         try {
             jid = jct.chosen.journal.id;
+        } catch {}
+        try {
             fid = jct.chosen.funder.id;
+        } catch {}
+        try {
             iid = jct.chosen.institution.id;
+        } catch {}
+        try {
+            not_he = jct.d.gebi('jct_notHE').checked;
         } catch {}
 
         let args = [];
@@ -1671,6 +1685,9 @@ jct.explain = (q) => {
         }
         if (iid) {
             args.push("ror=" + iid);
+        }
+        if (not_he) {
+            args.push("not_he=" + not_he);
         }
 
         if (args.length > 0) {
