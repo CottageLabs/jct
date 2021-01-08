@@ -17,13 +17,15 @@ and then customise it according to the documentation below.</p>
 &lt;div id=&quot;jct_plugin&quot;&gt;&lt;/div&gt;
 </code></pre>
 
+<p>You can see a live demonstration of the widget <a href="/widget-example">here</a>.</p>
 <h2>Considerations for embedding</h2>
-<p>The Journal Checker Widget provides a similar experience for the user as the main Journal Checker Tool.  As such, it 
-is best displayed in a full page width container.  Future releases may include a minified version of the widget for
-inclusion in page side-bars, etc.</p>
+<p>The Journal Checker Widget provides a similar experience for the user as the main Journal Checker Tool.  It is presented
+as a "sidebar", suitable for embed in a narrow enclosure (300px by default) on your site. This is similar in presentation
+to the mobile view of the main Journal Checker Tool.  It will take up a reasonable amount of vertical space, and that
+space will vary depending on exactly what results the user gets from their query.</p>
 <p>The widget will give the user the 3 standard input boxes (with autosuggests for values), and then the usual summary
-of compliance options followed by a fully expandable explanation of the results.  As a result, when all sections are completed
-and expanded, the widget will take up substantial vertical space on the page.</p>
+of compliance options followed by a link to the main JCT page for full details on their results.</p>
+<p>See the <a href="/widget-example">live demonstration of the widget</a> to see a reference example.</p>
 <h2>Configuring the widget</h2>
 <p>The widget can be configured to pre-fill the user input boxes with values dictated by the embedder.  Any number of the
 input boxes can be pre-filled.</p>
@@ -91,4 +93,15 @@ institution pre-filled. Instead the "Not affiliated" checkbox will be selected.
 If set to <code>true</code>, it will override any institution value you have set.
 A user will also be able to uncheck this box and select other institutions from the "My Institution" box.</p>
 <pre><code class="code">window.jct_query_options.no_he = true
+</code></pre>
+
+<h2>Customising the styles</h2>
+<p>The styles for the widget are provided by the <a href="https://journalcheckertool.org/static/css/plugin.css">plugin.css</a> file,
+and you may customise or override the styles here as you need.</p>
+<p>The main styles you may wish to override are the width and font-size of the widget, which can be done with the following
+properties:</p>
+<pre><code>#jct_plugin {
+    width: 300px;
+    font-size: 12px;
+}
 </code></pre>

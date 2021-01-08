@@ -21,15 +21,19 @@ and then customise it according to the documentation below.
 <div id="jct_plugin"></div>
 ```
 
+You can see a live demonstration of the widget [here](/widget-example).
+
 ## Considerations for embedding
 
-The Journal Checker Widget provides a similar experience for the user as the main Journal Checker Tool.  As such, it 
-is best displayed in a full page width container.  Future releases may include a minified version of the widget for
-inclusion in page side-bars, etc.
+The Journal Checker Widget provides a similar experience for the user as the main Journal Checker Tool.  It is presented
+as a "sidebar", suitable for embed in a narrow enclosure (300px by default) on your site. This is similar in presentation
+to the mobile view of the main Journal Checker Tool.  It will take up a reasonable amount of vertical space, and that
+space will vary depending on exactly what results the user gets from their query.
 
 The widget will give the user the 3 standard input boxes (with autosuggests for values), and then the usual summary
-of compliance options followed by a fully expandable explanation of the results.  As a result, when all sections are completed
-and expanded, the widget will take up substantial vertical space on the page.
+of compliance options followed by a link to the main JCT page for full details on their results.
+
+See the [live demonstration of the widget](/widget-example) to see a reference example.
 
 ## Configuring the widget
 
@@ -112,4 +116,19 @@ A user will also be able to uncheck this box and select other institutions from 
 
 ```code
 window.jct_query_options.no_he = true
+```
+
+## Customising the styles
+
+The styles for the widget are provided by the [plugin.css](https://journalcheckertool.org/static/css/plugin.css) file,
+and you may customise or override the styles here as you need.
+
+The main styles you may wish to override are the width and font-size of the widget, which can be done with the following
+properties:
+
+```
+#jct_plugin {
+    width: 300px;
+    font-size: 12px;
+}
 ```
