@@ -1,7 +1,5 @@
 // Card layout: used for results
 
-$card-icon-height: 50px;
-
 .card {
   margin-bottom: $spacing-05;
 
@@ -16,6 +14,7 @@ $card-icon-height: 50px;
 
     svg {
       margin: 0 auto;
+      width: $card-svg-icon-width;
     }
   }
 

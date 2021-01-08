@@ -611,7 +611,10 @@ jct.success = (xhr) => {
     jct._emptyElement(paths_results)
 
     jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
-    jct.d.gebi('jct_explain_results').style.display = 'initial';
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        jct.d.gebi('jct_explain_results').style.display = 'initial';
+    }
     jct.d.hide_detailed_results();
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
@@ -798,18 +801,30 @@ jct.htmlToElement = (html) => {
 // function to show detailed results
 // ----------------------------------------
 jct.d.show_detailed_results = () => {
-    jct.d.gebi("jct_explain_results").innerHTML = 'Hide explanation';
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Hide explanation';
+    }
     jct.d.gebi('jct_detailed_results').style.display = "flex";
-    jct.d.gebi('jct_print').style.display = 'initial';
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'initial';
+    }
 }
 
 // ----------------------------------------
 // function to hide detailed results
 // ----------------------------------------
 jct.d.hide_detailed_results = () => {
-    jct.d.gebi("jct_explain_results").innerHTML = 'Explain this result';
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Explain this result';
+    }
     jct.d.gebi('jct_detailed_results').style.display = "none";
-    jct.d.gebi('jct_print').style.display = 'none';
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'none';
+    }
 }
 
 // ----------------------------------------
@@ -842,6 +857,18 @@ jct.result_equals_chosen = (js) => {
     i_matches = (jct.chosen.institution && js.institution && js.institution[0]) ?
                 (jct.chosen.institution.id === js.institution[0].id) : true;
     return ( j_matches && i_matches && f_matches );
+}
+
+// ----------------------------------------
+// function to apply default values to the select boxes
+// and which runs the compliance check if all boxes are set
+// ----------------------------------------
+jct.set_each_default = (type, value) => {
+    let doChoose = (selectedObject) => {
+        jct.chosen[type] = selectedObject;
+        jct._calculate_if_all_data_provided();
+    }
+    jct.clinputs[type].setChoice(value, doChoose);
 }
 
 // ----------------------------------------
@@ -909,7 +936,7 @@ jct.result_equals_chosen = (js) => {
 // This maninly initializes clinput, CL's implementation of select 2
 // ----------------------------------------
 jct.clinputs = {};
-jct.setup = () => {
+jct.setup = (manageUrl=true) => {
     jct.setup_modals();
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
@@ -1106,7 +1133,38 @@ jct.setup = () => {
         location.reload();
     })
 
-    jct.d.gebi("jct_explain_results").addEventListener("click", (e) => {
-        jct.d.toggle_detailed_results();
-    })
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.addEventListener("click", (e) => {
+            jct.d.toggle_detailed_results();
+        })
+    }
+
+    // if we've been given URL params, read them then reset the url
+    if (manageUrl) {
+        let urlParams = new URLSearchParams(window.location.search);
+        let setDefault = false;
+        if (urlParams.get("issn")) {
+            jct.set_each_default('journal', urlParams.get("issn"));
+            setDefault = true;
+        }
+        if (urlParams.get("funder")) {
+            jct.set_each_default("funder", urlParams.get("funder"));
+            setDefault = true;
+        }
+        if (urlParams.get("ror")) {
+            jct.set_each_default("institution", urlParams.get("ror"));
+            setDefault = true;
+        }
+        if (urlParams.get("not_he") && urlParams.get("not_he") === "true") {
+            let not_he_element = jct.d.gebi('jct_notHE');
+            if (not_he_element.checked === false) {
+                not_he_element.click();
+            }
+            setDefault = true;
+        }
+        if (setDefault) {
+            window.history.replaceState("", "", "/");
+        }
+    }
 }

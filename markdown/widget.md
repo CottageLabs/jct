@@ -8,7 +8,7 @@ and then customise it according to the documentation below.
 
 ```code
 <script type="text/javascript" src="https://journalcheckertool.org/static/jct_plugin.js"></script>
-<link href="https://journalcheckertool.org/static/css/main.css" rel='stylesheet' type='text/css'>
+<link href="https://journalcheckertool.org/static/css/plugin.css" rel='stylesheet' type='text/css'>
 <script>
     window.jct_query_options = {
         journal: "[issn_of_the_journal]",
