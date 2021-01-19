@@ -6,7 +6,7 @@ cOAlition S is an initiative to make full and
 immediate Open Access to research publications a reality.
 It is built around Plan S, which consists of one target
 and [10 principles](https://www.coalition-s.org/addendum-to-the-coalition-s-guidance-on-the-implementation-of-plan-s/principles-and-implementation/).
-cOAlition S funders (a group of national research funders, European and
+[cOAlition S funders](https://www.coalition-s.org/plan-s-funders-implementation/) (a group of national research funders, European and
 international organisations and charitable foundations) have agreed to
 implement the 10 principles of Plan S in a coordinated way, together with
 the European Commission ([More details](https://www.coalition-s.org/why-plan-s/)).
@@ -24,7 +24,7 @@ You are certainly not required to use the Journal Checker Tool. However, it may 
 ## My funder is not listed - what should I do?
 
 If your funder is not listed in the Journal Checker Tool, then this means that the funder is
-not a member of cOAlition S and, in this case, the Plan S compliance rules do not apply.
+not a member of cOAlition S and, in this case, the Plan S compliance rules do not apply. You can check the [current list of funders on the cOALition S website](https://www.coalition-s.org/plan-s-funders-implementation/).
 
 
 ## My institution is not listed - what should I do?
