@@ -1,5 +1,5 @@
 jct.explain = (q) => {
-    let detailed_results = jct.d.gebi("detailed_results_section")
+    let detailed_results = jct.d.gebi("jct_detailed_results_section")
     detailed_results.innerHTML = "";
     let compliant_routes = `<h2>Compliant Routes</h2>`
     let noncompliant_routes = `<h2>Non-Compliant Routes</h2>`
@@ -158,19 +158,65 @@ jct.explain = (q) => {
         </p>
     `
 
-    let elem = htmlToElement("<div id='detailed_result_text'>" + text +
+    let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
         (compliant_routes_number > 0 ? compliant_routes : "") +
         (noncomplicant_routes_number > 0 ? noncompliant_routes : "") +
         (unknown_routes_number > 0 ? unknown_routes : "") + "</div>");
     detailed_results.append(elem);
 
-    jct.d.gebi("print").addEventListener("click", () => {
-        let a = window.open('', '', 'height=500, width=500');
-        let compliance = jct.d.gebc("compliance")[0]
-        let results_to_print = jct.d.gebi("detailed_result_text")
-        a.document.write(compliance.innerHTML);
-        a.document.write(results_to_print.innerHTML);
-        a.document.close();
-        a.print();
-    })
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.addEventListener("click", () => {
+            let a = window.open('', '', 'height=500, width=500');
+            let compliance = jct.d.gebc("jct_compliance")[0]
+            let results_to_print = jct.d.gebi("jct_detailed_result_text")
+            a.document.write(compliance.innerHTML);
+            a.document.write(results_to_print.innerHTML);
+            a.document.close();
+            a.print();
+        })
+    }
+
+    let fom = jct.d.gebi("jct_find_out_more");
+    if (fom) {
+        let url = "";
+        if (window.JCT_UI_BASE_URL) {
+            url = window.JCT_UI_BASE_URL;
+        }
+        url += "/";
+
+        let jid, fid, iid, not_he = false;
+        try {
+            jid = jct.chosen.journal.id;
+        } catch {}
+        try {
+            fid = jct.chosen.funder.id;
+        } catch {}
+        try {
+            iid = jct.chosen.institution.id;
+        } catch {}
+        try {
+            not_he = jct.d.gebi('jct_notHE').checked;
+        } catch {}
+
+        let args = [];
+        if (jid) {
+            args.push("issn=" + jid);
+        }
+        if (fid) {
+            args.push("funder=" + fid);
+        }
+        if (iid) {
+            args.push("ror=" + iid);
+        }
+        if (not_he) {
+            args.push("not_he=" + not_he);
+        }
+
+        if (args.length > 0) {
+            let query = args.join("&");
+            url += "?" + query;
+        }
+        fom.setAttribute("href", url);
+    }
 }

@@ -14,7 +14,7 @@
     <link href="../static/css/main.css" rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="../static/api_endpoint.js"></script>
     <script type="text/javascript" src="../static/jct.js"></script>
-    <script type="text/javascript" src="../static/detailed_results.js"></script>
+    <script type="text/javascript" src="../static/feedback.js"></script>
 
     <meta name="theme-color" content="#282624">
 
@@ -57,7 +57,7 @@
 immediate Open Access to research publications a reality.
 It is built around Plan S, which consists of one target
 and <a href="https://www.coalition-s.org/addendum-to-the-coalition-s-guidance-on-the-implementation-of-plan-s/principles-and-implementation/">10 principles</a>.
-cOAlition S funders (a group of national research funders, European and
+<a href="https://www.coalition-s.org/plan-s-funders-implementation/">cOAlition S funders</a> (a group of national research funders, European and
 international organisations and charitable foundations) have agreed to
 implement the 10 principles of Plan S in a coordinated way, together with
 the European Commission (<a href="https://www.coalition-s.org/why-plan-s/">More details</a>).</p>
@@ -68,7 +68,7 @@ the European Commission (<a href="https://www.coalition-s.org/why-plan-s/">More 
 <p>You are certainly not required to use the Journal Checker Tool. However, it may be useful for you to check if you are able to publish in a particle journal according to the policy set by your funder, if that funder is part of cOAlition S (the Journal Checker Tool will check if your funder is included).</p>
 <h2>My funder is not listed - what should I do?</h2>
 <p>If your funder is not listed in the Journal Checker Tool, then this means that the funder is
-not a member of cOAlition S and, in this case, the Plan S compliance rules do not apply.</p>
+not a member of cOAlition S and, in this case, the Plan S compliance rules do not apply. You can check the <a href="https://www.coalition-s.org/plan-s-funders-implementation/">current list of funders on the cOALition S website</a>.</p>
 <h2>My institution is not listed - what should I do?</h2>
 <p>If you cannot find your institution in the list of known institutions, you can
 select the checkbox labelled "No affiliation" to perform a compliance check without
@@ -160,9 +160,10 @@ looking for your institution by its full name or any other names it is known by.
                   Send us feedback
               </button>
               <p>
-                  <a href="/transformative-journals">Transformative Journals</a> •
-                  <a href="/transformative-agreements">Transformative Agreements</a> •
-                  <a href="/apidocs">API Documentation</a> •
+                  <a href="/transformative-journals">Transformative&nbsp;Journals</a> •
+                  <a href="/transformative-agreements">Transformative&nbsp;Agreements</a> •
+                  <a href="/apidocs">API&nbsp;Documentation</a> •
+                  <a href="/widget">Embeddable&nbsp;Widget</a> •
                   <a href="/faq">FAQ</a><br>
               </p>
               <p>
@@ -174,45 +175,9 @@ looking for your institution by its full name or any other names it is known by.
     </div>
 </footer>
 
-<!-- Modals -->
-<div class="modal" id="modal_feedback" style="display: none">
-    <div class="modal-content" id="contact">
-        <header class="modal-header">
-            <h2>
-                Feedback? Suggestion? Contact us here.
-                <span class="close" aria-label="Close" role="button" data-id="modal_feedback">&times;</span>
-            </h2>
-        </header>
-        <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>. If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. We will respond within working 3 days.</p>
-        <form id="contact_form">
-            <div class="modal-inputs">
-                <label for="name">Name</label>
-                <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
-            </div>
-            <div class="modal-inputs">
-                <label for="email">Email</label>
-                <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
-            </div>
-            <div class="modal-inputs">
-                <label for="message">Comment</label>
-                <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
-            </div>
-            <div class="modal-inputs">
-                <button class="button button--primary contact_submit" type="submit">
-                    Send
-                </button>
-            </div>
-
-        </form>
-        <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
-        <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
-        <p>
-            <a href="/notices#privacy_notice">Privacy Notice</a> •
-            <a href="/notices#disclaimer_and_copyright">Disclaimer & Copyright</a>
-        </p>
-    </div>
+<div id="jct_modal_container">
 </div>
 
-<script type="text/javascript" src="../static/modal.js"></script>
+<script>jct.setup_modals(true);</script>
 </body>
 </html>

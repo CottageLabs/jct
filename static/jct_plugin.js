@@ -1,3 +1,305 @@
+
+// -------- api_endpoint --------
+
+window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
+window.JCT_UI_BASE_URL = "https://journalcheckertool.org";
+
+
+
+// -------- clinput --------
+
+let clinput = {};
+
+clinput.CLInput = class {
+    constructor(params) {
+        this.timer = null;
+        this.delay = params.rateLimit || 0;
+        this.value = "";
+        this.options_method = params.options;
+        this.optionsTemplate = params.optionsTemplate;
+        this.selectedTemplate = params.selectedTemplate;
+        this.options = [];
+        this.id = params.id;
+        this.optionsLimit = params.optionsLimit || 0;
+        this.element = params.element;
+        this.onChoice = params.onChoice;
+        this.newValueMethod = params.newValue || false;
+        this.lastSearchValue = "";
+        this.selectedObject = false;
+
+        let label = params.label;
+        let inputAttrs = params.inputAttributes;
+
+        let attrs = []
+        let keys = Object.keys(inputAttrs)
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var val = inputAttrs[key];
+            attrs.push(key + "=\"" + val + "\"");
+        }
+        let attrsFrag = attrs.join(" ");
+
+        this.element.innerHTML = '<label for="' + this.id + '">' + label + '</label> \
+                <input type="text" id="' + this.id + '" name="' + this.id + '" which="' + this.id + '" ' + attrsFrag + '>\
+                <div id="' + this.id + '--options"></div>';
+
+        let input = document.getElementById(this.id);
+        input.addEventListener("focus", () => {this.activateInput()});
+        input.addEventListener("blur", () => {this.recordSearchValue()});
+        input.addEventListener("keydown", (e) => {
+            let entries = document.getElementsByClassName("clinput__option_"+this.id);
+            let arrowPress = (code, entries) => {
+                if(code === "ArrowDown"){
+                    entries[0].focus();
+                }
+            }
+            if (entries.length > 0) {
+                this._dispatchForCode(event, arrowPress, entries);
+            }
+        });
+    }
+
+    setChoice(value, callback) {
+        this.options_method(value, (data) => {
+            this.optionsReceived(data, true)
+            if (this.options.length > 0) {
+                this.selectedObject = this.options[0];
+                this.showSelectedObject();
+            }
+            callback(this.selectedObject);
+        });
+    }
+
+    unsetTimer() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    }
+
+    recordSearchValue() {
+        let input = document.getElementById(this.id);
+        let newVal = input.value;
+        if (newVal !== this.lastSearchValue) {
+            this.lastSearchValue = input.value;
+            this.selectedObject = false;
+        }
+
+        if (this.selectedObject) {
+            this.showSelectedObject()
+        } else {
+            this._setInputValue("");
+        }
+    }
+
+    _setInputValue(val) {
+        let input = document.getElementById(this.id);
+        input.value = val;
+        input.setAttribute("title", val);
+    }
+
+    clear() {
+        this._setInputValue("");
+        this.selectedObject = false;
+        this.lastSearchValue = "";
+    }
+
+    activateInput() {
+        let input = document.getElementById(this.id);
+        this._setInputValue(this.lastSearchValue);
+        this.value = "";
+
+        if (this.selectedObject) {
+            let lsv = this.lastSearchValue.toLowerCase();
+            let keys = Object.keys(this.selectedObject);
+
+            keycheck:
+            for (let i = 0; i < keys.length; i++) {
+                let key = keys[i];
+                let v = this.selectedObject[key];
+                if (Array.isArray(v)) {
+                    for (var j = 0; j < v.length; j++) {
+                        let ve = v[j];
+                        if (ve.toLowerCase().includes(lsv)) {
+                            this._setInputValue(ve);
+                            break keycheck;
+                        }
+                    }
+                } else {
+                    if (v && v.toLowerCase().includes(lsv)) {
+                        this._setInputValue(v);
+                        break keycheck;
+                    }
+                }
+            }
+        }
+
+        if (!this.timer) {
+            this.timer = window.setInterval(() => {
+                this.clearOptions();
+                this.lookupOptions();
+                // this.unsetTimer();
+            }, this.delay);
+        }
+    }
+
+    clearOptions() {
+        let input = document.getElementById(this.id);
+        if (document.activeElement === input) {
+            return;
+        }
+
+        let entries = this.element.getElementsByClassName("clinput__option_" + this.id)
+        for (let i = 0; i < entries.length; i++) {
+            if (document.activeElement === entries[i]) {
+                return;
+            }
+        }
+        document.getElementById(this.id + "--options").innerHTML = "";
+    }
+
+    lookupOptions() {
+        let input = document.getElementById(this.id);
+        if (document.activeElement !== input) {
+            return;
+        }
+        if (this.value !== input.value && input.value.length > 0) {
+            this.value = input.value;
+            this.options_method(this.value, (data) => {this.optionsReceived(data)});
+        } else if (input.value.length === 0) {
+            let optsContainer = document.getElementById(this.id + "--options");
+            optsContainer.innerHTML = "";
+        }
+    }
+
+    optionsReceived(data, silent) {
+        if (silent === undefined) {
+            silent = false;
+        }
+        if (!this.optionsLimit) {
+            this.options = data;
+        } else {
+            this.options = data.slice(0, this.optionsLimit);
+        }
+        if (this.newValueMethod && this.options.length === 0) {
+            let nv = this.newValueMethod(this.value);
+            if (nv) {
+                this.options = [nv].concat(this.options);
+            }
+        }
+        if (!silent) {
+            this._renderOptions();
+        }
+    }
+
+    _dispatchForCode(event, callback, entries){
+        let code;
+
+        if (event.key !== undefined) {
+            code = event.key;
+        } else if (event.keyIdentifier !== undefined) {
+            code = event.keyIdentifier;
+        } else if (event.keyCode !== undefined) {
+            code = event.keyCode;
+        }
+
+        callback(code, entries);
+    };
+
+    _renderOptions() {
+        let optsContainer = document.getElementById(this.id + "--options")
+        if (this.options.length === 0) {
+            optsContainer.innerHTML = "";
+            return;
+        }
+
+        let frag = "<ul class='clinput__options clinput__options_" + this.id + "'>";
+        for (let s = 0; s < this.options.length; s++) {
+            frag += '<li tabIndex=' + s + ' class="clinput__option clinput__option_' + this.id + '" data-idx=' + s + '">' + this.optionsTemplate(this.options[s]) + '</li>';
+        }
+        frag += '</ul>';
+        optsContainer.innerHTML = frag;
+
+        let entries = this.element.getElementsByClassName("clinput__option_" + this.id)
+
+        for (let i = 0; i < entries.length; i++) {
+            entries[i].addEventListener("mouseover", () => {
+                this.setFocusToOption(entries, i);
+            });
+            entries[i].addEventListener("mouseout", () => {
+                this.setFocusToOption(entries, i);
+            });
+            entries[i].addEventListener("click", (e) => {
+                this.chooseOption(e,i);
+            });
+            entries[i].addEventListener("focus", () => {
+                this._setInputValue(this.lastSearchValue);
+            });
+            entries[i].addEventListener("blur", () => {
+                this.recordSearchValue();
+            });
+            entries[i].addEventListener("keydown", (e) => {
+                let arrowPress = (code, entries) => {
+                    let idx = parseInt(e.target.getAttribute("data-idx"));
+                    if (entries.length !== 0) {
+                        if (code === "ArrowDown") {
+                            if (idx < entries.length - 1) {
+                                entries[idx + 1].focus();
+                                e.preventDefault();
+                            }
+                        } else if (code === "ArrowUp") {
+                            this.selecting = true;
+                            if (idx > 0) {
+                                entries[idx - 1].focus();
+                            } else {
+                                document.getElementById(this.id).focus();
+                            }
+                        } else if (code === "Enter") {
+                            this.selecting = true;
+                            this.chooseOption(e,idx);
+                        } else if (code === "Tab") {
+                            this.selecting = true;
+                            this.chooseOption(e,idx);
+                            e.preventDefault();
+                        }
+                    }
+                };
+                this._dispatchForCode(event, arrowPress, entries);
+            });
+        }
+    }
+
+    chooseOption(e,idx){
+        let input = document.getElementById(this.id);
+        let options = document.getElementsByClassName("clinput__options_" + this.id);
+        options[0].innerHTML = "";
+        this.lastSearchValue = input.value;
+        this.selectedObject = this.options[idx];
+        this.showSelectedObject();
+        this.onChoice(e,this.options[idx]);
+    }
+
+    setFocusToOption(elements, i){
+        if (i < 0) {
+            document.getElementById(this.id).focus();
+        }
+        else if (i < elements.length) {
+            elements[i].focus();
+        }
+    }
+
+    showSelectedObject() {
+        this._setInputValue(this.selectedTemplate(this.selectedObject));
+    }
+}
+
+clinput.init = (params) => {
+    return new clinput.CLInput(params)
+}
+
+
+// -------- jct --------
+
 // ----------------------------------------
 // Initial definitions
 // ----------------------------------------
@@ -1168,3 +1470,405 @@ jct.setup = (manageUrl=true) => {
         }
     }
 }
+
+
+
+// -------- detailed_results --------
+
+jct.explain = (q) => {
+    let detailed_results = jct.d.gebi("jct_detailed_results_section")
+    detailed_results.innerHTML = "";
+    let compliant_routes = `<h2>Compliant Routes</h2>`
+    let noncompliant_routes = `<h2>Non-Compliant Routes</h2>`
+    let unknown_routes = `<h2>Unknown Routes</h2>`
+    let compliant_routes_number = 0;
+    let noncomplicant_routes_number = 0;
+    let unknown_routes_number = 0;
+
+    q.results.forEach((r) => {
+        switch(r.route) {
+            case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
+                if (r.compliant === "yes") {
+                    statement = "You are able to comply with Plan S as this is a fully open access journal.";
+                    explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine if your chosen journal is an open access journal that enables compliance:"
+                } else if (r.compliant === "no") {
+                    statement = "You are not able to <b>comply with Plan S</b> via the fully open access journal route.";
+                    explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine that this is not a route to compliance:"
+                } else {
+                    statement = "We are <b>unable to determine if you are complaint</b> via the fully open access journal route.";
+                    explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine compliance:"
+                }
+                break;
+            case jct.COMPLIANCE_ROUTES_SHORT.ta:
+                if (r.compliant === "yes") {
+                    statement = "You are able to comply with Plan S via a Transformative agreement.";
+                    explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine if a transformative agreements is available that would enable compliance:"
+                } else if (r.compliant === "no") {
+                    statement = "You are not able to <b>comply with Plan S</b> via a Transformative agreement.";
+                    explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine if a transformative agreements is available that would enable compliance:"
+                } else {
+                    statement = "We are <b>unable to determine</b> if you are able to comply with Plan S via a Transformative agreement.";
+                    explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine compliance:"
+                }
+                break;
+            case jct.COMPLIANCE_ROUTES_SHORT.tj:
+                if (r.compliant === "yes") {
+                    statement = "This journal is a Transformative journal and therefore you <b>can comply with Plan S</b> via this route.";
+                    explanation = "The following checks were carried out to determine that this is a compliant route:"
+                } else if (r.compliant === "no") {
+                    statement = "This journal is not a Transformative journal and therefore you <b>cannot comply with Plan S</b> via this route.";
+                    explanation = "The following checks were carried out to determine that this is not a compliant route:"
+                } else {
+                    statement = "We are unable to determine if this journal is a Transformative journal and therefore <b>unable to determine compliance</b> via this route.";
+                    explanation = "The following checks were carried out to determine compliance:"
+                }
+                break;
+            case jct.COMPLIANCE_ROUTES_SHORT.sa:
+                if (r.compliant === "yes") {
+                    statement = "You are able to comply with Plan S via Self-archiving.";
+                    explanation = "The following checks were carried out to determine whether the right exists to comply with Plan S via self-archiving. Data from Open Access Button Permissions (OAB Permissions) is used to see if the publisher's policy of self-archiving enables compliance. If it does not or if an unknown answer has been returned then data on cOAlition S Implementation Roadmap data is checked to see if cOAlition S’s Rights Retention Strategy provides a route to compliance :"
+                } else if (r.compliant === "no") {
+                    statement = "Self-archiving does not enable <b>Plan S</b> compliance when publishing in this journal.";
+                    explanation = "TThe following checks were carried out to determine that this is not a compliant route:"
+                } else {
+                    statement = "We are <b>unable to determine</b> if you are able to comply with Plan S via Self-archiving, when publishing in this journal.";
+                    explanation = "The following checks were carried out to determine compliance:"
+                }
+                break;
+        }
+
+        let route = `
+        <h3>` + jct.COMPLIANCE_ROUTES_LONG[r.route] + `</h3>
+        <p>`  + statement + `</p>
+        <p>`  + explanation + `</p>`
+
+        if (r.log) {
+            r.log.forEach((log) => {
+                route += "<ul><li>" + log.action + "</li>"
+                route += "<ul><li>" + log.result + "</li>"
+                if (log.url) {
+                    route += "<li>" + log.url + "</li>"
+                }
+                route += "</ul></ul>"
+            })
+        }
+
+        if (r.compliant === "yes") {
+            compliant_routes_number++;
+            compliant_routes += route;
+        } else if (r.compliant === "no") {
+            noncomplicant_routes_number++;
+            noncompliant_routes += route;
+        } else {
+            unknown_routes_number++;
+            unknown_routes += route;
+        }
+    });
+
+    let blurb_for_count = "";
+    [compliant_routes_number,
+     noncomplicant_routes_number,
+     unknown_routes_number].forEach((num, index) => {
+        let human_num = (num === 0) ? 'no' : num;
+        switch(index) {
+            case 0:
+                if (num === 1) {
+                    blurb_for_count += '1 route that enables compliance, ';
+                } else {
+                    blurb_for_count += human_num + ' routes that enable compliance, ';
+                }
+                break;
+            case 1:
+                if (num === 1) {
+                    blurb_for_count += '1 non-compliant route and ';
+                } else {
+                    blurb_for_count += human_num + ' non-compliant routes and ';
+                }
+                break;
+            case 2:
+                if (num === 1) {
+                    blurb_for_count += '1 undetermined route.';
+                } else {
+                    blurb_for_count += human_num + ' undetermined routes.';
+                }
+                break;
+        }
+    })
+    let issns = jct.chosen.journal.issn.join(", ");
+    let publisher = jct.chosen.journal.publisher !== undefined ? jct.chosen.journal.publisher : "Not known";
+
+    let journal = "Unknown Title"
+    if (jct.chosen.journal.title) {
+        journal = jct.chosen.journal.title;
+    }
+    journal += " (ISSN: " + issns + ")";
+
+    let text =
+        `
+        <h3>Your query</h3>
+
+        <p>You asked us to calculate whether you can comply with Plan S under the following conditions:
+
+        <ul>
+            <li>Journal: </li>
+            <ul class="second">
+                <li> ` + journal + `</li>
+                <li> Publisher: ` + publisher + `</li>
+            </ul>
+            <li>Funder: ` + jct.chosen.funder.title + `</li>`
+
+    if (jct.chosen.institution){
+        text +=
+            `
+            <li>Institution: ` + jct.chosen.institution.title +
+                    ` (ROR: ` + jct.chosen.institution.id + `)</li>`
+    }
+    else {
+        text += `<li>Not part of Higher Education</li>`
+    }
+
+    text +=
+        `</ul>
+
+        We carried out this query at ` + new Date(q.request.started).toUTCString() +
+        `, and found ` + blurb_for_count + `
+        </p>
+    `
+
+    let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
+        (compliant_routes_number > 0 ? compliant_routes : "") +
+        (noncomplicant_routes_number > 0 ? noncompliant_routes : "") +
+        (unknown_routes_number > 0 ? unknown_routes : "") + "</div>");
+    detailed_results.append(elem);
+
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.addEventListener("click", () => {
+            let a = window.open('', '', 'height=500, width=500');
+            let compliance = jct.d.gebc("jct_compliance")[0]
+            let results_to_print = jct.d.gebi("jct_detailed_result_text")
+            a.document.write(compliance.innerHTML);
+            a.document.write(results_to_print.innerHTML);
+            a.document.close();
+            a.print();
+        })
+    }
+
+    let fom = jct.d.gebi("jct_find_out_more");
+    if (fom) {
+        let url = "";
+        if (window.JCT_UI_BASE_URL) {
+            url = window.JCT_UI_BASE_URL;
+        }
+        url += "/";
+
+        let jid, fid, iid, not_he = false;
+        try {
+            jid = jct.chosen.journal.id;
+        } catch {}
+        try {
+            fid = jct.chosen.funder.id;
+        } catch {}
+        try {
+            iid = jct.chosen.institution.id;
+        } catch {}
+        try {
+            not_he = jct.d.gebi('jct_notHE').checked;
+        } catch {}
+
+        let args = [];
+        if (jid) {
+            args.push("issn=" + jid);
+        }
+        if (fid) {
+            args.push("funder=" + fid);
+        }
+        if (iid) {
+            args.push("ror=" + iid);
+        }
+        if (not_he) {
+            args.push("not_he=" + not_he);
+        }
+
+        if (args.length > 0) {
+            let query = args.join("&");
+            url += "?" + query;
+        }
+        fom.setAttribute("href", url);
+    }
+}
+
+
+
+// -------- feedback --------
+
+jct.setup_feedback_modal = () => {
+    if (jct.d.gebi('feedback')) {
+        jct.d.gebi('feedback').addEventListener("click", (e) => {
+            e.preventDefault();
+            let modal = jct.d.gebi('jct_modal_feedback')
+            jct.d.gebi('message').value = "";
+            jct.d.gebi('feedback_success').style.display = "none";
+            jct.d.gebi('feedback_error').style.display = "none";
+            modal.style.display = 'block';
+        });
+
+        jct.d.gebi("contact_form")
+            .addEventListener("submit", (event) => {
+                event.preventDefault()
+            let name  = jct.d.gebi("name").value;
+            let email = jct.d.gebi("email").value;
+            let message = jct.d.gebi("message").value;
+            let timestamp = new Date().toUTCString()
+
+            let data =
+                JSON.stringify({
+                    "name" : name,
+                    "email" : email,
+                    "feedback" : message,
+                    "context" : {
+                        "request" : {
+                            "timestamp" : timestamp,
+                            "issn" : jct.chosen.journal ? jct.chosen.journal.id : "",
+                            "funder" : jct.chosen.funder ? jct.chosen.funder.id : "",
+                            "ror" : jct.chosen.institution ? jct.chosen.institution.id : "",
+                            "navigator data": {
+                                "appCodeName": navigator.appCodeName,
+                                "appName": navigator.appName,
+                                "appVersion": navigator.appVersion,
+                                "cookieEnabled": navigator.cookieEnabled,
+                                "language": navigator.language,
+                                "platform": navigator.platform,
+                                "userAgent": navigator.userAgent,
+                                "vendor": navigator.vendor
+                            }
+                        },
+                        "results" : [
+                            jct.latest_response
+                        ],
+                        "url" : window.location.href
+                    }
+                });
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', jct.api + '/feedback');
+            xhr.onload = () => {
+                alert("message sent successfully")
+                //jct.d.gebi("feedback_success").style.display = "block"
+            };
+            xhr.onerror = () => {
+                //jct.d.gebi("feedback_error").style.display = "block"
+                alert("Oops, something went wrong");
+            };
+            xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.send(data);
+            jct.d.gebi('modal_feedback').style.display = "none";
+            return false
+        });
+    }
+}
+
+
+
+
+// -------- plugin --------
+
+
+// ----------------------------------------
+// Function to add plugin containers
+// ----------------------------------------
+jct.add_plugin_containers = () => {
+    // ----------------------------------------
+    // html for holding the query
+    // ----------------------------------------
+    let query_container_html = `
+        <div class="query" id="jct_query">
+            <div class="header-logo">
+                <h2 class="label">
+                    <svg width="13" height="20" viewbox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M6.28479 2.14158C5.43898 2.14158 4.62781 2.47934 4.02973 3.08057C3.43165 3.6818 3.09564 4.49725 3.09564 5.34752V6.07785H0.965235V5.34752C0.965235 3.92928 1.52568 2.56912 2.52329 1.56626C3.5209 0.563403 4.87395 0 6.28479 0C7.69562 0 9.04868 0.563403 10.0463 1.56626C11.0439 2.56912 11.6043 3.92928 11.6043 5.34752V10.3707C12.2009 11.3357 12.5455 12.4746 12.5455 13.6944C12.5455 17.1769 9.73706 20 6.27273 20C2.8084 20 0 17.1769 0 13.6944C0 10.2119 2.8084 7.38877 6.27273 7.38877C7.44213 7.38877 8.5368 7.71045 9.47393 8.27058V5.34752C9.47393 4.49725 9.13793 3.6818 8.53984 3.08057C7.94176 2.47934 7.13059 2.14158 6.28479 2.14158ZM6.27273 9.53034C3.98499 9.53034 2.13041 11.3946 2.13041 13.6944C2.13041 15.9941 3.98499 17.8584 6.27273 17.8584C8.56047 17.8584 10.415 15.9941 10.415 13.6944C10.415 11.3946 8.56047 9.53034 6.27273 9.53034Z" fill="#F47115"></path>
+                        <path d="M6.29321 15.4802C7.26388 15.4802 8.05077 14.6892 8.05077 13.7134C8.05077 12.7376 7.26388 11.9466 6.29321 11.9466C5.32254 11.9466 4.53566 12.7376 4.53566 13.7134C4.53566 14.6892 5.32254 15.4802 6.29321 15.4802Z" fill="#F47115"></path>
+                    </svg>
+                    <a href="https://journalcheckertool.org">cOAlition S: Journal Checker Tool</a>
+                </h2>
+            </div>
+            <div class="row row-inputs" id="jct_inputs_plugin"></div>
+        </div>
+    `;
+
+    // ----------------------------------------
+    // html for holding the result
+    // ----------------------------------------
+    let results_container_html = `
+        <div class="container results" id="jct_results" style="display: none">
+            <div id="jct_results_plugin"></div>
+            <div id="jct_tiles_plugin"></div>
+            <div class="row row--centered" style="display: none;" id="jct_detailed_results">
+                <section class="col col--1of2" id="jct_detailed_results_section">
+                </section>
+            </div>
+            <div class="row">
+                <div class="col col--1of2 col--centered">
+                    <a href="#" class="button button--secondary" id="jct_find_out_more" target="_blank">Find out more</a>
+                </div>
+                <div class="col col--2of2 col--centered">
+                    <button class="button button--primary" id="jct_restart">
+                        <svg width="30" height="25" viewBox="0 0 30 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.57592 9.07816L2.94589 10.4481C3.92217 4.80549 8.85311 0.5 14.7704 0.5C18.2125 0.5 21.4922 1.98062 23.7704 4.56246C24.1073 4.94462 24.0713 5.528 23.6891 5.86585C23.3079 6.20277 22.7245 6.16677 22.3857 5.78462C20.4584 3.59877 17.6817 2.34615 14.7704 2.34615C9.70014 2.34615 5.48545 6.08244 4.73523 10.9461L6.97131 9.8277C7.42823 9.5997 7.98208 9.78431 8.21008 10.2403C8.43808 10.6963 8.25346 11.2511 7.79746 11.4791L4.14234 13.3066C4.01456 13.3779 3.86813 13.4198 3.71225 13.4229L3.69346 13.4231C3.59256 13.4231 3.49231 13.4066 3.39684 13.3743C3.26521 13.3298 3.14264 13.2553 3.03992 13.1526L0.270692 10.3834C-0.0902308 10.0225 -0.0902308 9.43908 0.270692 9.07816C0.631615 8.71724 1.215 8.71724 1.57592 9.07816ZM5.77034 20.4385C8.04942 23.0194 11.3291 24.5 14.7703 24.5C20.6873 24.5 25.6181 20.1949 26.5947 14.5526L27.964 15.9218C28.144 16.1018 28.3803 16.1923 28.6166 16.1923C28.8529 16.1923 29.0892 16.1018 29.2692 15.9228C29.6301 15.5618 29.6301 14.9785 29.2692 14.6175L26.5271 11.8754C26.3584 11.6919 26.1165 11.5769 25.8473 11.5769C25.6855 11.5769 25.5336 11.6185 25.4015 11.6914L21.7424 13.5209C21.2864 13.7489 21.1018 14.3037 21.3298 14.7597C21.5587 15.2157 22.1135 15.3985 22.5686 15.1723L24.8055 14.0535C24.0555 18.9173 19.8407 22.6538 14.7703 22.6538C11.859 22.6538 9.08326 21.4012 7.15403 19.2163C6.81711 18.8351 6.23372 18.7972 5.85157 19.1351C5.46942 19.472 5.43249 20.0563 5.77034 20.4385Z" fill="#2B2B2B"/>
+                        </svg>Start over
+                    </button>
+                </div>
+            </div>
+            <section class="row row--centered">
+                <p class="col col--1of2 alert">
+                  The information provided by the <em>Journal Checker Tool</em> represents cOAlition S’s current
+                  understanding in relation to the policies of the journals contained within it. We will endeavour to
+                  keep it up to date and accurate, but we do not accept any liability in relation to any errors or omissions.
+                </p>
+            </section>
+        </div>
+    `;
+
+    // ----------------------------------------
+    // html for holding the modals
+    // ----------------------------------------
+    let modal_container_html = `
+        <div id="jct_modal_container"></div>
+    `;
+
+    let plugin_div = jct.d.gebi("jct_plugin");
+    if (plugin_div.children.length === 0) {
+        plugin_div.innerHTML = query_container_html + results_container_html + modal_container_html;
+    }
+}
+
+// ----------------------------------------
+// Function to initialize the plugin with values
+// ----------------------------------------
+jct.set_defaults = () => {
+    if (jct_query_options && jct_query_options.journal) {
+        jct.set_each_default('journal', jct_query_options.journal);
+    }
+    if (jct_query_options && jct_query_options.funder) {
+        jct.set_each_default('funder', jct_query_options.funder);
+    }
+    if (jct_query_options && jct_query_options.not_he) {
+        let not_he_element = jct.d.gebi('jct_notHE');
+        if (not_he_element.checked === false) {
+            not_he_element.click();
+        }
+    } else if (jct_query_options && jct_query_options.institution) {
+        jct.set_each_default('institution', jct_query_options.institution);
+    }
+}
+
+// ----------------------------------------
+// Function to setup the plugin
+// ----------------------------------------
+jct.setup_plugin = () => {
+    jct.add_plugin_containers();
+    jct.setup(false);
+    jct.set_defaults();
+}
+
+

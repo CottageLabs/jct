@@ -1,6 +1,8 @@
 // Buttons, button inputs, & links styled as buttons
 
-$btn-height: 70px;
+a.button {
+  display: inline-block;
+}
 
 .button,
 button {

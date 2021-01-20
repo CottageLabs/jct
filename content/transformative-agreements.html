@@ -14,7 +14,7 @@
     <link href="../static/css/main.css" rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="../static/api_endpoint.js"></script>
     <script type="text/javascript" src="../static/jct.js"></script>
-    <script type="text/javascript" src="../static/detailed_results.js"></script>
+    <script type="text/javascript" src="../static/feedback.js"></script>
 
     <meta name="theme-color" content="#282624">
 
@@ -146,9 +146,10 @@ since the start date of the agreement, but we cannot necessarily verify that.</p
                   Send us feedback
               </button>
               <p>
-                  <a href="/transformative-journals">Transformative Journals</a> •
-                  <a href="/transformative-agreements">Transformative Agreements</a> •
-                  <a href="/apidocs">API Documentation</a> •
+                  <a href="/transformative-journals">Transformative&nbsp;Journals</a> •
+                  <a href="/transformative-agreements">Transformative&nbsp;Agreements</a> •
+                  <a href="/apidocs">API&nbsp;Documentation</a> •
+                  <a href="/widget">Embeddable&nbsp;Widget</a> •
                   <a href="/faq">FAQ</a><br>
               </p>
               <p>
@@ -160,45 +161,9 @@ since the start date of the agreement, but we cannot necessarily verify that.</p
     </div>
 </footer>
 
-<!-- Modals -->
-<div class="modal" id="modal_feedback" style="display: none">
-    <div class="modal-content" id="contact">
-        <header class="modal-header">
-            <h2>
-                Feedback? Suggestion? Contact us here.
-                <span class="close" aria-label="Close" role="button" data-id="modal_feedback">&times;</span>
-            </h2>
-        </header>
-        <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>. If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. We will respond within working 3 days.</p>
-        <form id="contact_form">
-            <div class="modal-inputs">
-                <label for="name">Name</label>
-                <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
-            </div>
-            <div class="modal-inputs">
-                <label for="email">Email</label>
-                <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
-            </div>
-            <div class="modal-inputs">
-                <label for="message">Comment</label>
-                <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
-            </div>
-            <div class="modal-inputs">
-                <button class="button button--primary contact_submit" type="submit">
-                    Send
-                </button>
-            </div>
-
-        </form>
-        <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
-        <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
-        <p>
-            <a href="/notices#privacy_notice">Privacy Notice</a> •
-            <a href="/notices#disclaimer_and_copyright">Disclaimer & Copyright</a>
-        </p>
-    </div>
+<div id="jct_modal_container">
 </div>
 
-<script type="text/javascript" src="../static/modal.js"></script>
+<script>jct.setup_modals(true);</script>
 </body>
 </html>
