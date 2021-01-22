@@ -69,9 +69,10 @@ For each route, there is a general response format:
   "ror" : "the ror relevant to this result, if there is one>",
   "log" : [
     {
-      "action" : "<description of the action (see below for details)>",
-      "result" : "<the outcome of the action (optional, depending on circumstance)>",
-      "url" : "<url to data supporting the result, if available>"
+      "code" : "<algorithm transition code (see below)>",
+      "parameters" : {
+        "<parameter name>" : ["<parameter value>"]
+      }
     },
     ...
   ]
@@ -111,20 +112,38 @@ Qualification IDs:
   
 Log:
 
-The log provides a description of an action and its result, in human-readable English, in order.
+The log provides a list of decision transitions through the algorithm, in order of traversal.  This allows you to 
+see the path through the algorithm that was taken to reach the decision, along with any relevant parameters.
+
+See the table below for a full list of transitions, their meanings, and the parameters that may be associated.
 
 For example, items such as this may be present:
 
-```
+```json
 {
   "log" : [
-    {"action" : "Lookup in DOAJ", "result" : "ISSN not in public DOAJ"},
-    {"action" : "Lookup in DOAJ", "result" : "ISSN 'in progress' at DOAJ"},
+    { "code" : "FullOA.InDOAJ" },
+    { 
+      "code" : "FullOA.Compliant",
+      "parameters" : {
+        "licence" : ["CC BY", "CC-BY-SA"]
+      }
+    } 
   ]
 }
 ```
 
-In the above example there is no `url` parameter to visit, but if the record were in DOAJ, for example, the URL would be the URL to the ToC in the DOAJ `https://doaj.org/toc/<ISSN>`.
+Full OA Route Codes:
+
+| Code | Meaning | Property | Property Value |
+| ---- | ------- | -------- | -------------- |
+| FullOA.NotInDOAJ | Journal not found in DOAJ | | |
+| FullOA.InProgressDOAJ | Journal application found in DOAJ | | |
+| FullOA.NotInProgressDOAJ | No application found in DOAJ | | |
+| FullOA.InDOAJ | Journal found in DOAJ | | |
+| FullOA.Compliant | Journal properties are compliant | licence | List of Journal licences |
+| FullOA.Unknown | Journal properties are unclear | missing | List of missing properties |
+| FullOA.NonCompliant | Journal properties are non-compliant | license | List of Journal licences |
 
 
 ## Transformative Journals
