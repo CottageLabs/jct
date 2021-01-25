@@ -426,8 +426,6 @@ jct.tiles_plugin_html = `
 // html for non compliant option
 // ----------------------------------------
 jct.non_compliant_options_html = `
-    <h3 class="col">What can I do now?</h3>
-
     <div class="col col--1of4">
         <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
             <h4 class="label card__heading">Check with an alternative journal</h4>
@@ -938,7 +936,7 @@ jct.success = (xhr) => {
 // function to add non compliant html response
 // ----------------------------------------
 jct._addNonCompliantOptions = () => {
-    jct.d.gebi("jct_paths_results").innerHTML = non_compliant_options_html;
+    jct.d.gebi("jct_paths_results").innerHTML = jct.non_compliant_options_html;
 }
 
 // ----------------------------------------
