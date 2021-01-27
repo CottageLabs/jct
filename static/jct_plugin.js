@@ -740,8 +740,7 @@ jct.feedback_modal_html = `
                  </h2>
             </header>
             <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>.</p>
-            <p>If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. Your current search details will be automatically included in your feedback. </p>
-            <p>We will respond within 3 working days.</p>
+            <p>If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. Your current search details will be automatically included in your feedback. We will respond within 3 working days.</p>
             <form id="contact_form">
                 <div class="modal-inputs">
                     <label for="name">Name</label>
