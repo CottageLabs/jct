@@ -52,7 +52,7 @@ jct.explain = (q) => {
                     explanation = "The following checks were carried out to determine whether the right exists to comply with Plan S via self-archiving. Data from Open Access Button Permissions (OAB Permissions) is used to see if the publisher's policy of self-archiving enables compliance. If it does not or if an unknown answer has been returned then data on cOAlition S Implementation Roadmap data is checked to see if cOAlition S’s Rights Retention Strategy provides a route to compliance :"
                 } else if (r.compliant === "no") {
                     statement = "Self-archiving does not enable <b>Plan S</b> compliance when publishing in this journal.";
-                    explanation = "TThe following checks were carried out to determine that this is not a compliant route:"
+                    explanation = "The following checks were carried out to determine that this is not a compliant route:"
                 } else {
                     statement = "We are <b>unable to determine</b> if you are able to comply with Plan S via Self-archiving, when publishing in this journal.";
                     explanation = "The following checks were carried out to determine compliance:"
