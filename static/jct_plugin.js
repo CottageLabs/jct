@@ -1172,66 +1172,6 @@ jct.set_each_default = (type, value) => {
 }
 
 // ----------------------------------------
-// ToDo: Not sure if this is used.
-// ----------------------------------------
-//jct.setTimer = () => {
-//    jct._setComplianceTheme();
-//    if (!jct.intervalID){
-//        jct.intervalID = window.setInterval(sent_suggestion_request, jct.delay);
-//    }
-//}
-
-// ----------------------------------------
-// ToDo: Not sure if this is used.
-// ----------------------------------------
-//function sent_suggestion_request() {
-//    let funderInput = jct.d.gebi("jct_funder");
-//    let journalInput = jct.d.gebi("jct_journal");
-//    let institutionInput = jct.d.gebi("jct_institution");
-//
-//    let change = false;
-//    let focused;
-//    if (funderInput === document.activeElement){
-//        change = funderInput.value !== jct.inputValues.Funder;
-//        jct.inputValues.Funder = funderInput.value;
-//        focused = "jct_funder";
-//    }
-//    else if (journalInput === document.activeElement){
-//        change = journalInput.value !== jct.inputValues.Journal;
-//        jct.inputValues.Journal = journalInput.value;
-//        focused = "jct_journal";
-//    }
-//    else if (institutionInput === document.activeElement){
-//        change = institutionInput.value !== jct.inputValues.Institution;
-//        jct.inputValues.Institution = institutionInput.value;
-//        focused = "jct_institution";
-//    }
-//    else {
-//        clearInterval(jct.intervalID);
-//        jct.intervalID = null;
-//        return;
-//    }
-//
-//    if (change){
-//        jct._sug(focused);
-//    }
-//}
-
-// ----------------------------------------
-// ToDo: Not sure if this is used.
-// ----------------------------------------
-//jct._sug = (focused) => {
-//    jct.d.gebi('jct_suggest'+focused).innerHTML="";
-//    jct.d.gebi('jct_detailed_results_section').innerHTML = "";
-//    jct.d.gebi('jct_explain_results').style.display = "none";
-//    jct.d.gebi('jct_detailed_results').style.display = "none";
-//    jct.d.gebi('jct_paths_results').innerHTML = "";
-//    //negatives only for dev
-//    jct.suggesting = focused;
-//    jct.suggest(focused);
-//}
-
-// ----------------------------------------
 // Setup JCT
 // This maninly initializes clinput, CL's implementation of select 2
 // ----------------------------------------
@@ -1388,22 +1328,23 @@ jct.setup = (manageUrl=true) => {
             }
         },
         optionsTemplate : function(obj) {
-            let title = obj.title;
-            let id = obj.id;
-
-            let frag = '<a class="optionsTemplate"><span class="jct__option_institution_title">' + title + '</span>';
-            if (id) {
-                frag += ' <span class="jct__option_publisher_id">(ROR:' + id + ')</span></a> ';
+            let frag = '<a class="optionsTemplate"><span class="jct__option_institution_title">' + obj.title + '</span>';
+            if (obj.country) {
+                frag += '<span class="jct__option_institution_country">, ' + obj.country + '</span>';
             }
+            if (obj.id) {
+                frag += ' <span class="jct__option_institution_id"> (ROR:' + obj.id + ')</span>';
+            }
+            frag += '</a>'
             return frag;
         },
         selectedTemplate : function(obj) {
-            let title = obj.title;
-            let id = obj.id;
-
-            let frag = title;
-            if (id) {
-                frag += ' (ROR:' + id + ')';
+            let frag = obj.title;
+            if (obj.country) {
+                frag += ', ' + obj.country;
+            }
+            if (obj.id) {
+                frag += ' (ROR:' + obj.id + ')';
             }
             return frag;
         },
@@ -1616,10 +1557,16 @@ jct.explain = (q) => {
             <li>Funder: ` + jct.chosen.funder.title + `</li>`
 
     if (jct.chosen.institution){
+        inner_text = 'Institution: ' + jct.chosen.institution.title;
+        if (jct.chosen.institution.country) {
+            inner_text += ', ' + jct.chosen.institution.country;
+        }
+        if (jct.chosen.institution.id) {
+            inner_text += ' (ROR: ' + jct.chosen.institution.id + ')';
+        }
         text +=
             `
-            <li>Institution: ` + jct.chosen.institution.title +
-                    ` (ROR: ` + jct.chosen.institution.id + `)</li>`
+            <li>` + inner_text + `)</li>`
     }
     else {
         text += `<li>Not part of Higher Education</li>`

@@ -141,10 +141,16 @@ jct.explain = (q) => {
             <li>Funder: ` + jct.chosen.funder.title + `</li>`
 
     if (jct.chosen.institution){
+        inner_text = 'Institution: ' + jct.chosen.institution.title;
+        if (jct.chosen.institution.country) {
+            inner_text += ', ' + jct.chosen.institution.country;
+        }
+        if (jct.chosen.institution.id) {
+            inner_text += ' (ROR: ' + jct.chosen.institution.id + ')';
+        }
         text +=
             `
-            <li>Institution: ` + jct.chosen.institution.title +
-                    ` (ROR: ` + jct.chosen.institution.id + `)</li>`
+            <li>` + inner_text + `)</li>`
     }
     else {
         text += `<li>Not part of Higher Education</li>`
