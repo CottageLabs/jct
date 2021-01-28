@@ -150,7 +150,7 @@ jct.explain = (q) => {
         }
         text +=
             `
-            <li>` + inner_text + `)</li>`
+            <li>` + inner_text + `</li>`
     }
     else {
         text += `<li>Not part of Higher Education</li>`
