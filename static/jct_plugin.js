@@ -5,7 +5,6 @@ window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
 window.JCT_UI_BASE_URL = "https://journalcheckertool.org";
 
 
-
 // -------- clinput --------
 
 let clinput = {};
@@ -466,7 +465,8 @@ jct.non_compliant_options_html = `
 // html for fully_oa tile in results
 // Needs journal title
 // ----------------------------------------
-jct.fullyOA_tile = (journal_title) => {
+jct.fullyOA_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
     let fullyOA_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -479,7 +479,7 @@ jct.fullyOA_tile = (journal_title) => {
                   Full <br>open access
                 </h4>
                 <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
-                <p><em>` + journal_title + `</em> is a fully open access journal.</p>
+                <p><em>` + title + `</em> is a fully open access journal.</p>
             </article>
         </div>`;
     return jct.htmlToElement (fullyOA_tile_html);
@@ -490,6 +490,9 @@ jct.fullyOA_tile = (journal_title) => {
 // needs journal and institution_title
 // ----------------------------------------
 jct.transformative_agreement_tile = (journal, institution_title) => {
+    let title = journal.title ? journal.title : journal.id;
+    let publisher = journal.publisher ? journal.publisher : 'the publisher';
+    let institution = institution_title ? institution_title : 'the institution';
     let transformative_agreement_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -502,7 +505,7 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                   Transformative <br>agreement
                 </h4>
                 <p>Conditions may be in place around publishing through this agreement. <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>
-                <p><em>` + journal.title + `</em> is part of a transformative agreement between <em>` + journal.publisher + `</em> and <em>` + institution_title +`</em></p>
+                <p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_agreement_tile_html);
@@ -512,7 +515,8 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
 // html for transformative_journal_tile in results
 // needs journal_title
 // ----------------------------------------
-jct.transformative_journal_tile = (journal_title) => {
+jct.transformative_journal_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
     let transformative_journal_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -527,7 +531,7 @@ jct.transformative_journal_tile = (journal_title) => {
                     Transformative <br>journal
                 </h4>
                 <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
-                <p><em>` + journal_title + `</em> is a transformative journal</p>
+                <p><em>` + title + `</em> is a transformative journal</p>
                 <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
             </article>
         </div>`;
@@ -538,7 +542,8 @@ jct.transformative_journal_tile = (journal_title) => {
 // html for self_archiving_tile in results
 // needs journal_title
 // ----------------------------------------
-jct.self_archiving_tile = (journal_title) => {
+jct.self_archiving_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
     let self_archiving_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -549,7 +554,7 @@ jct.self_archiving_tile = (journal_title) => {
                 </span>
                 <h4 class="label">Self-archiving</h4>
                 <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
-                <p><em>` + journal_title + `</em> has a Plan S aligned self-archiving policy.</p>
+                <p><em>` + title + `</em> has a Plan S aligned self-archiving policy.</p>
                 <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button">
             </article>
         </div>`;
@@ -560,7 +565,7 @@ jct.self_archiving_tile = (journal_title) => {
 // html for self_archiving_using_rights_retention_tile in results
 // needs journal_title
 // ----------------------------------------
-jct.sa_rights_retention_tile = (journal_title) => {
+jct.sa_rights_retention_tile = () => {
     let sa_rights_retention_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -595,7 +600,7 @@ jct.ta_modal_html = `
                 <p>A common eligibility criterion is that the corresponding author of the article must be at an
                     institution subscribing to the transformative agreement for the paper (determined via the use of an
                     institutional email address). If you are not the corresponding author, please repeat your search
-                    with the corresponding author’s insitution to help validate the article’s eligibility.</p>
+                    with the corresponding author’s institution to help validate the article’s eligibility.</p>
             </div>
         </div>
     </div>
@@ -990,20 +995,20 @@ jct.add_tile = (result, data) => {
     let has_sa_rights_retention;
     switch(tile_type) {
         case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
-            tile = jct.fullyOA_tile(data.journal.title);
+            tile = jct.fullyOA_tile(data.journal);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.ta:
             tile = jct.transformative_agreement_tile(data.journal, data.institution.title);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.tj:
-            tile = jct.transformative_journal_tile(data.journal.title);
+            tile = jct.transformative_journal_tile(data.journal);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.sa:
             has_sa_rights_retention = jct.sa_rights_retention_check(result);
             if (has_sa_rights_retention) {
-                tile = jct.sa_rights_retention_tile(data.journal.title);
+                tile = jct.sa_rights_retention_tile();
             } else {
-                tile = jct.self_archiving_tile(data.journal.title);
+                tile = jct.self_archiving_tile(data.journal);
             }
             break;
     }
