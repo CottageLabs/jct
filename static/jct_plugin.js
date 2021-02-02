@@ -5,7 +5,6 @@ window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
 window.JCT_UI_BASE_URL = "https://journalcheckertool.org";
 
 
-
 // -------- clinput --------
 
 let clinput = {};
@@ -478,7 +477,7 @@ jct.fullyOA_tile = (journal_title) => {
                   <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Full <br>open access
                 </h4>
-                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance. The APC, if one is charged, will be met by your funder.</p>
                 <p><em>` + journal_title + `</em> is a fully open access journal.</p>
             </article>
         </div>`;
@@ -526,7 +525,7 @@ jct.transformative_journal_tile = (journal_title) => {
                     <br/><br/>
                     Transformative <br>journal
                 </h4>
-                <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance. Verify if your funder supports the payment of APCs to Transformative Journals <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noferrer noopener">here</a>.</p>
                 <p>
                     <span><em>` + journal_title + `</em> is a transformative journal</span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
