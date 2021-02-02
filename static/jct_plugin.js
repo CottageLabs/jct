@@ -531,8 +531,14 @@ jct.transformative_journal_tile = (journal) => {
                     Transformative <br>journal
                 </h4>
                 <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
-                <p><em>` + title + `</em> is a transformative journal</p>
-                <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
+                <p>
+                    <span><em>` + title + `</em> is a transformative journal</span>
+                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
+                        <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
+                        </svg>
+                    </span>
+                </p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_journal_tile_html);
@@ -554,8 +560,14 @@ jct.self_archiving_tile = (journal) => {
                 </span>
                 <h4 class="label">Self-archiving</h4>
                 <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
-                <p><em>` + title + `</em> has a Plan S aligned self-archiving policy.</p>
-                <img src="../static/img/icons/question.svg" alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button">
+                <p>
+                    <span><em>` + title + `</em> has a Plan S aligned self-archiving policy.</span>
+                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button">
+                        <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
+                        </svg>
+                    </span>
+                </p>
             </article>
         </div>`;
     return jct.htmlToElement(self_archiving_tile_html);
@@ -744,7 +756,8 @@ jct.feedback_modal_html = `
                     <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_feedback">&times;</span>
                  </h2>
             </header>
-            <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>. If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. We will respond within working 3 days.</p>
+            <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>.</p>
+            <p>If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. Your current search details will be automatically included in your feedback. We will respond within 3 working days.</p>
             <form id="contact_form">
                 <div class="modal-inputs">
                     <label for="name">Name</label>
@@ -1202,66 +1215,6 @@ jct.set_each_default = (type, value) => {
 }
 
 // ----------------------------------------
-// ToDo: Not sure if this is used.
-// ----------------------------------------
-//jct.setTimer = () => {
-//    jct._setComplianceTheme();
-//    if (!jct.intervalID){
-//        jct.intervalID = window.setInterval(sent_suggestion_request, jct.delay);
-//    }
-//}
-
-// ----------------------------------------
-// ToDo: Not sure if this is used.
-// ----------------------------------------
-//function sent_suggestion_request() {
-//    let funderInput = jct.d.gebi("jct_funder");
-//    let journalInput = jct.d.gebi("jct_journal");
-//    let institutionInput = jct.d.gebi("jct_institution");
-//
-//    let change = false;
-//    let focused;
-//    if (funderInput === document.activeElement){
-//        change = funderInput.value !== jct.inputValues.Funder;
-//        jct.inputValues.Funder = funderInput.value;
-//        focused = "jct_funder";
-//    }
-//    else if (journalInput === document.activeElement){
-//        change = journalInput.value !== jct.inputValues.Journal;
-//        jct.inputValues.Journal = journalInput.value;
-//        focused = "jct_journal";
-//    }
-//    else if (institutionInput === document.activeElement){
-//        change = institutionInput.value !== jct.inputValues.Institution;
-//        jct.inputValues.Institution = institutionInput.value;
-//        focused = "jct_institution";
-//    }
-//    else {
-//        clearInterval(jct.intervalID);
-//        jct.intervalID = null;
-//        return;
-//    }
-//
-//    if (change){
-//        jct._sug(focused);
-//    }
-//}
-
-// ----------------------------------------
-// ToDo: Not sure if this is used.
-// ----------------------------------------
-//jct._sug = (focused) => {
-//    jct.d.gebi('jct_suggest'+focused).innerHTML="";
-//    jct.d.gebi('jct_detailed_results_section').innerHTML = "";
-//    jct.d.gebi('jct_explain_results').style.display = "none";
-//    jct.d.gebi('jct_detailed_results').style.display = "none";
-//    jct.d.gebi('jct_paths_results').innerHTML = "";
-//    //negatives only for dev
-//    jct.suggesting = focused;
-//    jct.suggest(focused);
-//}
-
-// ----------------------------------------
 // Setup JCT
 // This maninly initializes clinput, CL's implementation of select 2
 // ----------------------------------------
@@ -1418,22 +1371,23 @@ jct.setup = (manageUrl=true) => {
             }
         },
         optionsTemplate : function(obj) {
-            let title = obj.title;
-            let id = obj.id;
-
-            let frag = '<a class="optionsTemplate"><span class="jct__option_institution_title">' + title + '</span>';
-            if (id) {
-                frag += ' <span class="jct__option_publisher_id">(ROR:' + id + ')</span></a> ';
+            let frag = '<a class="optionsTemplate"><span class="jct__option_institution_title">' + obj.title + '</span>';
+            if (obj.country) {
+                frag += '<span class="jct__option_institution_country">, ' + obj.country + '</span>';
             }
+            if (obj.id) {
+                frag += ' <span class="jct__option_institution_id"> (ROR:' + obj.id + ')</span>';
+            }
+            frag += '</a>'
             return frag;
         },
         selectedTemplate : function(obj) {
-            let title = obj.title;
-            let id = obj.id;
-
-            let frag = title;
-            if (id) {
-                frag += ' (ROR:' + id + ')';
+            let frag = obj.title;
+            if (obj.country) {
+                frag += ', ' + obj.country;
+            }
+            if (obj.id) {
+                frag += ' (ROR:' + obj.id + ')';
             }
             return frag;
         },
@@ -1646,10 +1600,16 @@ jct.explain = (q) => {
             <li>Funder: ` + jct.chosen.funder.title + `</li>`
 
     if (jct.chosen.institution){
+        inner_text = 'Institution: ' + jct.chosen.institution.title;
+        if (jct.chosen.institution.country) {
+            inner_text += ', ' + jct.chosen.institution.country;
+        }
+        if (jct.chosen.institution.id) {
+            inner_text += ' (ROR: ' + jct.chosen.institution.id + ')';
+        }
         text +=
             `
-            <li>Institution: ` + jct.chosen.institution.title +
-                    ` (ROR: ` + jct.chosen.institution.id + `)</li>`
+            <li>` + inner_text + `</li>`
     }
     else {
         text += `<li>Not part of Higher Education</li>`
