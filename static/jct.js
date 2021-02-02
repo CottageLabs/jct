@@ -862,7 +862,7 @@ jct.result_equals_chosen = (js) => {
             if (!jct.chosen.journal.title && js.journal[0].title) {
                 jct.chosen.journal.title = js.journal[0].title
             }
-            if (!jct.chosen.journal.publisher && js.journal[0].title) {
+            if (!jct.chosen.journal.publisher && js.journal[0].publisher) {
                 jct.chosen.journal.publisher = js.journal[0].publisher
             }
         }
