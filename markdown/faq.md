@@ -82,6 +82,10 @@ cOAlition S strongly encourages institutions and consortia to develop new transf
 agreements and will only financially support agreements after 1 of January 2021 where they
 adhere to the [ESAC Guidelines](https://esac-initiative.org).
 
+## What does it mean when I get a result that says "Rights Retention"?
+
+As the funder you selected has adopted the [Plan S Rights Retention Strategy](https://www.coalition-s.org/rights-retention-strategy/), your paper can be archived upon acceptance provided you include the rights retention statement within your submission. Hence every journal has a route to compliance. What the result is showing you is whether your selected funder has implemented rights retention.
+
 
 ## I have found 2 journals with the same name in the suggestion list, which one do I pick
 
