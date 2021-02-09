@@ -164,7 +164,8 @@ jct.non_compliant_options_html = `
 // html for fully_oa tile in results
 // Needs journal title
 // ----------------------------------------
-jct.fullyOA_tile = (journal_title) => {
+jct.fullyOA_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
     let fullyOA_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -177,7 +178,7 @@ jct.fullyOA_tile = (journal_title) => {
                   Full <br>open access
                 </h4>
                 <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
-                <p><em>` + journal_title + `</em> is a fully open access journal.</p>
+                <p><em>` + title + `</em> is a fully open access journal.</p>
             </article>
         </div>`;
     return jct.htmlToElement (fullyOA_tile_html);
@@ -188,6 +189,9 @@ jct.fullyOA_tile = (journal_title) => {
 // needs journal and institution_title
 // ----------------------------------------
 jct.transformative_agreement_tile = (journal, institution_title) => {
+    let title = journal.title ? journal.title : journal.id;
+    let publisher = journal.publisher ? journal.publisher : 'the publisher';
+    let institution = institution_title ? institution_title : 'the institution';
     let transformative_agreement_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -200,7 +204,7 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                   Transformative <br>agreement
                 </h4>
                 <p>Conditions may be in place around publishing through this agreement. <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>
-                <p><em>` + journal.title + `</em> is part of a transformative agreement between <em>` + journal.publisher + `</em> and <em>` + institution_title +`</em></p>
+                <p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_agreement_tile_html);
@@ -210,7 +214,8 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
 // html for transformative_journal_tile in results
 // needs journal_title
 // ----------------------------------------
-jct.transformative_journal_tile = (journal_title) => {
+jct.transformative_journal_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
     let transformative_journal_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -226,7 +231,7 @@ jct.transformative_journal_tile = (journal_title) => {
                 </h4>
                 <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
                 <p>
-                    <span><em>` + journal_title + `</em> is a transformative journal</span>
+                    <span><em>` + title + `</em> is a transformative journal</span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
                         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
@@ -242,7 +247,8 @@ jct.transformative_journal_tile = (journal_title) => {
 // html for self_archiving_tile in results
 // needs journal_title
 // ----------------------------------------
-jct.self_archiving_tile = (journal_title) => {
+jct.self_archiving_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
     let self_archiving_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -254,7 +260,7 @@ jct.self_archiving_tile = (journal_title) => {
                 <h4 class="label">Self-archiving</h4>
                 <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
                 <p>
-                    <span><em>` + journal_title + `</em> has a Plan S aligned self-archiving policy. </span>
+                    <span><em>` + title + `</em> has a Plan S aligned self-archiving policy. </span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button" >
                         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
@@ -270,7 +276,7 @@ jct.self_archiving_tile = (journal_title) => {
 // html for self_archiving_using_rights_retention_tile in results
 // needs journal_title
 // ----------------------------------------
-jct.sa_rights_retention_tile = (journal_title) => {
+jct.sa_rights_retention_tile = () => {
     let sa_rights_retention_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -305,7 +311,7 @@ jct.ta_modal_html = `
                 <p>A common eligibility criterion is that the corresponding author of the article must be at an
                     institution subscribing to the transformative agreement for the paper (determined via the use of an
                     institutional email address). If you are not the corresponding author, please repeat your search
-                    with the corresponding author’s insitution to help validate the article’s eligibility.</p>
+                    with the corresponding author’s institution to help validate the article’s eligibility.</p>
             </div>
         </div>
     </div>
@@ -701,20 +707,20 @@ jct.add_tile = (result, data) => {
     let has_sa_rights_retention;
     switch(tile_type) {
         case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
-            tile = jct.fullyOA_tile(data.journal.title);
+            tile = jct.fullyOA_tile(data.journal);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.ta:
             tile = jct.transformative_agreement_tile(data.journal, data.institution.title);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.tj:
-            tile = jct.transformative_journal_tile(data.journal.title);
+            tile = jct.transformative_journal_tile(data.journal);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.sa:
             has_sa_rights_retention = jct.sa_rights_retention_check(result);
             if (has_sa_rights_retention) {
-                tile = jct.sa_rights_retention_tile(data.journal.title);
+                tile = jct.sa_rights_retention_tile();
             } else {
-                tile = jct.self_archiving_tile(data.journal.title);
+                tile = jct.self_archiving_tile(data.journal);
             }
             break;
     }
@@ -852,22 +858,47 @@ jct.d.toggle_detailed_results = () => {
 
 // ----------------------------------------
 // function to check if the results obtained from the api
-// are the same as the curently chosen user options
+// are the same as the currently chosen user options
 // ----------------------------------------
 jct.result_equals_chosen = (js) => {
     // jct.chosen holds the current chosen object
     // js is the result request
     // The chosen journal id should exist in the list of ISSNs returned by the request. If no data, going with true
-    j_matches = (jct.chosen.journal && js.journal && js.journal[0]) ?
+    let j_matches = (jct.chosen.journal && js.journal && js.journal[0]) ?
                 (js.journal[0].issn.includes(jct.chosen.journal.id)) : true;
     // The funder ids should be equal. If no data, going with true
-    f_matches = (jct.chosen.funder && js.funder && js.funder[0]) ?
+    let f_matches = (jct.chosen.funder && js.funder && js.funder[0]) ?
                 (jct.chosen.funder.id === js.funder[0].id) : true;
     // The institution may not exist in case of notHE.
     // The institution ids should be equal. If no data, going with true
-    i_matches = (jct.chosen.institution && js.institution && js.institution[0]) ?
+    let i_matches = (jct.chosen.institution && js.institution && js.institution[0]) ?
                 (jct.chosen.institution.id === js.institution[0].id) : true;
-    return ( j_matches && i_matches && f_matches );
+    let result = j_matches && i_matches && f_matches;
+    // Add missing details to jct.chosen (when a user doesn't select from drop down)
+    if (result) {
+        // Add missing details to jct.chosen.journal
+        if (jct.chosen.journal && js.journal && js.journal[0]) {
+            if (!jct.chosen.journal.title && js.journal[0].title) {
+                jct.chosen.journal.title = js.journal[0].title
+            }
+            if (!jct.chosen.journal.publisher && js.journal[0].publisher) {
+                jct.chosen.journal.publisher = js.journal[0].publisher
+            }
+        }
+        // Add missing details to jct.chosen.funder
+        if (jct.chosen.funder && js.funder && js.funder[0]) {
+            if (!jct.chosen.funder.title && js.funder[0].title) {
+                jct.chosen.funder.title = js.funder[0].title
+            }
+        }
+        // Add missing details to jct.chosen.institution
+        if (jct.chosen.institution && js.institution && js.institution[0]) {
+            if (!jct.chosen.institution.title && js.institution[0].title) {
+                jct.chosen.institution.title = js.institution[0].title
+            }
+        }
+    }
+    return result;
 }
 
 // ----------------------------------------
