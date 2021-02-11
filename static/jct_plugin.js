@@ -1244,8 +1244,10 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]((a-z|A-Z)?)/;
-            if (!pattern.test(text)) {
+            let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9|x|X]/;
+            if (pattern.test(text)) {
+                text = text.toUpperCase();
+            } else {
                 text = text.toLowerCase().replace(' of','').replace('the ','');
             }
             if (text.length > 1) {
