@@ -943,7 +943,7 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9|x|X]/;
+            let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9xX]/;
             if (pattern.test(text)) {
                 text = text.toUpperCase();
             } else {
