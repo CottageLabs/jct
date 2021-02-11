@@ -1244,7 +1244,10 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
+            let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]((a-z|A-Z)?)/;
+            if (!pattern.test(text)) {
+                text = text.toLowerCase().replace(' of','').replace('the ','');
+            }
             if (text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
