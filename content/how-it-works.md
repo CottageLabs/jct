@@ -1,3 +1,9 @@
+---
+title: "How It Works"
+date: 2021-02-13T23:42:57Z
+description: "A description of how the Journal Checker Tool works."
+---
+
 <style type="text/css">
 table {
     border: 1px solid #cccccc;
@@ -77,7 +83,7 @@ The API is [documented here](/apidocs).
 
 The JCT makes its calculations according to a defined algorithm.
 
-<img src="/static/img/algorithm_main.png">
+<img src="/img/algorithm_main.png">
 
 ### Inputs
 
