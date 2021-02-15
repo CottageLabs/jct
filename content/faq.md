@@ -1,3 +1,9 @@
+---
+title: "FAQs"
+date: 2021-02-13T23:42:49Z
+description: "Frequently asked questions for the Journal Checker Tool: Plan S Compliance Validator."
+---
+
 # FAQs
 
 ## What is Plan S / cOAlition S?

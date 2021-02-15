@@ -1,3 +1,9 @@
+---
+title: "Widget"
+date: 2021-02-13T23:43:29Z
+description: "Documentation of the public widget for the Journal Checker Tool: Plan S Compliance Validator."
+---
+
 # Journal Checker Widget
 
 The Journal Checker Widget allows you to embed the Journal Checker Tool's full functionality on your site. It also 

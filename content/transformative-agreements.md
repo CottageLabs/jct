@@ -1,3 +1,9 @@
+---
+title: "Transformative Agreements"
+date: 2021-02-13T23:43:11Z
+description: "Transformative agreements explained for the Journal Checker Tool: Plan S Compliance Validator."
+---
+
 # Transformative Agreements Public Data
 
 This document describes the structure of the published data for Transformative Agreements.

@@ -1,3 +1,9 @@
+---
+title: "Transformative Journals"
+date: 2021-02-13T23:43:22Z
+description: "Transformative Journals explained for the Journal Checker Tool: Plan S Compliance Validator."
+---
+
 # Transformative Journals data
 
 <p xmlns:dct="http://purl.org/dc/terms/">

@@ -1,3 +1,9 @@
+---
+title: "Notices"
+date: 2021-02-13T23:43:05Z
+description: "Privacy notice and Disclaimer & Copyright Notice for the Journal Checker Tool: Plan S Compliance Validator."
+---
+
 # Notices
 ## <a name="privacy_notice"></a>Privacy Notice
 
