@@ -1,17 +1,22 @@
+---
+title: "Public API docs"
+date: 2021-02-13T23:38:56Z
+description: "Documentation of the public API for the Journal Checker Tool: Plan S Compliance Validator."
+---
+
 # JCT Public API
 
 The api is available at [https://api.journalcheckertool.org](https://api.journalcheckertool.org).
 
+<hr>
 
----
 **NOTE**
 
-We are offering access to the early version of the api to enable programmatic access to the data. 
-This early version will be unsupported. Therefore we recommend that you do not integrate this API 
+We are offering access to the early version of the api to enable programmatic access to the data.
+This early version will be unsupported. Therefore we recommend that you do not integrate this API
 into your production systems until we transition out of beta. <br><br>
 The API is rate limited to 10 requests per second, with burst up to 6000, with delay. Exceeding the limit will result in 429.
----
-    
+<hr>
 
 ## Request a compliance calculation
 
