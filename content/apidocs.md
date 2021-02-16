@@ -6,7 +6,7 @@ description: "Documentation of the public API for the Journal Checker Tool: Plan
 
 # JCT Public API
 
-The api is available at [https://api.journalcheckertool.org](https://api.journalcheckertool.org).
+The api is available at [{{< param apiURL >}}]({{< param apiURL >}}).
 
 <hr>
 
