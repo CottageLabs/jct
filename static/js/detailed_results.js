@@ -13,48 +13,60 @@ jct.explain = (q) => {
             case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
                 if (r.compliant === "yes") {
                     statement = "You are able to comply with Plan S as this is a fully open access journal.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine if your chosen journal is an open access journal that enables compliance:"
                 } else if (r.compliant === "no") {
                     statement = "You are not able to <b>comply with Plan S</b> via the fully open access journal route.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine that this is not a route to compliance:"
                 } else {
                     statement = "We are <b>unable to determine if you are complaint</b> via the fully open access journal route.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine compliance:"
                 }
                 break;
             case jct.COMPLIANCE_ROUTES_SHORT.ta:
                 if (r.compliant === "yes") {
                     statement = "You are able to comply with Plan S via a Transformative agreement.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine if a transformative agreements is available that would enable compliance:"
                 } else if (r.compliant === "no") {
                     statement = "You are not able to <b>comply with Plan S</b> via a Transformative agreement.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine if a transformative agreements is available that would enable compliance:"
                 } else {
                     statement = "We are <b>unable to determine</b> if you are able to comply with Plan S via a Transformative agreement.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine compliance:"
                 }
                 break;
             case jct.COMPLIANCE_ROUTES_SHORT.tj:
                 if (r.compliant === "yes") {
                     statement = "This journal is a Transformative journal and therefore you <b>can comply with Plan S</b> via this route.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out to determine that this is a compliant route:"
                 } else if (r.compliant === "no") {
                     statement = "This journal is not a Transformative journal and therefore you <b>cannot comply with Plan S</b> via this route.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out to determine that this is not a compliant route:"
                 } else {
                     statement = "We are unable to determine if this journal is a Transformative journal and therefore <b>unable to determine compliance</b> via this route.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out to determine compliance:"
                 }
                 break;
             case jct.COMPLIANCE_ROUTES_SHORT.sa:
                 if (r.compliant === "yes") {
                     statement = "You are able to comply with Plan S via Self-archiving.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out to determine whether the right exists to comply with Plan S via self-archiving. Data from Open Access Button Permissions (OAB Permissions) is used to see if the publisher's policy of self-archiving enables compliance. If it does not or if an unknown answer has been returned then data on cOAlition S Implementation Roadmap data is checked to see if cOAlition S’s Rights Retention Strategy provides a route to compliance :"
                 } else if (r.compliant === "no") {
                     statement = "Self-archiving does not enable <b>Plan S</b> compliance when publishing in this journal.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out to determine that this is not a compliant route:"
                 } else {
                     statement = "We are <b>unable to determine</b> if you are able to comply with Plan S via Self-archiving, when publishing in this journal.";
+                    qualification = jct.get_qualifications(r.qualifications);
                     explanation = "The following checks were carried out to determine compliance:"
                 }
                 break;
@@ -63,16 +75,28 @@ jct.explain = (q) => {
         let route = `
         <h3>` + jct.COMPLIANCE_ROUTES_LONG[r.route] + `</h3>
         <p>`  + statement + `</p>
+        <p style="color: #F47115">`  + qualification + `</p>
         <p>`  + explanation + `</p>`
 
         if (r.log) {
             r.log.forEach((log) => {
-                route += "<ul><li>" + log.action + "</li>"
-                route += "<ul><li>" + log.result + "</li>"
-                if (log.url) {
-                    route += "<li>" + log.url + "</li>"
+                let action = jct.api_codes[r.route][log.code]
+                let parameters = ''
+                if (log.parameters) {
+                    for (let [parameter,values] of Object.entries(log.parameters)) {
+                        parameters += jct.api_codes[r.route][parameter] + "<br/>"
+                        if (values && values.length > 0) {
+                            parameters += "<ul>"
+                            values.forEach((value) => {
+                                parameters += "<li>" + value + "</li>"
+                            })
+                            parameters += "</ul>"
+                        }
+                    }
                 }
-                route += "</ul></ul>"
+                route += "<ul><li>" + action + "</li>"
+                route += parameters
+                route += "</ul>"
             })
         }
 
@@ -182,4 +206,21 @@ jct.explain = (q) => {
             a.print();
         })
     }
+}
+
+jct.get_qualifications = (qualifications) => {
+    let qualification = '';
+    console.log(qualifications);
+    if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
+        for (let [key,values] of Object.entries(qualifications[0])) {
+            console.log(key);
+            qualification = jct.api_codes.qualification_ids[key]['description'] + "<br/>";
+            if (values) {
+                for (let [k2,v2] of Object.entries(values)) {
+                    qualification += k2 + ': ' + v2 + "<br/>";
+                }
+            }
+        }
+    }
+    return qualification
 }
