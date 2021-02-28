@@ -316,8 +316,6 @@ jct.d.gebi = document.getElementById;
 
 jct.d.gebc = document.getElementsByClassName;
 
-// jct.MAX_SUGGS_LENGTHS = 10; // ToDo: Confirm this is not used?
-
 jct.COMPLIANCE_ROUTES_SHORT = {
     fully_oa: "fully_oa",
     ta: "ta",
@@ -331,8 +329,6 @@ jct.COMPLIANCE_ROUTES_LONG = {
     tj: "Transformative journal",
     self_archiving: "Self-archiving"
 }
-
-// jct.waiting = false; // ToDo: Confirm this is not used?
 
 // ----------------------------------------
 // html for input form
@@ -561,8 +557,8 @@ jct.self_archiving_tile = (journal) => {
                 <h4 class="label">Self-archiving</h4>
                 <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
                 <p>
-                    <span><em>` + title + `</em> has a Plan S aligned self-archiving policy.</span>
-                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button">
+                    <span><em>` + title + `</em> has a Plan S aligned self-archiving policy. </span>
+                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button" >
                         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
                         </svg>
@@ -815,7 +811,9 @@ jct.setup_modals = (only_feedback=false) => {
         // Add the modal html and event handlers
         jct.add_modal_containers(modal_div, only_feedback);
 
-        jct.setup_feedback_modal();
+        if (jct.d.gebi('feedback')) {
+            jct.setup_feedback_modal();
+        }
 
         if (jct.d.gebi('jct_open_help_modal')) {
             jct.d.gebi('jct_open_help_modal').addEventListener("click", (e) => {
@@ -927,13 +925,22 @@ jct.success = (xhr) => {
     jct.latest_response = js.results;
     let paths_results = jct.d.gebi("jct_paths_results");
     jct._emptyElement(paths_results)
-
-    jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
-    let explainResults = jct.d.gebi("jct_explain_results");
-    if (explainResults) {
+    jct.display_result(js);
+    if (jct.d.gebi("jct_explain_results")) {
         jct.d.gebi('jct_explain_results').style.display = 'initial';
+        jct.d.hide_detailed_results();
+        jct.explain(js)
     }
-    jct.d.hide_detailed_results();
+    if (jct.d.gebi("jct_find_out_more")) {
+        jct.setup_fom_url();
+    }
+}
+
+//-----------------------------------------
+// function to display the results
+//-----------------------------------------
+jct.display_result = (js) => {
+    jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
@@ -947,7 +954,6 @@ jct.success = (xhr) => {
         jct._setComplianceTheme(false);
         jct._addNonCompliantOptions();
     }
-    jct.explain(js)
 }
 
 // ----------------------------------------
@@ -1399,12 +1405,6 @@ jct.setup = (manageUrl=true) => {
         allowClear: true,
     });
 
-    // ToDo: Confirm this is not used?
-    //how to change it to jct.d.gebc?
-    // document.querySelectorAll(".select_option").forEach(item => {
-    //     item.addEventListener("click", jct.choose);
-    // });
-
     jct.d.gebi("jct_notHE").addEventListener("click", (event) => {
         if (event.target.checked && jct.chosen.institution) {
             jct.clinputs.institution.clear();
@@ -1455,193 +1455,9 @@ jct.setup = (manageUrl=true) => {
 
 
 
-// -------- detailed_results --------
+// -------- find_out_more --------
 
-jct.explain = (q) => {
-    let detailed_results = jct.d.gebi("jct_detailed_results_section")
-    detailed_results.innerHTML = "";
-    let compliant_routes = `<h2>Compliant Routes</h2>`
-    let noncompliant_routes = `<h2>Non-Compliant Routes</h2>`
-    let unknown_routes = `<h2>Unknown Routes</h2>`
-    let compliant_routes_number = 0;
-    let noncomplicant_routes_number = 0;
-    let unknown_routes_number = 0;
-
-    q.results.forEach((r) => {
-        switch(r.route) {
-            case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
-                if (r.compliant === "yes") {
-                    statement = "You are able to comply with Plan S as this is a fully open access journal.";
-                    explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine if your chosen journal is an open access journal that enables compliance:"
-                } else if (r.compliant === "no") {
-                    statement = "You are not able to <b>comply with Plan S</b> via the fully open access journal route.";
-                    explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine that this is not a route to compliance:"
-                } else {
-                    statement = "We are <b>unable to determine if you are complaint</b> via the fully open access journal route.";
-                    explanation = "The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine compliance:"
-                }
-                break;
-            case jct.COMPLIANCE_ROUTES_SHORT.ta:
-                if (r.compliant === "yes") {
-                    statement = "You are able to comply with Plan S via a Transformative agreement.";
-                    explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine if a transformative agreements is available that would enable compliance:"
-                } else if (r.compliant === "no") {
-                    statement = "You are not able to <b>comply with Plan S</b> via a Transformative agreement.";
-                    explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine if a transformative agreements is available that would enable compliance:"
-                } else {
-                    statement = "We are <b>unable to determine</b> if you are able to comply with Plan S via a Transformative agreement.";
-                    explanation = "The following checks were carried out on the JCT’s Transformative Agreement Index to determine compliance:"
-                }
-                break;
-            case jct.COMPLIANCE_ROUTES_SHORT.tj:
-                if (r.compliant === "yes") {
-                    statement = "This journal is a Transformative journal and therefore you <b>can comply with Plan S</b> via this route.";
-                    explanation = "The following checks were carried out to determine that this is a compliant route:"
-                } else if (r.compliant === "no") {
-                    statement = "This journal is not a Transformative journal and therefore you <b>cannot comply with Plan S</b> via this route.";
-                    explanation = "The following checks were carried out to determine that this is not a compliant route:"
-                } else {
-                    statement = "We are unable to determine if this journal is a Transformative journal and therefore <b>unable to determine compliance</b> via this route.";
-                    explanation = "The following checks were carried out to determine compliance:"
-                }
-                break;
-            case jct.COMPLIANCE_ROUTES_SHORT.sa:
-                if (r.compliant === "yes") {
-                    statement = "You are able to comply with Plan S via Self-archiving.";
-                    explanation = "The following checks were carried out to determine whether the right exists to comply with Plan S via self-archiving. Data from Open Access Button Permissions (OAB Permissions) is used to see if the publisher's policy of self-archiving enables compliance. If it does not or if an unknown answer has been returned then data on cOAlition S Implementation Roadmap data is checked to see if cOAlition S’s Rights Retention Strategy provides a route to compliance :"
-                } else if (r.compliant === "no") {
-                    statement = "Self-archiving does not enable <b>Plan S</b> compliance when publishing in this journal.";
-                    explanation = "The following checks were carried out to determine that this is not a compliant route:"
-                } else {
-                    statement = "We are <b>unable to determine</b> if you are able to comply with Plan S via Self-archiving, when publishing in this journal.";
-                    explanation = "The following checks were carried out to determine compliance:"
-                }
-                break;
-        }
-
-        let route = `
-        <h3>` + jct.COMPLIANCE_ROUTES_LONG[r.route] + `</h3>
-        <p>`  + statement + `</p>
-        <p>`  + explanation + `</p>`
-
-        if (r.log) {
-            r.log.forEach((log) => {
-                route += "<ul><li>" + log.action + "</li>"
-                route += "<ul><li>" + log.result + "</li>"
-                if (log.url) {
-                    route += "<li>" + log.url + "</li>"
-                }
-                route += "</ul></ul>"
-            })
-        }
-
-        if (r.compliant === "yes") {
-            compliant_routes_number++;
-            compliant_routes += route;
-        } else if (r.compliant === "no") {
-            noncomplicant_routes_number++;
-            noncompliant_routes += route;
-        } else {
-            unknown_routes_number++;
-            unknown_routes += route;
-        }
-    });
-
-    let blurb_for_count = "";
-    [compliant_routes_number,
-     noncomplicant_routes_number,
-     unknown_routes_number].forEach((num, index) => {
-        let human_num = (num === 0) ? 'no' : num;
-        switch(index) {
-            case 0:
-                if (num === 1) {
-                    blurb_for_count += '1 route that enables compliance, ';
-                } else {
-                    blurb_for_count += human_num + ' routes that enable compliance, ';
-                }
-                break;
-            case 1:
-                if (num === 1) {
-                    blurb_for_count += '1 non-compliant route and ';
-                } else {
-                    blurb_for_count += human_num + ' non-compliant routes and ';
-                }
-                break;
-            case 2:
-                if (num === 1) {
-                    blurb_for_count += '1 undetermined route.';
-                } else {
-                    blurb_for_count += human_num + ' undetermined routes.';
-                }
-                break;
-        }
-    })
-    let issns = jct.chosen.journal.issn.join(", ");
-    let publisher = jct.chosen.journal.publisher !== undefined ? jct.chosen.journal.publisher : "Not known";
-
-    let journal = "Unknown Title"
-    if (jct.chosen.journal.title) {
-        journal = jct.chosen.journal.title;
-    }
-    journal += " (ISSN: " + issns + ")";
-
-    let text =
-        `
-        <h3>Your query</h3>
-
-        <p>You asked us to calculate whether you can comply with Plan S under the following conditions:
-
-        <ul>
-            <li>Journal: </li>
-            <ul class="second">
-                <li> ` + journal + `</li>
-                <li> Publisher: ` + publisher + `</li>
-            </ul>
-            <li>Funder: ` + jct.chosen.funder.title + `</li>`
-
-    if (jct.chosen.institution){
-        inner_text = 'Institution: ' + jct.chosen.institution.title;
-        if (jct.chosen.institution.country) {
-            inner_text += ', ' + jct.chosen.institution.country;
-        }
-        if (jct.chosen.institution.id) {
-            inner_text += ' (ROR: ' + jct.chosen.institution.id + ')';
-        }
-        text +=
-            `
-            <li>` + inner_text + `</li>`
-    }
-    else {
-        text += `<li>Not part of Higher Education</li>`
-    }
-
-    text +=
-        `</ul>
-
-        We carried out this query at ` + new Date(q.request.started).toUTCString() +
-        `, and found ` + blurb_for_count + `
-        </p>
-    `
-
-    let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
-        (compliant_routes_number > 0 ? compliant_routes : "") +
-        (noncomplicant_routes_number > 0 ? noncompliant_routes : "") +
-        (unknown_routes_number > 0 ? unknown_routes : "") + "</div>");
-    detailed_results.append(elem);
-
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.addEventListener("click", () => {
-            let a = window.open('', '', 'height=500, width=500');
-            let compliance = jct.d.gebc("jct_compliance")[0]
-            let results_to_print = jct.d.gebi("jct_detailed_result_text")
-            a.document.write(compliance.innerHTML);
-            a.document.write(results_to_print.innerHTML);
-            a.document.close();
-            a.print();
-        })
-    }
-
+jct.setup_fom_url = () => {
     let fom = jct.d.gebi("jct_find_out_more");
     if (fom) {
         let url = "";
@@ -1685,7 +1501,6 @@ jct.explain = (q) => {
         fom.setAttribute("href", url);
     }
 }
-
 
 
 // -------- feedback --------
@@ -1791,10 +1606,6 @@ jct.add_plugin_containers = () => {
         <div class="container results" id="jct_results" style="display: none">
             <div id="jct_results_plugin"></div>
             <div id="jct_tiles_plugin"></div>
-            <div class="row row--centered" style="display: none;" id="jct_detailed_results">
-                <section class="col col--1of2" id="jct_detailed_results_section">
-                </section>
-            </div>
             <div class="row">
                 <div class="col col--1of2 col--centered">
                     <a href="#" class="button button--secondary" id="jct_find_out_more" target="_blank">Find out more</a>
