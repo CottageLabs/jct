@@ -28,10 +28,6 @@ jct.add_plugin_containers = () => {
         <div class="container results" id="jct_results" style="display: none">
             <div id="jct_results_plugin"></div>
             <div id="jct_tiles_plugin"></div>
-            <div class="row row--centered" style="display: none;" id="jct_detailed_results">
-                <section class="col col--1of2" id="jct_detailed_results_section">
-                </section>
-            </div>
             <div class="row">
                 <div class="col col--1of2 col--centered">
                     <a href="#" class="button button--secondary" id="jct_find_out_more" target="_blank">Find out more</a>
