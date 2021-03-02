@@ -74,9 +74,10 @@ For each route, there is a general response format:
   "ror" : "the ror relevant to this result, if there is one>",
   "log" : [
     {
-      "action" : "<description of the action (see below for details)>",
-      "result" : "<the outcome of the action (optional, depending on circumstance)>",
-      "url" : "<url to data supporting the result, if available>"
+      "code" : "<algorithm transition code (see below)>",
+      "parameters" : {
+        "<parameter name>" : ["<parameter value>"]
+      }
     },
     ...
   ]
@@ -116,20 +117,80 @@ Qualification IDs:
   
 Log:
 
-The log provides a description of an action and its result, in human-readable English, in order.
+The log provides a list of decision transitions through the algorithm, in order of traversal.  This allows you to 
+see the path through the algorithm that was taken to reach the decision, along with any relevant parameters.
+
+See the table below for a full list of transitions, their meanings, and the parameters that may be associated.
 
 For example, items such as this may be present:
 
-```
+```json
 {
   "log" : [
-    {"action" : "Lookup in DOAJ", "result" : "ISSN not in public DOAJ"},
-    {"action" : "Lookup in DOAJ", "result" : "ISSN 'in progress' at DOAJ"},
+    { "code" : "FullOA.InDOAJ" },
+    { 
+      "code" : "FullOA.Compliant",
+      "parameters" : {
+        "licence" : ["CC BY", "CC-BY-SA"]
+      }
+    } 
   ]
 }
 ```
 
-In the above example there is no `url` parameter to visit, but if the record were in DOAJ, for example, the URL would be the URL to the ToC in the DOAJ `https://doaj.org/toc/<ISSN>`.
+Full OA Route Codes:
+
+| Code | Meaning | Property | Property Value |
+| ---- | ------- | -------- | -------------- |
+| FullOA.NotInDOAJ | Journal not found in DOAJ | | |
+| FullOA.InProgressDOAJ | Journal application found in DOAJ | | |
+| FullOA.NotInProgressDOAJ | No application found in DOAJ | | |
+| FullOA.InDOAJ | Journal found in DOAJ | | |
+| FullOA.Compliant | Journal properties are compliant | licence | List of Journal licences |
+| FullOA.Unknown | Journal properties are unclear | missing | List of missing properties |
+| FullOA.NonCompliant | Journal properties are non-compliant | license | List of Journal licences |
+
+Self-Archiving Route Codes:
+
+| Code | Meaning | Property | Property Value |
+| ---- | ------- | -------- | -------------- |
+| SA.InOAB | Journal was found in OAB | | |
+| SA.NotInOAB | Journal was not found in OAB | | |
+| SA.OABNonCompliant | The record in OAB did not comply with the Plan S requirements | licence | List of allowed SA licenses |
+| | | embargo | Embargo length (list of length 1) |
+| | | version | List of allowed SA versions |
+| SA.OABIncomplete | Some data was missing from the OAB record, no determination could be made | missing | List of missing properties |
+| SA.Compliant | The record in OAB complied with the Plan S requirements | licence | List of allowed SA licences |
+| | | embargo | Embargo length (list of length 1) |
+| | | version | List of allowed SA versions |
+| SA.FunderRRNotActive | Funder has not adopted the Rights Retention strategy | | |
+| SA.FunderRRActive | Funder has adopted the Rights Retention strategy | | |
+| SA.Unknown | Self-Archiving status could not be determined | | |
+| SA.NonCompliant | Self-Archiving is not possible under current circumstances | | |
+| SA.Compliant | Self-Archiving is permitted via Rights Retention | | |
+
+
+Transformative Agreement Route Codes:
+
+| Code | Meaning | Property | Property Value |
+| ---- | ------- | -------- | -------------- |
+| TA.NoTA | No TA was found that matched the query parameters | | |
+| TA.Exists | A TA was found that matched the query parameters | | |
+| TA.NotAcive | The TA that was found is not current in force | | |
+| TA.Active | The TA that was found is currently in force | | |
+| TA.Unknown | It was not clear if the parameters of the TA meet Plan S criteria | | |
+| TA.NonCompliant | The parameters of the TA do not meet Plan S criteria | | |
+| TA.Compliant | The TA is Plan S compliant | | |
+
+
+Transformative Journals Route Codes:
+
+| Code | Meaning | Property | Property Value |
+| ---- | ------- | -------- | -------------- |
+| TJ.NoTJ | The Journal was not registered as a TJ | | |
+| TJ.Exists | The Journal is registered as a TJ | | |
+| TJ.NonCompliant | The parameters of the TJ do not meet Plan S criteria | | |
+| TJ.Compliant | The TJ is Plan S compliant | | |
 
 
 ## Transformative Journals
