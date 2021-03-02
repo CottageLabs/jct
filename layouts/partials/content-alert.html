@@ -1,11 +1,11 @@
-{{ $section := `style="max-width: 100%;"` }}
-{{ $p := "" }}
+{{ $section := `<section class="row row--centered patterned-section" style="max-width: 100%;">` }}
+{{ $p := `<p class="col col--1of2 alert">` }}
 {{ if .IsHome }}
-    {{ $section := `data-aos="fade-up" data-aos-duration="1000"` }}
-    {{ $p := `data-aos="fade-up" data-aos-duration="1500"` }}
+    {{ $section = `<section class="row row--centered patterned-section" data-aos="fade-up" data-aos-duration="1000">` }}
+    {{ $p = `<p class="col col--1of2 alert" data-aos="fade-up" data-aos-duration="1500">` }}
 {{ end }}
 
-<section class="row row--centered patterned-section" {{ $section }}>
+{{ $section | safeHTML }}
     <div class="wave" aria-hidden="true">
         <svg preserveaspectratio="none" viewbox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" style="width: 125%; height: 75px; transform: scaleX(-1);">
             <path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" opacity=".25"></path>
@@ -13,5 +13,5 @@
             <path d="M0 0v5.63C149.93 59 314.09 71.32 475.83 42.57c43-7.64 84.23-20.12 127.61-26.46 59-8.63 112.48 12.24 165.56 35.4C827.93 77.22 886 95.24 951.2 90c86.53-7 172.46-45.71 248.8-84.81V0z"></path>
         </svg>
     </div>
-    <p class="col col--1of2 alert" {{ $p }}>{{ .Site.Params.alert | safeHTML }}</p>
+    {{ $p | safeHTML}}{{ .Site.Params.alert | safeHTML }}</p>
 </section>
