@@ -25,6 +25,7 @@ for that relationship
 * End Date - the date this TA is in force until
 * C/A Only - is the TA relevant only to Corresponding Authors
 * Data URL - a URL to a CSV of the institutions and journals involved in the TA
+* Last Reviewed - the date this TA was last reviewed by the JCT team
 
 All records that are listed in this index are:
 
