@@ -15,8 +15,6 @@ jct.d.gebi = document.getElementById;
 
 jct.d.gebc = document.getElementsByClassName;
 
-// jct.MAX_SUGGS_LENGTHS = 10; // ToDo: Confirm this is not used?
-
 jct.COMPLIANCE_ROUTES_SHORT = {
     fully_oa: "fully_oa",
     ta: "ta",
@@ -30,8 +28,6 @@ jct.COMPLIANCE_ROUTES_LONG = {
     tj: "Transformative journal",
     self_archiving: "Self-archiving"
 }
-
-// jct.waiting = false; // ToDo: Confirm this is not used?
 
 // ----------------------------------------
 // html for input form
@@ -514,7 +510,9 @@ jct.setup_modals = (only_feedback=false) => {
         // Add the modal html and event handlers
         jct.add_modal_containers(modal_div, only_feedback);
 
-        jct.setup_feedback_modal();
+        if (jct.d.gebi('feedback')) {
+            jct.setup_feedback_modal();
+        }
 
         if (jct.d.gebi('jct_open_help_modal')) {
             jct.d.gebi('jct_open_help_modal').addEventListener("click", (e) => {
@@ -626,13 +624,22 @@ jct.success = (xhr) => {
     jct.latest_response = js.results;
     let paths_results = jct.d.gebi("jct_paths_results");
     jct._emptyElement(paths_results)
-
-    jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
-    let explainResults = jct.d.gebi("jct_explain_results");
-    if (explainResults) {
+    jct.display_result(js);
+    if (jct.d.gebi("jct_explain_results")) {
         jct.d.gebi('jct_explain_results').style.display = 'initial';
+        jct.d.hide_detailed_results();
+        jct.explain(js)
     }
-    jct.d.hide_detailed_results();
+    if (jct.d.gebi("jct_find_out_more")) {
+        jct.setup_fom_url();
+    }
+}
+
+//-----------------------------------------
+// function to display the results
+//-----------------------------------------
+jct.display_result = (js) => {
+    jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
@@ -646,7 +653,6 @@ jct.success = (xhr) => {
         jct._setComplianceTheme(false);
         jct._addNonCompliantOptions();
     }
-    jct.explain(js)
 }
 
 // ----------------------------------------
@@ -1102,12 +1108,6 @@ jct.setup = (manageUrl=true) => {
         optionsLimit: 10,
         allowClear: true,
     });
-
-    // ToDo: Confirm this is not used?
-    //how to change it to jct.d.gebc?
-    // document.querySelectorAll(".select_option").forEach(item => {
-    //     item.addEventListener("click", jct.choose);
-    // });
 
     jct.d.gebi("jct_notHE").addEventListener("click", (event) => {
         if (event.target.checked && jct.chosen.institution) {

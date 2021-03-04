@@ -1,10 +1,10 @@
 import os
 
-read_files = ["api_endpoint", "clinput", "jct", "detailed_results", "feedback", "plugin"]
+read_files = ["api_endpoint", "clinput", "jct", "find_out_more", "feedback", "plugin"]
 
-with open(os.path.join("static", "jct_plugin.js"), "w") as outfile:
+with open(os.path.join("static", "js", "jct_plugin.js"), "w") as outfile:
     for f in read_files:
-        with open(os.path.join("static", f + ".js"), "r") as infile:
+        with open(os.path.join("static", "js", f + ".js"), "r") as infile:
             outfile.write("\n// -------- " + f + " --------\n\n")
             outfile.write(infile.read())
             outfile.write("\n\n")
