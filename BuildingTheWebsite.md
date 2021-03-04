@@ -21,17 +21,35 @@ hugo list all
 
 ## Publishing the hugo site
 
-See notes above on installing Hugo and cloning the code. To publish the static site in the production environment, run the command
+See notes above on installing Hugo and cloning the code. To generate the static site pages for the production environment, run the command
 ```
 hugo
 ```
 This will create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served.
 
-To publish the static site for the staging environment, run the command
+To generate the static site pages for the staging environment, run the command
 ```
 hugo --environment staging
 ```
-This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environemnt to be `jct.cottagelabs.com`.
+This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environment to be `jct.cottagelabs.com`.
+
+## Modify an existing page
+
+### Modify the contents of the page
+ - To modify the content of the page, you would need to edit the markdown file in the content directory. <br/>
+   Each content page has metatags at the top of the page. Do not delete these. They are used by hugo.
+
+### Modify the page layout
+ - See [#layouts](#layouts) below.
+
+## Create a new static page
+ To create a new static page, you can either copy one of the existing files in the content directory and then change the metadata and the content to be relevant to the page you want or the better way to do it would be to ask hugo to create the page by running the command
+ ```
+ hugo new coming-soon.md
+
+ ```
+ This page will be served at /coming-soon
+
 
 ## Hugo development notes
 
@@ -140,12 +158,12 @@ Hugo list all of the static pages and their url
 hugo list all
 ```
 
-To publish the static site in the production environment
+To generate the static site for the production environment
 ```
 hugo
 ```
 
-To publish the static site in the staging environment
+To generate the static site for the staging environment
 ```
 hugo --environment staging
 ```
