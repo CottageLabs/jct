@@ -25,13 +25,15 @@ See notes above on installing Hugo and cloning the code. To publish the static s
 ```
 hugo
 ```
-This will create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served.
+This will create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served.    
+**Note**    
+You need to delete the directories `_sass` and `_includes` from the generated public directory, as we do not need to expose these. At this moment there is no way of telling hugo to not include these. It copies the entire static directory into public.
 
 To publish the static site for the staging environment, run the command
 ```
 hugo --environment staging
 ```
-This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environemnt to be `jct.cottagelabs.com`.
+This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environemnt to be `jct.cottagelabs.com`. Also, note the direcotries that need to be deleted as described above.
 
 ## Hugo development notes
 
