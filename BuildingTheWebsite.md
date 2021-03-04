@@ -33,7 +33,7 @@ To publish the static site for the staging environment, run the command
 ```
 hugo --environment staging
 ```
-This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environemnt to be `jct.cottagelabs.com`. Also, note the direcotries that need to be deleted as described above.
+This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environemnt to be `jct.cottagelabs.com`. Also, note the directories that need to be deleted as described above.
 
 ## Hugo development notes
 
