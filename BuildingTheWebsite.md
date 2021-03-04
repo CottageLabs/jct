@@ -1,18 +1,47 @@
 # Building the JCT website
 
+## Running the site in development
+
 The JCT is built using [Hugo](https://gohugo.io/). In order to update changes or create new pages, you need Hugo installed. 
 
 See the Hugo website for [installation instructions](https://gohugo.io/getting-started/installing/)
 
+Once you have Hugo installed, clone the code from github and cd to the jct directory.
 
-## Theme
+To run the server in developmemt mode (any changes to files are picked up automatically).
+```
+hugo server -D
+```
+
+To list all of the static pages and their url
+```
+hugo list all
+```
+
+## Publishing the hugo site
+
+See notes above on installing Hugo and cloning the code. To publish the static site in the production environment, run the command
+```
+hugo
+```
+This will create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served.
+
+To publish the static site for the staging environment, run the command
+```
+hugo --environment staging
+```
+This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environemnt to be `jct.cottagelabs.com`.
+
+## Hugo development notes
+
+### Theme
 
 I have created a theme called [mainTheme](themes/mainTheme) which is a minimalist theme. 
 
 All of the design for the website is located in [layouts](./layouts)
 
 
-## Layouts
+### Layouts
 
 There are 4 base page layouts
 1. [Index.html](layouts/index.html)
@@ -65,9 +94,7 @@ There are 4 base page layouts
     ---
 ```
 
-
-
-## Config files
+### Config files
 The config files used by Hugo are located in the config directory. See [configuration/](https://gohugo.io/getting-started/configuration/) in the Hugo docs for details. The essentials are
  - [config/\_default](default) provides the default settings.
  - [config/production](production) provides settings for the production environment.
@@ -83,7 +110,7 @@ The config files used by Hugo are located in the config directory. See [configur
 **Note: Default environments are development with `hugo server` and production with `hugo`.**
 
 
-## Useful commands
+### Useful commands
 
 To create a new static site
 
