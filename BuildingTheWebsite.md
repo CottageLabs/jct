@@ -12,6 +12,7 @@ To run the server in developmemt mode (any changes to files are picked up automa
 ```
 hugo server -D
 ```
+The site will be served at http://localhost:1313/
 
 To list all of the static pages and their url
 ```
