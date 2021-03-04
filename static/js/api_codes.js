@@ -17,7 +17,7 @@ jct.api_codes = {
         'rights_retention_author_advice': {
             description:    'the journal does not have an SA policy and does not appear in the rights retention data source',
         },
-        'rights_rentention_funder_implementation': {
+        'rights_retention_funder_implementation': {
             description:    'the journal does not have an SA policy and the funder has a rights retention policy that starts in the future. There should be one record of this per funder that meets the conditions, and the following qualification specific data is requried',
             funder:         'The name of the funder',
             date:           '<date policy comes into force (YYYY-MM-DD)'

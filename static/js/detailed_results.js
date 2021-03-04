@@ -214,7 +214,9 @@ jct.get_qualifications = (qualifications) => {
     if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
         for (let [key,values] of Object.entries(qualifications[0])) {
             console.log(key);
-            qualification = jct.api_codes.qualification_ids[key]['description'] + "<br/>";
+            if (key in jct.api_codes.qualification_ids && 'description' in jct.api_codes.qualification_ids[key]) {
+                qualification = jct.api_codes.qualification_ids[key]['description'] + "<br/>";
+            }
             if (values) {
                 for (let [k2,v2] of Object.entries(values)) {
                     qualification += k2 + ': ' + v2 + "<br/>";
