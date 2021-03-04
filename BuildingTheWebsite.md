@@ -17,7 +17,7 @@ See the Hugo website for [installation instructions](https://gohugo.io/getting-s
 
 Once you have Hugo installed, clone the code from github and cd to the jct directory.
 
-To run the server in developmemt mode (any changes to files are picked up automatically).
+To run the server in development mode (any changes to files are picked up automatically).
 ```
 hugo server -D
 ```
@@ -158,7 +158,7 @@ hugo new apidocs.md
 hugo new coming-soon.md
 ```
 
-To run the server in developmemt mode (any changes to files are picked up automatically).
+To run the server in development mode (any changes to files are picked up automatically).
 ```
 hugo server -D
 ```
