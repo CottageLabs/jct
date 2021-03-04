@@ -1,6 +1,6 @@
 ---
 title: "Notices"
-date: 2021-02-13T23:43:05Z
+date: 2021-03-02T23:43:05Z
 description: "Privacy notice and Disclaimer & Copyright Notice for the Journal Checker Tool: Plan S Compliance Validator."
 ---
 
@@ -96,6 +96,8 @@ cOAlition S collects personal information about you when you visit its website t
 The processing is necessary for the performance of tasks carried out by ESF in the public interest.
 
 We use Cloudflare to help us protect this site. Cloudflare may place a cookie in your browser to provide its services. You can read more about this here - [Cloudflare Privacy & Security Policy](https://www.cloudflare.com/en-gb/privacypolicy/)
+
+We use Google analytics to carry out statistical analysis of page use and page interactions to evaluate and develop our Website. Google Analytics will place a cookie in your browser and IP-address anonymization is always enabled. For more information on how Google uses the data collected via this service, click [here](http://www.google.com/policies/privacy/partners/). To opt out of being tracked via Google Analytics, you can also use Google's [opt-out browser add-on](https://tools.google.com/dlpage/gaoptout).
 
 Should you choose to submit feedback, we will collect your name and email address to enable us to respond to your query. Additionally, to support us in responding to your query we collect the following information:
 
