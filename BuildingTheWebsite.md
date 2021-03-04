@@ -4,6 +4,15 @@
 
 The JCT is built using [Hugo](https://gohugo.io/). In order to update changes or create new pages, you need Hugo installed. 
 
+The version I have used is as follows
+```
+$ hugo env
+Hugo Static Site Generator v0.80.0/extended linux/amd64 BuildDate: unknown
+GOOS="linux"
+GOARCH="amd64"
+GOVERSION="go1.15.6"
+```
+
 See the Hugo website for [installation instructions](https://gohugo.io/getting-started/installing/)
 
 Once you have Hugo installed, clone the code from github and cd to the jct directory.
@@ -19,19 +28,21 @@ To list all of the static pages and their url
 hugo list all
 ```
 
-## Publishing the hugo site
+## Generating and publishing the hugo site
 
 See notes above on installing Hugo and cloning the code. To generate the static site pages for the production environment, run the command
 ```
 hugo
 ```
-This will create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served.
+This will create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served.    
+**Note**    
+You need to delete the directories `_sass` and `_includes` from the generated public directory, as we do not need to expose these. At this moment there is no way of telling hugo to not include these. It copies the entire static directory into public.
 
 To generate the static site pages for the staging environment, run the command
 ```
 hugo --environment staging
 ```
-This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environment to be `jct.cottagelabs.com`.
+This will similarly create a directory called `public` which will contain all of the html pages and the associated assets. For deployment, this directory needs to be served. I have configured the staging environment to be `jct.cottagelabs.com`. Also, note the directories that need to be deleted as described above.
 
 ## Modify an existing page
 
@@ -58,7 +69,6 @@ This will similarly create a directory called `public` which will contain all of
 I have created a theme called [mainTheme](themes/mainTheme) which is a minimalist theme. 
 
 All of the design for the website is located in [layouts](./layouts)
-
 
 ### Layouts
 
