@@ -4,6 +4,15 @@
 
 The JCT is built using [Hugo](https://gohugo.io/). In order to update changes or create new pages, you need Hugo installed. 
 
+The version I have used is as follows
+```
+$ hugo env
+Hugo Static Site Generator v0.80.0/extended linux/amd64 BuildDate: unknown
+GOOS="linux"
+GOARCH="amd64"
+GOVERSION="go1.15.6"
+```
+
 See the Hugo website for [installation instructions](https://gohugo.io/getting-started/installing/)
 
 Once you have Hugo installed, clone the code from github and cd to the jct directory.
@@ -19,7 +28,7 @@ To list all of the static pages and their url
 hugo list all
 ```
 
-## Publishing the hugo site
+## Generating and publishing the hugo site
 
 See notes above on installing Hugo and cloning the code. To publish the static site in the production environment, run the command
 ```
