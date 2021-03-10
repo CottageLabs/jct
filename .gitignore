@@ -2,3 +2,5 @@
 .sass-cache
 .DS_Store
 static/inputit.js
+data/
+resources/

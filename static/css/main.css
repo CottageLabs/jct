@@ -681,7 +681,7 @@ button {
     font-size: 0.833em; }
 
 .patterned-section {
-  background-image: url("../img/bg.png");
+  background-image: url("/img/bg.png");
   background-size: cover;
   mix-blend-mode: multiply; }
   .patterned-section .wave {
@@ -724,7 +724,7 @@ button {
     color: #FFF; }
   .query--compliant {
     background: #FABE5E;
-    background-image: url("../img/confetti.svg");
+    background-image: url("/img/confetti.svg");
     background-size: contain;
     color: #000; }
     .query--compliant label {
@@ -800,7 +800,7 @@ button {
     max-height: 100%; }
     .results--compliant header {
       background-color: #FABE5E;
-      background-image: url("../img/confetti.svg");
+      background-image: url("/img/confetti.svg");
       background-size: contain; }
     .results--compliant .wave svg {
       fill: #FABE5E; }
