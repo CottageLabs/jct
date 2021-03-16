@@ -153,7 +153,7 @@ jct.explain = (q) => {
         </p>
     `
 
-    fom = `<p><a href="#" id="jct_find_out_more" target="_blank">Link to this result</a></p>`
+    fom = `<p><a href="#" id="jct_find_out_more" target="_blank">Share this result</a></p>`
 
     let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
         (compliant_routes_number > 0 ? compliant_routes : "") +
