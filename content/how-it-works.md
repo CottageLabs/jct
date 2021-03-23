@@ -21,16 +21,22 @@ td, th {
 
 # How the Journal Checker Tool works
 
-The Journal Checker Tool (JCT) is provided by cOAlition S to authors to support them in finding Plan S compliant "routes" through which to publish their articles. The tool allows an author to enter the name of a funder, an institution and the journal to which they plan to submit an article, and checks if this combination of funder, institution and journal offers any route to compliance with Plan S.
+The Journal Checker Tool (JCT) is provided by cOAlition S to authors to support them in finding Plan S compliant 
+"routes" through which to publish their articles. The tool allows an author to enter the name of a funder, an 
+institution and the journal to which they plan to submit an article, and checks if this combination of funder, 
+institution and journal offers any route to compliance with Plan S.
 
 ## <a name="architecture"></a>Architecture
 
 The JCT is divided into two components - a *backend* and a *frontend*.
 
 **Back-end:** the back-end component harvests and [caches](#caches) data from a number of significant 
-[data sources](#data_sources), handles search requests via an API, and executes several [algorithms](#algorithms) used to determine compliance with the Plan S policies. The back-end is designed in such a way that it may be used in other, third-party webservices via its API.
+[data sources](#data_sources), handles search requests via an API, and executes several [algorithms](#algorithms) used 
+to determine compliance with the Plan S policies. The back-end is designed in such a way that it may be used in other, 
+third-party webservices via its API.
 
-**Front-end:** the front-end component is the part that most users see, providing the search form and results screen, as well as documents such as FAQs etc.
+**Front-end:** the front-end component is the part that most users see, providing the search form and results screen, 
+as well as documents such as FAQs etc.
 
 **Codebase:** [https://github.com/CottageLabs/jct](https://github.com/CottageLabs/jct)
 
@@ -40,15 +46,22 @@ A number of data sources are used by the JCT to inform its calculation of Plan S
 
 ### DOAJ (Directory of Open Access Journals)
 
-[DOAJ](https://doaj.org/) provides a high quality, manually curated list of fully OA journals, and is therefore perfectly suited to the *full OA* compliance check for Plan S. DOAJ provides a curated data feed to JCT.
+[DOAJ](https://doaj.org/) provides a high quality, manually curated list of fully OA journals, and is therefore 
+perfectly suited to the *full OA* compliance check for Plan S. DOAJ provides a curated data feed to JCT.
 
 ### Open Access Button
 
-Open Access Button Permission System provides clear information on how 85% of papers can be self-archived. Information provided includes which versions can be shared, licenses allowed, computed deposit statements and embargoes. Open Access Button provides a curated data feed to JCT.
+Open Access Button Permission System provides clear information on how 85% of papers can be self-archived. Information 
+provided includes which versions can be shared, licenses allowed, computed deposit statements and embargoes. Open 
+Access Button provides a curated data feed to JCT.
 
 ### ESAC Agreement Registry
 
-[The ESAC Agreement Registry](https://esac-initiative.org/about/transformative-agreements/agreement-registry/) is a community-curated registry of *[Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/)* (TAs) between publishers on the one hand and consortia representing academic institutions on the other. The Plan S policy for recognising a TA requires that it be registered in ESAC. Therefore, the JCT derives its list of recognised TAs from the ESAC website.
+[The ESAC Agreement Registry](https://esac-initiative.org/about/transformative-agreements/agreement-registry/) is a 
+community-curated registry of *[Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/)* (TAs) 
+between publishers on the one hand and consortia representing academic institutions on the other. The Plan S policy for 
+recognising a TA requires that it be registered in ESAC. Therefore, the JCT derives its list of recognised TAs from the 
+ESAC website.
 
 ### ROR (Research Organisation Registry)
 
@@ -68,13 +81,16 @@ JCT makes use of other data sources to supply information about journals and ins
 ## <a name="caches"></a>Caches
 
 The data used in the JCT calculation is both very large (millions of records) and distributed across the global 
-network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of some of this data. These caches are "refreshed" regularly. Refreshing the caches picks up new records as well as updates to existing records.
+network. This means that, in order to maintain a good level of performance, the JCT operates a set of local caches of 
+some of this data. These caches are "refreshed" regularly. Refreshing the caches picks up new records as well as 
+updates to existing records.
 
 
 
 ## <a name="api"></a>API
 
-The API to the the back-end component of the JCT is used by the front-end component. This API is also made openly available so that others may use it directly. 
+The API to the the back-end component of the JCT is used by the front-end component. This API is also made openly 
+available so that others may use it directly. 
 The API is [documented here](/apidocs).
 
 
@@ -83,7 +99,7 @@ The API is [documented here](/apidocs).
 
 The JCT makes its calculations according to a defined algorithm.
 
-<img src="/img/algorithm_main.png">
+<img src="/img/algorithm_main.svg">
 
 ### Inputs
 
@@ -95,9 +111,12 @@ A request against the compliance algorithm (such as via the Web API) can provide
 | Funder        | 0..*        | CrossRef ID   |
 | Institution   | 0..*        | ROR ID        |
 
-Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there  are compliance routes documented here which do not *require* either Funder or Institution. Nonetheless, Funder and Institution data is essential to give the user a complete picture of the compliance space for their context.
+Note that both Funder and Institution are not strictly required for the algorithm to execute. This is because there are 
+compliance routes documented here which do not *require* either Funder or Institution. Nonetheless, Funder and 
+Institution data is essential to give the user a complete picture of the compliance space for their context.
 
-The ISSN is required. This constraint means that we can calculate compliance for journals **only if they are identified with an ISSN**.
+The ISSN is required. This constraint means that we can calculate compliance for journals **only if they are identified 
+with an ISSN**.
 
 ### Outputs
 
@@ -116,3 +135,39 @@ Each of these analyses contains:
 * An audit trail for the decision - a record of the checks that took place in order to come to this conclusion
 
 The best route to compliance may be different for each user.
+
+### Full OA Check
+
+When JCT checks for compliance with the Full OA route, this is the algorithm which is followed.
+
+Note that transitions are annoated with the codes you will see in the API logs for your request.
+
+<img src="/img/algorithm_fulloa.svg">
+
+
+### Self Archiving Check
+
+When JCT checks for compliance with the Self Archiving route, this is the algorithm which is followed.
+
+Note that transitions are annoated with the codes you will see in the API logs for your request.
+
+<img src="/img/algorithm_sa.svg">
+
+
+### TA Check
+
+When JCT checks for compliance with the Transformative Agreements route, this is the algorithm which is followed.
+
+Note that transitions are annoated with the codes you will see in the API logs for your request.
+
+<img src="/img/algorithm_ta.svg">
+
+
+### TJ Check
+
+When JCT checks for compliance with the Transformative Journals route, this is the algorithm which is followed.
+
+Note that transitions are annoated with the codes you will see in the API logs for your request.
+
+<img src="/img/algorithm_tj.svg">
+
