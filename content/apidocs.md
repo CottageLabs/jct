@@ -66,7 +66,7 @@ For each route, there is a general response format:
   "route" : "<the type id of the route (see below)>",
   "compliant" : "<the compliance type id of the route (see below)",
   "qualifications" : [
-    {"<qualification id> (see below)" : {<qualification specific data (if needed)>},
+    {"<qualification id> (see below)" : { <qualification specific data (if needed)> },
     ...
   ],
   "issn" : "<the issn checked for this result, if there is one>",
@@ -103,17 +103,8 @@ Qualification IDs:
     * no qualification specific data required
 * `rights_retention_author_advice` - the journal does not have an SA policy and does not appear in the rights retention data source
     * no qualification specific data required
-* `rights_rentention_funder_implementation` - the journal does not have an SA policy and the funder has a rights retention policy that starts in the future.  There should be one record of this per funder that meets the conditions, and the following qualification specific data is requried:
-    * `funder: <funder name>`
-    * `date: <date policy comes into force (YYYY-MM-DD)`
 * `corresponding_authors` - the TA is only open to corresponding authors
     * no qualification specific data required
-* `journal` - if a TA is currently in force, the journal start_date and end_date of being in the TA will be provided
-    * `start_date: <start date (human format)>`
-    * `end_date: <end date (human format)>`
-* `institution` - if a TA is currently in force, the institution start_date and end_date of being in the TA will be provided
-    * `start_date: <start date (human format)>`
-    * `end_date: <end date (human format)>`
   
 Log:
 
@@ -149,6 +140,7 @@ Full OA Route Codes:
 | FullOA.Compliant | Journal properties are compliant | licence | List of Journal licences |
 | FullOA.Unknown | Journal properties are unclear | missing | List of missing properties |
 | FullOA.NonCompliant | Journal properties are non-compliant | license | List of Journal licences |
+
 
 Self-Archiving Route Codes:
 
@@ -227,11 +219,12 @@ Response format:
   "took" : "<the time in ms between request start and end (on the server, not including travel time)>",
   "route" : "<ta> # indicating a check for transformative agreement was done in the api",
   "compliant" : "<true/false> # (if there is an agreement, this is true. Otherwise false.)",
-  "qualifications" : [{
-      {"<qualification id> (see below)" : {<qualification specific data (if needed)>},
+  "qualifications" : [
+    {
+      "<qualification id> (see below)" : { <qualification specific data (if needed)> },
     }
     ...
-   ],
+  ],
   "issn" : "<issn in the TA>",
   "ror" : "<ror in the TA>",
   "log" : [
