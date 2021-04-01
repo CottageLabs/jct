@@ -194,6 +194,19 @@ jct.get_qualifications = (qualifications) => {
     return qualification
 }
 
+jct.author_qualification = (qualifications) => {
+    let author_qualification = '';
+    if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
+        for (let [key,values] of Object.entries(qualifications[0])) {
+            if (key === 'corresponding_authors' && key in jct.api_codes.qualification_ids &&
+                'description' in jct.api_codes.qualification_ids[key]) {
+                author_qualification = jct.api_codes.qualification_ids[key]['description'];
+            }
+        }
+    }
+    return author_qualification;
+}
+
 jct.is_in_doaj = (route, logs) => {
     if (route !== 'fully_oa') { return false }
     let is_in = false;

@@ -184,10 +184,19 @@ jct.fullyOA_tile = (journal) => {
 // html for transformative_agreement_tile in results
 // needs journal and institution_title
 // ----------------------------------------
-jct.transformative_agreement_tile = (journal, institution_title) => {
+jct.transformative_agreement_tile = (journal, institution_title, author_qualification) => {
     let title = journal.title ? journal.title : journal.id;
     let publisher = journal.publisher ? journal.publisher : 'the publisher';
     let institution = institution_title ? institution_title : 'the institution';
+    let condition_text = '';
+    if (author_qualification) {
+        condition_text = `<p>` + author_qualification + `<br/><br/>` +
+            `Other conditions may also be in place around publishing through this agreement. ` +
+            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    } else {
+        condition_text = `<p>Conditions may be in place around publishing through this agreement. ` +
+            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    }
     let transformative_agreement_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -198,9 +207,8 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                 <h4 class="label">
                   <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Transformative <br>agreement
-                </h4>
-                <p>Conditions may be in place around publishing through this agreement. <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>
-                <p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
+                </h4>` + condition_text +
+                `<p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_agreement_tile_html);
@@ -716,7 +724,7 @@ jct.add_tile = (result, data) => {
             tile = jct.fullyOA_tile(data.journal);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.ta:
-            tile = jct.transformative_agreement_tile(data.journal, data.institution.title);
+            tile = jct.transformative_agreement_tile(data.journal, data.institution.title, jct.author_qualification(result.qualifications));
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.tj:
             tile = jct.transformative_journal_tile(data.journal);
