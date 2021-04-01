@@ -17,7 +17,7 @@ jct.api_codes = {
                                     'approved for inclusion within the public DOAJ database.',
         },
         'rights_retention_author_advice': {
-            description:            'Your funder supports you to use the <a href="https://www.coalition-s.org/faq-theme/rights-licences/">'+'' +
+            description:            'Your funder supports you to use the <a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">'+'' +
                                     'cOAlition S rights retention strategy</a> as a route to compliance irrespective of the journals self-archiving policy.',
         },
         'corresponding_authors': {
@@ -63,7 +63,7 @@ jct.api_codes = {
         },
         'FullOA.NonCompliant':      'This journal does not enable you to publish under a CC BY or equivalent licence required for policy compliance.',
         'FullOA.NonCompliant.Properties': {
-            'license':               'The licences allowed by this journal are:'
+            'licence':               'The licences allowed by this journal are:'
         },
     },
     self_archiving: {
@@ -86,9 +86,9 @@ jct.api_codes = {
         'SA.NotInOAB':              'This journal is not present in OAB Permissions.',
         'SA.OABNonCompliant':       "This journals self-archiving policy does not enable compliance with your funder's open access policy, for the following reason(s):",
         'SA.OABNonCompliant.Properties': {
-            'licence':              'The manuscript version that can be archived is:',
+            'version':              'The manuscript version that can be archived is:',
             'embargo':              'There is an embargo period (in months):',
-            'version':              'The licence that can be used on the manuscript to be archived is:'
+            'licence':              'The licence that can be used on the manuscript to be archived is:'
         },
         'SA.OABIncomplete':         'We were unable to determine if this journal provides a route to compliance.',
         'SA.OABIncomplete.Properties': {
@@ -96,14 +96,14 @@ jct.api_codes = {
         },
         'SA.OABCompliant':          "This journals self-archiving policy aligns with your funder's open access policy.",
         'SA.OABCompliant.Properties': {
-            'licence':              'The manuscript version that can be archived is:',
+            'version':              'The manuscript version that can be archived is:',
             'embargo':              'There is an embargo period (in months):',
-            'version':              'The licence that can be used on the manuscript to be archived is:'
+            'licence':              'The licence that can be used on the manuscript to be archived is:'
         },
         'SA.FunderRRNotActive': 	'Your funder has not implemented the ' +
-                                    '<a href="https://www.coalition-s.org/faq-theme/rights-licences/">Plan S Rights Retention Strategy</a>.',
+                                    '<a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">Plan S Rights Retention Strategy</a>.',
         'SA.FunderRRActive':        'Your funder has implemented the ' +
-                                    '<a href="https://www.coalition-s.org/faq-theme/rights-licences/">Plan S Rights Retention Strategy</a>. ' +
+                                    '<a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">Plan S Rights Retention Strategy</a>. ' +
                                     'Rights retention takes precedence over the journals self-archiving policy. It provides a route to ' +
                                     'compliance irrespective of publisher imposed restrictions or embargo periods.',
         'SA.Unknown':               'We are unable to determine if this journals provides a route to compliance via self-archiving due to missing information.',

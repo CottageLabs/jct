@@ -47,6 +47,9 @@ jct.explain = (q) => {
                         if (values && values.length > 0) {
                             parameters += "<ul>";
                             values.forEach((value) => {
+                                if (parameter === 'version') {
+                                    value = jct.version_rename(value);
+                                }
                                 parameters += "<li>" + value + "</li>";
                             })
                             parameters += "</ul>";
@@ -73,7 +76,7 @@ jct.explain = (q) => {
 
     let blurb_for_count = "";
     [compliant_routes_number,
-     noncomplicant_routes_number,
+     non_compliant_routes_number,
      unknown_routes_number].forEach((num, index) => {
         let human_num = (num === 0) ? 'no' : num;
         switch(index) {
@@ -227,4 +230,22 @@ jct.is_in_progress_doaj = (route, logs) => {
         }
     })
     return is_in
+}
+
+jct.version_rename = (val) => {
+    let new_val;
+    switch(val) {
+        case "publishedVersion":
+            new_val = "Published version";
+            break;
+        case "acceptedVersion":
+            new_val = "Accepted version";
+            break;
+        case "submittedVersion":
+            new_val = "Submitted version";
+            break;
+        default:
+            new_val = val;
+   }
+   return new_val
 }
