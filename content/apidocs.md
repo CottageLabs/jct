@@ -4,6 +4,21 @@ date: 2021-02-13T23:38:56Z
 description: "Documentation of the public API for the Journal Checker Tool: Plan S Compliance Validator."
 ---
 
+<style type="text/css">
+table {
+    border: 1px solid #cccccc;
+}
+
+thead {
+    font-weight: bold;
+}
+
+td, th {
+    border: 1px solid #cccccc;
+    padding: 5px;
+}
+</style>
+
 # JCT Public API
 
 The api is available at [{{< param apiURL >}}]({{< param apiURL >}}).
@@ -129,7 +144,7 @@ For example, items such as this may be present:
 }
 ```
 
-Full OA Route Codes:
+#### Full OA Route Codes:
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
@@ -141,8 +156,7 @@ Full OA Route Codes:
 | FullOA.Unknown | Journal properties are unclear | missing | List of missing properties |
 | FullOA.NonCompliant | Journal properties are non-compliant | license | List of Journal licences |
 
-
-Self-Archiving Route Codes:
+#### Self-Archiving Route Codes:
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
@@ -161,8 +175,7 @@ Self-Archiving Route Codes:
 | SA.NonCompliant | Self-Archiving is not possible under current circumstances | | |
 | SA.Compliant | Self-Archiving is permitted via Rights Retention | | |
 
-
-Transformative Agreement Route Codes:
+#### Transformative Agreement Route Codes:
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
@@ -174,8 +187,7 @@ Transformative Agreement Route Codes:
 | TA.NonCompliant | The parameters of the TA do not meet Plan S criteria | | |
 | TA.Compliant | The TA is Plan S compliant | | |
 
-
-Transformative Journals Route Codes:
+#### Transformative Journals Route Codes:
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
