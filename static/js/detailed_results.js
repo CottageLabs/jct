@@ -2,10 +2,10 @@ jct.explain = (q) => {
     let detailed_results = jct.d.gebi("jct_detailed_results_section")
     detailed_results.innerHTML = "";
     let compliant_routes = `<h2>Compliant Routes</h2>`
-    let noncompliant_routes = `<h2>Non-Compliant Routes</h2>`
+    let non_compliant_routes = `<h2>Non-Compliant Routes</h2>`
     let unknown_routes = `<h2>Unknown Routes</h2>`
     let compliant_routes_number = 0;
-    let noncomplicant_routes_number = 0;
+    let non_compliant_routes_number = 0;
     let unknown_routes_number = 0;
 
     q.results.forEach((r) => {
@@ -13,30 +13,43 @@ jct.explain = (q) => {
         let statement = jct.api_codes[r.route]['statement'][r.compliant];
         let explanation = jct.api_codes[r.route]['explanation'][r.compliant];
         let qualification = jct.get_qualifications(r.qualifications);
+        let route = `<h3>` + name + `</h3>` +
+                    `<p>`  + statement + `</p>` +
+                    `<p>`  + qualification + `</p>` +
+                    `<p>`  + explanation + `</p>`;
 
-        let route = `
-        <h3>` + name + `</h3>
-        <p>`  + statement + `</p>
-        <p style="color: #F47115">`  + qualification + `</p>
-        <p>`  + explanation + `</p>`;
-
+        let is_in_doaj = jct.is_in_doaj(r.route, r.log);
+        let is_in_progress_doaj = jct.is_in_progress_doaj(r.route, r.log);
         if (r.log) {
+            let route_defined = r.route in jct.api_codes;
             r.log.forEach((log) => {
                 let action = log.code;
-                if (r.route in jct.api_codes && log.code in jct.api_codes[r.route]) {
+                if (is_in_doaj && action === 'FullOA.NotInProgressDOAJ') {
+                    return;
+                }
+                if (is_in_progress_doaj && action === 'FullOA.NotInDOAJ') {
+                    return;
+                }
+                if (route_defined && log.code in jct.api_codes[r.route]) {
                     action = jct.api_codes[r.route][log.code];
                 }
                 let parameters = ''
                 if (log.parameters) {
                     for (let [parameter,values] of Object.entries(log.parameters)) {
-                        let p = parameter;
-                        if (r.route in jct.api_codes && parameter in jct.api_codes[r.route]) {
-                            p = jct.api_codes[r.route][parameter];
+                        let parent_key = log.code + '.Properties';
+                        if (route_defined && parent_key in jct.api_codes[r.route] &&
+                            parameter in jct.api_codes[r.route][parent_key] &&
+                            jct.api_codes[r.route][parent_key][parameter]) {
+                            // The key is displayed irrespective of the value existing
+                            parameters += jct.api_codes[r.route][parent_key][parameter] + "<br/>";
                         }
-                        parameters += p + "<br/>";
+
                         if (values && values.length > 0) {
                             parameters += "<ul>";
                             values.forEach((value) => {
+                                if (parameter === 'version') {
+                                    value = jct.version_rename(value);
+                                }
                                 parameters += "<li>" + value + "</li>";
                             })
                             parameters += "</ul>";
@@ -53,8 +66,8 @@ jct.explain = (q) => {
             compliant_routes_number++;
             compliant_routes += route;
         } else if (r.compliant === "no") {
-            noncomplicant_routes_number++;
-            noncompliant_routes += route;
+            non_compliant_routes_number++;
+            non_compliant_routes += route;
         } else {
             unknown_routes_number++;
             unknown_routes += route;
@@ -63,7 +76,7 @@ jct.explain = (q) => {
 
     let blurb_for_count = "";
     [compliant_routes_number,
-     noncomplicant_routes_number,
+     non_compliant_routes_number,
      unknown_routes_number].forEach((num, index) => {
         let human_num = (num === 0) ? 'no' : num;
         switch(index) {
@@ -139,7 +152,7 @@ jct.explain = (q) => {
 
     let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
         (compliant_routes_number > 0 ? compliant_routes : "") +
-        (noncomplicant_routes_number > 0 ? noncompliant_routes : "") +
+        (non_compliant_routes_number > 0 ? non_compliant_routes : "") +
         (unknown_routes_number > 0 ? unknown_routes : "") + "</div>");
     detailed_results.append(elem);
 
@@ -163,17 +176,76 @@ jct.get_qualifications = (qualifications) => {
         for (let [key,values] of Object.entries(qualifications[0])) {
             if (key in jct.api_codes.qualification_ids && 'description' in jct.api_codes.qualification_ids[key]) {
                 qualification = jct.api_codes.qualification_ids[key]['description'] + "<br/>";
-            }
-            if (values) {
-                for (let [k2,v2] of Object.entries(values)) {
-                    let label = k2;
-                    if (key in jct.api_codes.qualification_ids && k2 in jct.api_codes.qualification_ids[key]) {
-                        label = jct.api_codes.qualification_ids[key][k2]
+                if (values) {
+                    for (let [k2,v2] of Object.entries(values)) {
+                        if (v2) {
+                            let label = k2;
+                            if (key in jct.api_codes.qualification_ids && k2 in jct.api_codes.qualification_ids[key]) {
+                                label = jct.api_codes.qualification_ids[key][k2]
+                            }
+                            qualification += label + ' ' + v2 + "<br/>";
+                        }
                     }
-                    qualification += label + ' ' + v2 + "<br/>";
                 }
             }
         }
     }
+    if (qualification) {
+        return `<p><b>` + jct.api_codes.qualification_ids.name + `</b></p>` +
+            `<p>` + qualification + `</p>`;
+    }
     return qualification
+}
+
+jct.author_qualification = (qualifications) => {
+    let author_qualification = '';
+    if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
+        for (let [key,values] of Object.entries(qualifications[0])) {
+            if (key === 'corresponding_authors' && key in jct.api_codes.qualification_ids &&
+                'description' in jct.api_codes.qualification_ids[key]) {
+                author_qualification = jct.api_codes.qualification_ids[key]['description'];
+            }
+        }
+    }
+    return author_qualification;
+}
+
+jct.is_in_doaj = (route, logs) => {
+    if (route !== 'fully_oa') { return false }
+    let is_in = false;
+    logs.forEach((log) => {
+        if (log.code === 'FullOA.InDOAJ') {
+            is_in = true;
+        }
+    })
+    return is_in
+}
+
+jct.is_in_progress_doaj = (route, logs) => {
+    if (route !== 'fully_oa') { return false }
+    let is_in = false;
+    logs.forEach((log) => {
+        if (log.code === 'FullOA.InProgressDOAJ') {
+            is_in = true;
+        }
+    })
+    return is_in
+}
+
+jct.version_rename = (val) => {
+    let new_val;
+    switch(val) {
+        case "publishedVersion":
+            new_val = "Published version";
+            break;
+        case "acceptedVersion":
+            new_val = "Accepted version";
+            break;
+        case "submittedVersion":
+            new_val = "Submitted version";
+            break;
+        default:
+            new_val = val;
+   }
+   return new_val
 }
