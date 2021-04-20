@@ -140,7 +140,7 @@ The best route to compliance may be different for each user.
 
 When JCT checks for compliance with the Full OA route, this is the algorithm which is followed.
 
-Note that transitions are annoated with the codes you will see in the API logs for your request.
+Note that transitions are annotated with the codes you will see in the API logs for your request.
 
 <img src="/img/algorithm_fulloa.svg">
 
@@ -149,7 +149,7 @@ Note that transitions are annoated with the codes you will see in the API logs f
 
 When JCT checks for compliance with the Self Archiving route, this is the algorithm which is followed.
 
-Note that transitions are annoated with the codes you will see in the API logs for your request.
+Note that transitions are annotated with the codes you will see in the API logs for your request.
 
 <img src="/img/algorithm_sa.svg">
 
@@ -158,7 +158,7 @@ Note that transitions are annoated with the codes you will see in the API logs f
 
 When JCT checks for compliance with the Transformative Agreements route, this is the algorithm which is followed.
 
-Note that transitions are annoated with the codes you will see in the API logs for your request.
+Note that transitions are annotated with the codes you will see in the API logs for your request.
 
 <img src="/img/algorithm_ta.svg">
 
@@ -167,7 +167,7 @@ Note that transitions are annoated with the codes you will see in the API logs f
 
 When JCT checks for compliance with the Transformative Journals route, this is the algorithm which is followed.
 
-Note that transitions are annoated with the codes you will see in the API logs for your request.
+Note that transitions are annotated with the codes you will see in the API logs for your request.
 
 <img src="/img/algorithm_tj.svg">
 
