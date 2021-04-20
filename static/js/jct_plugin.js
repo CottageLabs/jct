@@ -453,7 +453,7 @@ jct.non_compliant_options_html = `
             <h4 class="label card__heading">Rights retention</h4>
             <p>cOAlition S has developed a Rights Retention Strategy to give researchers supported by a cOAlition S Funder
             the freedom to publish in their journal of choice, including subscription journals, whilst remaining fully compliant with Plan S.
-            <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank">More information on how to use it is available here</a>.</p>
+            <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank"  rel="noopener">More information on how to use it is available here</a>.</p>
         </article>
     </div>
 `;
@@ -475,7 +475,7 @@ jct.fullyOA_tile = (journal) => {
                   <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Full <br>open access
                 </h4>
-                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
                 <p><em>` + title + `</em> is a fully open access journal.</p>
             </article>
         </div>`;
@@ -486,10 +486,19 @@ jct.fullyOA_tile = (journal) => {
 // html for transformative_agreement_tile in results
 // needs journal and institution_title
 // ----------------------------------------
-jct.transformative_agreement_tile = (journal, institution_title) => {
+jct.transformative_agreement_tile = (journal, institution_title, author_qualification) => {
     let title = journal.title ? journal.title : journal.id;
     let publisher = journal.publisher ? journal.publisher : 'the publisher';
     let institution = institution_title ? institution_title : 'the institution';
+    let condition_text = '';
+    if (author_qualification) {
+        condition_text = `<p>` + author_qualification + `<br/><br/>` +
+            `Other conditions may also be in place around publishing through this agreement. ` +
+            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    } else {
+        condition_text = `<p>Conditions may be in place around publishing through this agreement. ` +
+            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    }
     let transformative_agreement_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -500,9 +509,8 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                 <h4 class="label">
                   <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Transformative <br>agreement
-                </h4>
-                <p>Conditions may be in place around publishing through this agreement. <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>
-                <p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
+                </h4>` + condition_text +
+                `<p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_agreement_tile_html);
@@ -527,7 +535,7 @@ jct.transformative_journal_tile = (journal) => {
                     <br/><br/>
                     Transformative <br>journal
                 </h4>
-                <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
                 <p>
                     <span><em>` + title + `</em> is a transformative journal</span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
@@ -556,7 +564,7 @@ jct.self_archiving_tile = (journal) => {
                     </svg>
                 </span>
                 <h4 class="label">Self-archiving</h4>
-                <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
+                <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>.</p>
                 <p>
                     <span><em>` + title + `</em> has a Plan S aligned self-archiving policy. </span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button" >
@@ -589,6 +597,29 @@ jct.sa_rights_retention_tile = () => {
             </article>
         </div>`;
     return jct.htmlToElement(sa_rights_retention_tile_html);
+}
+
+// ----------------------------------------
+// html for fullyOA_self_archiving_tile in results
+// needs journal_title
+// ----------------------------------------
+jct.fullyOA_self_archiving_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
+    let oa_self_archiving_tile_html = `
+        <div class="col col--1of4">
+            <article class="card" data-aos="fade-up" data-aos-duration="2000">
+                <span class="card__icon">
+                    <svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
+                    </svg>
+                </span>
+                <h4 class="label">Full open access<br>self-archiving</h4>
+                <p>Publication in this fully open access journal under a CC BY licence results in the right to self-archive the 
+                version of record as an additional route to compliance rather than an alternative route.</p>
+                <p><em>` + title + `</em> is a fully open access journal.</p>
+            </article>
+        </div>`;
+    return jct.htmlToElement(oa_self_archiving_tile_html);
 }
 
 // ----------------------------------------
@@ -632,7 +663,7 @@ jct.tj_modal_html = `
                     to a fully OA journal. It must gradually increase the share of OA content and offset subscription
                     income from payments for publishing services (to avoid double payments).</p>
                 <p>Check with your funder if they are able to pay the article publishing charge for transformative journals.
-                <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noferrer noopener">here</a>.</p>
+                <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noopener">here</a>.</p>
             </div>
         </div>
     </div>
@@ -655,7 +686,7 @@ jct.sa_modal_html = `
                         funder may not cover the cost if you do and it does not enable compliance). Following acceptance
                         of your peer reviewed manuscript, deposit the full text version of the author accepted manuscript
                         (the version that includes changes requested by peer-reviewers) to a repository without embargo and
-                        under a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.
+                        under a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>.
                         Your funder may require you to archive your article in a specific repository.</p>
                 </div>
             </div>
@@ -674,11 +705,11 @@ jct.sa_rr_modal_html = `
                 </h2>
             </header>
             <div>
-                <p><a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> has
+                <p><a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> has
                     developed a Rights Retention Strategy to give researchers supported by a cOAlition S Funder the
                     freedom to publish in their journal of choice, including subscription journals, whilst remaining fully
                     compliant with Plan S. More information on how to use it is available
-                    <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noferrer noopener">here</a>.</p>
+                    <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noopener">here</a>.</p>
             </div>
         </div>
     </div>
@@ -724,7 +755,7 @@ jct.help_modal_html = `
             </header>
             <div>
                 <p>Plan S aims for full and immediate Open Access to peer-reviewed scholarly publications from research funded by public and private grants.
-                  <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> is the
+                  <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> is the
                   coalition of research funding and performing organisations that have committed to implementing Plan S.
                   The goal of cOAlition S is to accelerate the transition to a scholarly publishing system that is characterised
                   by immediate, free online access to, and largely unrestricted use and re-use (full Open Access) of scholarly publications. </p>
@@ -732,7 +763,7 @@ jct.help_modal_html = `
                 aligned OA policy based on the combination of journal, funder(s) and the institution(s) affiliated with
                 the research to be published. The tool currently only identifies routes to open access compliance for
                 Plan S aligned policies.</p>
-                <p>This is a <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> project.</p>
+                <p>This is a <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> project.</p>
                 <p>
                     <a href="/notices#privacy_notice">Privacy Notice</a> •
                     <a href="/notices#disclaimer_and_copyright">Disclaimer & Copyright</a>
@@ -753,7 +784,7 @@ jct.feedback_modal_html = `
                     <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_feedback">&times;</span>
                  </h2>
             </header>
-            <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>. </p>
+            <p>This tool is delivered by <a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a>. </p>
             <p>If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. Your current search details will be automatically included in your feedback. We will respond within 3 working days.</p>
             <form id="contact_form">
                 <div class="modal-inputs">
@@ -945,11 +976,19 @@ jct.display_result = (js) => {
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
+        let need_fully_oa_sa_tile = false;
         js.results.forEach((r) => {
             if (r.compliant === "yes") {
                 jct.add_tile(r, jct.chosen)
+                if (r.route === jct.COMPLIANCE_ROUTES_SHORT.fully_oa) {
+                    need_fully_oa_sa_tile = true;
+                }
             }
         })
+        if (need_fully_oa_sa_tile) {
+            // Add Fully oa SA tile after all other tiles
+            jct.add_fully_oa_sa_tile(jct.chosen)
+        }
     }
     else {
         jct._setComplianceTheme(false);
@@ -1018,7 +1057,7 @@ jct.add_tile = (result, data) => {
             tile = jct.fullyOA_tile(data.journal);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.ta:
-            tile = jct.transformative_agreement_tile(data.journal, data.institution.title);
+            tile = jct.transformative_agreement_tile(data.journal, data.institution.title, jct.author_qualification(result.qualifications));
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.tj:
             tile = jct.transformative_journal_tile(data.journal);
@@ -1069,6 +1108,11 @@ jct.add_tile = (result, data) => {
             modal.style.display = "block";
         });
     }
+}
+
+jct.add_fully_oa_sa_tile = (data) => {
+    let tile = jct.fullyOA_self_archiving_tile(data.journal);
+    jct.d.gebi("jct_paths_results").append(tile);
 }
 
 // ----------------------------------------

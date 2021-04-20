@@ -298,6 +298,29 @@ jct.sa_rights_retention_tile = () => {
 }
 
 // ----------------------------------------
+// html for fullyOA_self_archiving_tile in results
+// needs journal_title
+// ----------------------------------------
+jct.fullyOA_self_archiving_tile = (journal) => {
+    let title = journal.title ? journal.title : journal.id;
+    let oa_self_archiving_tile_html = `
+        <div class="col col--1of4">
+            <article class="card" data-aos="fade-up" data-aos-duration="2000">
+                <span class="card__icon">
+                    <svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
+                    </svg>
+                </span>
+                <h4 class="label">Full open access<br>self-archiving</h4>
+                <p>Publication in this fully open access journal under a CC BY licence results in the right to self-archive the 
+                version of record as an additional route to compliance rather than an alternative route.</p>
+                <p><em>` + title + `</em> is a fully open access journal.</p>
+            </article>
+        </div>`;
+    return jct.htmlToElement(oa_self_archiving_tile_html);
+}
+
+// ----------------------------------------
 // html for transformative agreement modal
 // ----------------------------------------
 jct.ta_modal_html = `
@@ -651,11 +674,19 @@ jct.display_result = (js) => {
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
+        let need_fully_oa_sa_tile = false;
         js.results.forEach((r) => {
             if (r.compliant === "yes") {
                 jct.add_tile(r, jct.chosen)
+                if (r.route === jct.COMPLIANCE_ROUTES_SHORT.fully_oa) {
+                    need_fully_oa_sa_tile = true;
+                }
             }
         })
+        if (need_fully_oa_sa_tile) {
+            // Add Fully oa SA tile after all other tiles
+            jct.add_fully_oa_sa_tile(jct.chosen)
+        }
     }
     else {
         jct._setComplianceTheme(false);
@@ -775,6 +806,11 @@ jct.add_tile = (result, data) => {
             modal.style.display = "block";
         });
     }
+}
+
+jct.add_fully_oa_sa_tile = (data) => {
+    let tile = jct.fullyOA_self_archiving_tile(data.journal);
+    jct.d.gebi("jct_paths_results").append(tile);
 }
 
 // ----------------------------------------
