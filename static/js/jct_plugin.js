@@ -453,7 +453,7 @@ jct.non_compliant_options_html = `
             <h4 class="label card__heading">Rights retention</h4>
             <p>cOAlition S has developed a Rights Retention Strategy to give researchers supported by a cOAlition S Funder
             the freedom to publish in their journal of choice, including subscription journals, whilst remaining fully compliant with Plan S.
-            <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank">More information on how to use it is available here</a>.</p>
+            <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank"  rel="noopener">More information on how to use it is available here</a>.</p>
         </article>
     </div>
 `;
@@ -475,7 +475,7 @@ jct.fullyOA_tile = (journal) => {
                   <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Full <br>open access
                 </h4>
-                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
                 <p><em>` + title + `</em> is a fully open access journal.</p>
             </article>
         </div>`;
@@ -486,10 +486,19 @@ jct.fullyOA_tile = (journal) => {
 // html for transformative_agreement_tile in results
 // needs journal and institution_title
 // ----------------------------------------
-jct.transformative_agreement_tile = (journal, institution_title) => {
+jct.transformative_agreement_tile = (journal, institution_title, author_qualification) => {
     let title = journal.title ? journal.title : journal.id;
     let publisher = journal.publisher ? journal.publisher : 'the publisher';
     let institution = institution_title ? institution_title : 'the institution';
+    let condition_text = '';
+    if (author_qualification) {
+        condition_text = `<p>` + author_qualification + `<br/><br/>` +
+            `Other conditions may also be in place around publishing through this agreement. ` +
+            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    } else {
+        condition_text = `<p>Conditions may be in place around publishing through this agreement. ` +
+            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    }
     let transformative_agreement_tile_html = `
         <div class="col col--1of4">
             <article class="card" data-aos="fade-up" data-aos-duration="2000">
@@ -500,9 +509,8 @@ jct.transformative_agreement_tile = (journal, institution_title) => {
                 <h4 class="label">
                   <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Transformative <br>agreement
-                </h4>
-                <p>Conditions may be in place around publishing through this agreement. <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>
-                <p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
+                </h4>` + condition_text +
+                `<p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_agreement_tile_html);
@@ -527,7 +535,7 @@ jct.transformative_journal_tile = (journal) => {
                     <br/><br/>
                     Transformative <br>journal
                 </h4>
-                <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
                 <p>
                     <span><em>` + title + `</em> is a transformative journal</span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
@@ -556,7 +564,7 @@ jct.self_archiving_tile = (journal) => {
                     </svg>
                 </span>
                 <h4 class="label">Self-archiving</h4>
-                <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.</p>
+                <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>.</p>
                 <p>
                     <span><em>` + title + `</em> has a Plan S aligned self-archiving policy. </span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button" >
@@ -606,10 +614,6 @@ jct.ta_modal_html = `
                 <p>Consult your institution’s library prior to submitting to this journal. </p>
                 <p><em>Transformative agreements</em> may have eligibility criteria or limits on publication numbers
                     in place that the Journal Checker Tool is currently not able to check. </p>
-                <p>A common eligibility criterion is that the corresponding author of the article must be at an
-                    institution subscribing to the transformative agreement for the paper (determined via the use of an
-                    institutional email address). If you are not the corresponding author, please repeat your search
-                    with the corresponding author’s institution to help validate the article’s eligibility.</p>
             </div>
         </div>
     </div>
@@ -632,7 +636,7 @@ jct.tj_modal_html = `
                     to a fully OA journal. It must gradually increase the share of OA content and offset subscription
                     income from payments for publishing services (to avoid double payments).</p>
                 <p>Check with your funder if they are able to pay the article publishing charge for transformative journals.
-                <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noferrer noopener">here</a>.</p>
+                <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noopener">here</a>.</p>
             </div>
         </div>
     </div>
@@ -655,7 +659,7 @@ jct.sa_modal_html = `
                         funder may not cover the cost if you do and it does not enable compliance). Following acceptance
                         of your peer reviewed manuscript, deposit the full text version of the author accepted manuscript
                         (the version that includes changes requested by peer-reviewers) to a repository without embargo and
-                        under a <a href="https://creativecommons.org/licenses/by/2.0/" target="blank" rel="noferrer noopener">CC BY licence</a>.
+                        under a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>.
                         Your funder may require you to archive your article in a specific repository.</p>
                 </div>
             </div>
@@ -674,11 +678,11 @@ jct.sa_rr_modal_html = `
                 </h2>
             </header>
             <div>
-                <p><a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> has
+                <p><a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> has
                     developed a Rights Retention Strategy to give researchers supported by a cOAlition S Funder the
                     freedom to publish in their journal of choice, including subscription journals, whilst remaining fully
                     compliant with Plan S. More information on how to use it is available
-                    <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noferrer noopener">here</a>.</p>
+                    <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noopener">here</a>.</p>
             </div>
         </div>
     </div>
@@ -724,7 +728,7 @@ jct.help_modal_html = `
             </header>
             <div>
                 <p>Plan S aims for full and immediate Open Access to peer-reviewed scholarly publications from research funded by public and private grants.
-                  <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> is the
+                  <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> is the
                   coalition of research funding and performing organisations that have committed to implementing Plan S.
                   The goal of cOAlition S is to accelerate the transition to a scholarly publishing system that is characterised
                   by immediate, free online access to, and largely unrestricted use and re-use (full Open Access) of scholarly publications. </p>
@@ -732,7 +736,7 @@ jct.help_modal_html = `
                 aligned OA policy based on the combination of journal, funder(s) and the institution(s) affiliated with
                 the research to be published. The tool currently only identifies routes to open access compliance for
                 Plan S aligned policies.</p>
-                <p>This is a <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a> project.</p>
+                <p>This is a <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> project.</p>
                 <p>
                     <a href="/notices#privacy_notice">Privacy Notice</a> •
                     <a href="/notices#disclaimer_and_copyright">Disclaimer & Copyright</a>
@@ -753,7 +757,7 @@ jct.feedback_modal_html = `
                     <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_feedback">&times;</span>
                  </h2>
             </header>
-            <p>This tool is delivered by <a href="https://cottagelabs.com/" target="blank" rel="noferrer noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noferrer noopener">cOAlition S</a>. </p>
+            <p>This tool is delivered by <a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a>. </p>
             <p>If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. Your current search details will be automatically included in your feedback. We will respond within 3 working days.</p>
             <form id="contact_form">
                 <div class="modal-inputs">
@@ -1018,7 +1022,7 @@ jct.add_tile = (result, data) => {
             tile = jct.fullyOA_tile(data.journal);
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.ta:
-            tile = jct.transformative_agreement_tile(data.journal, data.institution.title);
+            tile = jct.transformative_agreement_tile(data.journal, data.institution.title, jct.author_qualification(result.qualifications));
             break;
         case jct.COMPLIANCE_ROUTES_SHORT.tj:
             tile = jct.transformative_journal_tile(data.journal);

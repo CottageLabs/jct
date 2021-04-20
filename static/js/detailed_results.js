@@ -191,8 +191,7 @@ jct.get_qualifications = (qualifications) => {
         }
     }
     if (qualification) {
-        return `<p><b>` + jct.api_codes.qualification_ids.name + `</b></p>` +
-            `<p>` + qualification + `</p>`;
+        return `<p>` + jct.api_codes.qualification_ids.name + ` ` + qualification + `</p>`;
     }
     return qualification
 }
