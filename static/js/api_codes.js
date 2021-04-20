@@ -11,26 +11,26 @@ jct.api_codes = {
          'unknown':                 'Not known if route offers compliance'
     },
     qualification_ids: {
-        'name':                     'Consider the following when taking this publishing route',
+        'name':                     'Please note,',
         'doaj_under_review': {
-            description:            'This journal is currently under review for potential inclusion in DOAJ, it is yet to be ' +
+            description:            'this journal is currently under review for potential inclusion in DOAJ, it is yet to be ' +
                                     'approved for inclusion within the public DOAJ database.',
         },
         'rights_retention_author_advice': {
-            description:            'Your funder supports you to use the <a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">'+'' +
+            description:            'your funder supports you to use the <a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">'+'' +
                                     'cOAlition S rights retention strategy</a> as a route to compliance irrespective of the journal\'s self-archiving policy.',
         },
         'corresponding_authors': {
-            description:            'The corresponding author of the submitted article must be based at '+
+            description:            'the corresponding author of the submitted article must be based at '+
                                     'an institution within this transformative agreement for it to provide a route to compliance.',
         },
         'journal' : {
-            description:            'A transformative agreement is currently in force for this journal.',
+            description:            'a transformative agreement is currently in force for this journal.',
             start_date:             'Start date of the transformative agreement:',
             end_date:               'End date of the transformative agreement:'
         },
         'institution':  {
-            description:            'A transformative agreement is currently in force for this institution.',
+            description:            'a transformative agreement is currently in force for this institution.',
             start_date:             'Start date of the transformative agreement:',
             end_date:               'End date of the transformative agreement:'
         }
@@ -140,9 +140,9 @@ jct.api_codes = {
             'unknown':              'We are unable to determine if this journal is a Transformative Journal and therefore <b>unable to determine compliance</b> via this route.',
         },
         'explanation': {
-            'yes':                  'The following checks were carried out to determine that this is a compliant route:',
-            'no':                   'The following checks were carried out to determine that this is not a compliant route:',
-            'unknown':              'The following checks were carried out to determine compliance:',
+            'yes':                  'The following checks were carried out on the JCT\'s Transformative Journal Index to determine that this is a compliant route:',
+            'no':                   'The following checks were carried out on the JCT\'s Transformative Journal Index to determine that this is not a compliant route:',
+            'unknown':              'The following checks were carried out on the JCT\'s Transformative Journal Index to determine compliance:',
         },
         'TJ.NoTJ':                  'This journal is not a Transformative Journal.',
         'TJ.Exists':                'This journal is a Transformative Journal.',

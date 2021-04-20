@@ -312,10 +312,6 @@ jct.ta_modal_html = `
                 <p>Consult your institution’s library prior to submitting to this journal. </p>
                 <p><em>Transformative agreements</em> may have eligibility criteria or limits on publication numbers
                     in place that the Journal Checker Tool is currently not able to check. </p>
-                <p>A common eligibility criterion is that the corresponding author of the article must be at an
-                    institution subscribing to the transformative agreement for the paper (determined via the use of an
-                    institutional email address). If you are not the corresponding author, please repeat your search
-                    with the corresponding author’s institution to help validate the article’s eligibility.</p>
             </div>
         </div>
     </div>
