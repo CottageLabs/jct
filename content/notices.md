@@ -72,7 +72,7 @@ In the context of the Journal Checker Tool the data controller is the European S
 
 The members of cOAlition S and Cottage Labs LLP respect the privacy of everyone that they work with and everyone who visits the Journal Checker Website. They will treat any personal information that they have on you with the strictest confidentiality and in accordance with the applicable legislation. This privacy notice gives you more detail on what information is collected, why, and what your rights are. We regularly review this privacy notice to make sure that it is up to date and complies with the law. If there are significant changes in how your personal information is treated, this will be made clear on the Journal Checker Tool website and you may also be informed directly.
 
-The last update to this privacy notice was made on **18 November 2020.**
+The last update to this privacy notice was made on **29 April 2021.**
 
 The websites and/or platforms that this privacy notice applies to are located at the domains journalcheckertool.org, unless otherwise indicated. This website contains links to other websites: cOAlition S and Cottage Labs LLP have no control over the content of those websites, or what personal information their operators gather. Please check the privacy statements for these websites to learn more about how they handle your personal information.
 
