@@ -10,18 +10,18 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
 
-    <link href="/css/main.css?v=2.0.0" rel='stylesheet' type='text/css'>
+    <link href="/css/main.css?v={{.Site.Params.jctAssetsVersion}}" rel='stylesheet' type='text/css'>
 
-    <script type="text/javascript" src="/js/api_endpoint.js?v=2.0.0"></script>
-    <script type="text/javascript" src="/js/jct.js?v=2.0.0"></script>
-    <script type="text/javascript" src="/js/feedback.js?v=2.0.0"></script>
+    <script type="text/javascript" src="/js/api_endpoint.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/jct.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/feedback.js?v={{.Site.Params.jctAssetsVersion}}"></script>
     {{ if .IsHome }}
-        <script type="text/javascript" src="/js/api_codes.js?v=2.0.0"></script>
-        <script type="text/javascript" src="/js/detailed_results.js?v=2.0.0"></script>
-        <script type="text/javascript" src="/js/clinput.js?v=2.0.0"></script>
-        <script type="text/javascript" src="/js/ready.js?v=2.0.0"></script>
-        <link href="/css/aos.css?v=2.2.0" rel="stylesheet">
-        <script type="text/javascript" src="/js/aos.js?v=2.2.0"></script>
+        <script type="text/javascript" src="/js/api_codes.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+        <script type="text/javascript" src="/js/detailed_results.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+        <script type="text/javascript" src="/js/clinput.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+        <script type="text/javascript" src="/js/ready.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+        <link href="/css/aos.css?v={{.Site.Params.aosAssetsVersion}}" rel="stylesheet">
+        <script type="text/javascript" src="/js/aos.js?v={{.Site.Params.aosAssetsVersion}}"></script>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=URL"></script>
     {{ end }}
     {{ if .Site.GoogleAnalytics }}
