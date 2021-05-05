@@ -126,7 +126,7 @@ window.jct_query_options.no_he = true
 
 ## Customising the styles
 
-The styles for the widget are provided by the [plugin.css](https://journalcheckertool.org/static/css/plugin.css) file,
+The styles for the widget are provided by the [plugin.css](https://journalcheckertool.org/css/plugin.css) file,
 and you may customise or override the styles here as you need.
 
 The main styles you may wish to override are the width and font-size of the widget, which can be done with the following
