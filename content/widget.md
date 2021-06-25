@@ -13,18 +13,22 @@ To embed the widget on your web page, copy and paste the code below into the web
 and then customise it according to the documentation below.
 
 ```code
-<script type="text/javascript" src="https://journalcheckertool.org/js/jct_plugin.js"></script>
-<link href="https://journalcheckertool.org/css/plugin.css" rel='stylesheet' type='text/css'>
-<script>
-    window.jct_query_options = {
-        journal: "[issn_of_the_journal]",
-        funder: "[funder_id]",
-        institution: "[ror_of_the_institution]",
-        not_he: false, // true or false
-    }
-    jct.setup_plugin();
-</script>
-<div id="jct_plugin"></div>
+<head>
+    <script type="text/javascript" src="https://journalcheckertool.org/js/jct_plugin.js"></script>
+    <link href="https://journalcheckertool.org/css/plugin.css" rel='stylesheet' type='text/css'>
+</head>
+<body>
+    <div id="jct_plugin"></div>
+    <script>
+        window.jct_query_options = {
+            journal: "[issn_of_the_journal]",
+            funder: "[funder_id]",
+            institution: "[ror_of_the_institution]",
+            not_he: false, // true or false
+        }
+        jct.setup_plugin();
+    </script>
+</body>
 ```
 
 You can see a live demonstration of the widget [here](/widget-example).
