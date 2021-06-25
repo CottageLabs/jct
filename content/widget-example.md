@@ -10,16 +10,12 @@ This is a page which shows an example of the Journal Checker Widget
 It is installed and configured using the settings shown below.
 
 ```code
-<script type="text/javascript" src="https://journalcheckertool.org/js/jct_plugin.js"></script>
-<link href="https://journalcheckertool.org/css/plugin.css" rel='stylesheet' type='text/css'>
-<script>
     window.jct_query_options = {
         journal: "1477-9129",
         funder: "wellcome",
         not_he: true
     }
     jct.setup_plugin();
-</script>
 ```
 
 For full documentation on the widget please see the [widget](/widget) page
