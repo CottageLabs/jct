@@ -1122,6 +1122,10 @@ jct.setup = (manageUrl=true) => {
         },
         optionsTemplate : function(obj) {
             let frag = '<a class="optionsTemplate"><span class="jct__option_institution_title">' + obj.title + '</span>';
+            if (obj.alternate && !(/^[a-zA-Z0-9 ]+$/.test(obj.alternate))) {
+                // has alternate non-english title. Use it
+                frag += '<span class="jct__option_institution_alt_title"> (' +  obj.alternate + ')</span>';
+            }
             if (obj.country) {
                 frag += '<span class="jct__option_institution_country">, ' + obj.country + '</span>';
             }
@@ -1133,6 +1137,10 @@ jct.setup = (manageUrl=true) => {
         },
         selectedTemplate : function(obj) {
             let frag = obj.title;
+            if (obj.alternate && !(/^[a-zA-Z0-9 ]+$/.test(obj.alternate))) {
+                // has alternate non-english title. Use it
+                frag += ' (' + obj.alternate + ')';
+            }
             if (obj.country) {
                 frag += ', ' + obj.country;
             }
