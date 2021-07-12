@@ -128,6 +128,9 @@ jct.explain = (q) => {
 
     if (jct.chosen.institution){
         inner_text = 'Institution: ' + jct.chosen.institution.title;
+        if (jct.chosen.institution.alternate && !(/^[a-zA-Z0-9 ]+$/.test(jct.chosen.institution.alternate))) {
+            inner_text += ' (' + jct.chosen.institution.alternate + ')';
+        }
         if (jct.chosen.institution.country) {
             inner_text += ', ' + jct.chosen.institution.country;
         }

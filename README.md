@@ -32,4 +32,3 @@ See [BuildingTheWebsite.md](BuildingTheWebsite.md)
 2. If you make any changes to any of the above js files, you need to recreate the jct_plugin.js file.
 
     To do this run compile_plugin_js.py
- 
