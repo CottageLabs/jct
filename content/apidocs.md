@@ -23,16 +23,6 @@ td, th {
 
 The api is available at [{{< param apiURL >}}]({{< param apiURL >}}).
 
-<hr>
-
-**NOTE**
-
-We are offering access to the early version of the api to enable programmatic access to the data.
-This early version will be unsupported. Therefore we recommend that you do not integrate this API
-into your production systems until we transition out of beta. <br><br>
-The API is rate limited to 10 requests per second, with burst up to 6000, with delay. Exceeding the limit will result in 429.
-<hr>
-
 ## Request a compliance calculation
 
 To carry out a compliance calculation, you can make a get request, as detailed below.

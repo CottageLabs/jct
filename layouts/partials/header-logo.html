@@ -4,14 +4,12 @@
             {{- partial "header-title-image.html" . -}}
             {{ .Site.Params.pageTitle }}
         </h2>
-        {{- partial "header-beta.html" . -}}
     </div>
 {{ else }}
     <div class="header-logo">
         <h2 class="label">
             {{- partial "header-title-image.html" . -}}
             <a href="/">{{ .Site.Params.pageTitle }}</a>
-            {{- partial "header-beta.html" . -}}
         </h2>
     </div>
 {{ end }}
