@@ -96,13 +96,11 @@ jct.results_plugin_html = `
     <header class="jct_compliance">
         <h2  id="jct_compliant" style="display:none">
             <strong>Yes</strong>, this combination is compliant.
-            <br/><br/>
-            What options do I have?
+            <p class="jct_compliance--question">What options do I have?</p>
         </h2>
         <h2  id="jct_notcompliant" style="display:none">
             <strong>No</strong>, this combination is not compliant.
-            <br/><br/>
-            What can I do now?
+            <p class="jct_compliance--question">What can I do now?</p>
         </h2>
     </header>
 `;
@@ -688,8 +686,15 @@ jct.display_result = (js) => {
         jct._setComplianceTheme(false);
         jct._addNonCompliantOptions();
     }
-    let results_section = jct.d.gebi("jct_results")
-    results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
+
+    x = window.matchMedia("(max-width: 767px)")
+    let results_section_top = jct.d.gebi("jct_results_plugin").offsetTop
+    let inputs_height = 0
+    if (!x.matches) {
+        inputs_height = jct.d.gebi("jct_journal").offsetHeight
+    }
+    window.scrollTo(0, results_section_top - inputs_height)
+    //results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
 }
 
 // ----------------------------------------
@@ -978,16 +983,21 @@ jct.setup = (manageUrl=true) => {
     window.onscroll = (e) => {
         let inputs = jct.d.gebi("jct_inputs_plugin")
         let label_height = jct.d.gebi("jct_journal-container").getElementsByTagName("label")[0].offsetHeight
-        console.log(label_height)
         let currentScrollPos = window.pageYOffset
-        console.log(label_height)
-        if (currentScrollPos > jct.inputs_offset+label_height) {
+        x = window.matchMedia("(max-width: 767px)")
+        if (currentScrollPos > jct.inputs_offset && !x.matches) {
             inputs.classList.add("sticky")
         }
         else {
             inputs.classList.remove("sticky")
         }
 
+    }
+
+    let scroll_to_top_if_sticky = () => {
+        if (jct.d.gebi("jct_inputs_plugin").classList.contains("sticky")) {
+            window.scrollTo(0, 0);
+        }
     }
 
     jct.inputValues = {
@@ -1175,6 +1185,10 @@ jct.setup = (manageUrl=true) => {
         optionsLimit: 10,
         allowClear: true,
     });
+
+    jct.d.gebi("jct_journal").addEventListener("click", scroll_to_top_if_sticky)
+    jct.d.gebi("jct_funder").addEventListener("click", scroll_to_top_if_sticky)
+    jct.d.gebi("jct_institution").addEventListener("click", scroll_to_top_if_sticky)
 
     jct.d.gebi("jct_notHE").addEventListener("click", (event) => {
         if (event.target.checked && jct.chosen.institution) {
