@@ -687,8 +687,8 @@ jct.display_result = (js) => {
     else {
         jct._setComplianceTheme(false);
         jct._addNonCompliantOptions();
-        let results_section = jct.d.gebi("jct_results")
     }
+    let results_section = jct.d.gebi("jct_results")
     results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
 }
 
@@ -969,10 +969,27 @@ jct.clinputs = {};
 jct.setup = (manageUrl=true) => {
     jct.setup_modals();
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
+    jct.inputs_offset = jct.d.gebi("jct_inputs_plugin").getBoundingClientRect().top
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
     jct.d.gebi("jct_tiles_plugin").innerHTML = jct.tiles_plugin_html;
     let f = jct.d.gebi("jct_funder");
     jct.suggesting = true;
+
+    window.onscroll = (e) => {
+        let inputs = jct.d.gebi("jct_inputs_plugin")
+        let label_height = jct.d.gebi("jct_journal-container").getElementsByTagName("label")[0].offsetHeight
+        console.log(label_height)
+        let currentScrollPos = window.pageYOffset
+        console.log(label_height)
+        if (currentScrollPos > jct.inputs_offset+label_height) {
+            inputs.classList.add("sticky")
+        }
+        else {
+            inputs.classList.remove("sticky")
+        }
+
+    }
+
     jct.inputValues = {
         Journal: "",
         Funder: "",

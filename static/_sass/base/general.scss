@@ -28,7 +28,19 @@ body {
     .sticky {
       position: fixed;
       top: 0;
-      width: 100%
+      width: 100%;
+
+      > * label {
+        display: none;
+      }
+
+      > * .expression__checkbox > label {
+        display: inline-block;
+      }
+
+      > * .expression__operator {
+        margin-top: 0.625rem;
+      }
     }
   }
 }
