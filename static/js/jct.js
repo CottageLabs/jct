@@ -687,6 +687,8 @@ jct.display_result = (js) => {
     else {
         jct._setComplianceTheme(false);
         jct._addNonCompliantOptions();
+        let results_section = jct.d.gebi("jct_results")
+        results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
     }
 }
 

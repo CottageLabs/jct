@@ -1,5 +1,4 @@
 jct.explain = (q) => {
-    let results_section = jct.d.gebi("jct_results")
     let detailed_results = jct.d.gebi("jct_detailed_results_section")
     detailed_results.innerHTML = "";
     let compliant_routes = `<h2>Compliant Routes</h2>`
@@ -172,7 +171,7 @@ jct.explain = (q) => {
             a.print();
         })
     }
-    results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
+
 }
 
 jct.get_qualifications = (qualifications) => {
