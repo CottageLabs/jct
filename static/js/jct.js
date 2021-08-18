@@ -95,12 +95,12 @@ jct.inputs_plugin_html =`
 jct.results_plugin_html = `
     <header class="jct_compliance">
         <h2  id="jct_compliant" style="display:none">
-            <strong>Yes</strong>, this combination is <br>compliant.
+            <strong>Yes</strong>, this combination is compliant.
             <br/><br/>
             What options do I have?
         </h2>
         <h2  id="jct_notcompliant" style="display:none">
-            <strong>No</strong>, this combination is <br>not compliant.
+            <strong>No</strong>, this combination is not compliant.
             <br/><br/>
             What can I do now?
         </h2>
