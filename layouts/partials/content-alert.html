@@ -1,8 +1,8 @@
 {{ $section := `<section class="row row--centered patterned-section" style="max-width: 100%;">` }}
 {{ $p := `<p class="col col--1of2 alert">` }}
 {{ if .IsHome }}
-    {{ $section = `<section class="row row--centered patterned-section" data-aos="fade-up" data-aos-duration="1000">` }}
-    {{ $p = `<p class="col col--1of2 alert" data-aos="fade-up" data-aos-duration="1500">` }}
+    {{ $section = `<section class="row row--centered patterned-section">` }}
+    {{ $p = `<p class="col col--1of2 alert">` }}
 {{ end }}
 
 {{ $section | safeHTML }}
