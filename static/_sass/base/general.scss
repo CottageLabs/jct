@@ -34,8 +34,8 @@ body {
         display: none;
       }
 
-      > * .expression__checkbox > label {
-        display: inline-block;
+      > * .expression__checkbox {
+        display: none;
       }
 
       > * .expression__operator {
