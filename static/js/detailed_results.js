@@ -155,7 +155,11 @@ jct.explain = (q) => {
 
     let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
         (compliant_routes_number > 0 ? compliant_routes : "") +
+<<<<<<< HEAD
         (non_compliant_routes_number > 0 ? non_compliant_routes : "") +
+=======
+        (noncomplicant_routes_number > 0 ? noncompliant_routes : "") +
+>>>>>>> 577aa20 (Button to share results)
         (unknown_routes_number > 0 ? unknown_routes : "") + "</div>");
     detailed_results.append(elem);
 
@@ -163,15 +167,30 @@ jct.explain = (q) => {
     if (print) {
         print.addEventListener("click", () => {
             let a = window.open('', '', 'height=500, width=500');
-            let compliance = jct.d.gebc("jct_compliance")[0]
-            let results_to_print = jct.d.gebi("jct_detailed_result_text")
+            let compliance = jct.d.gebc("jct_compliance")[0];
+            let results_to_print = jct.d.gebi("jct_detailed_result_text");
+            let share_url = jct.d.gebi("jct_results_url");
+            let share_text = ''
+            if (share_url) {
+                share_text = `To view these results, visit <a href="`+ share_url.innerHTML +`">`+ share_url.innerHTML + `</a>`
+            }
             a.document.write(compliance.innerHTML);
             a.document.write(results_to_print.innerHTML);
+            a.document.write(share_text);
             a.document.close();
             a.print();
         })
     }
 
+    let share = jct.d.gebi('jct_share_results');
+    if (share) {
+        jct.d.gebi('jct_share_results').addEventListener("click", (e) => {
+            e.preventDefault();
+            let modal = jct.d.gebi('jct_modal_share');
+            modal.style.display = 'block';
+        });
+        jct.display_results_url();
+    }
 }
 
 jct.get_qualifications = (qualifications) => {
