@@ -171,6 +171,7 @@ jct.explain = (q) => {
             a.print();
         })
     }
+
 }
 
 jct.get_qualifications = (qualifications) => {
