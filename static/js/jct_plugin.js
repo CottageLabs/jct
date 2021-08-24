@@ -461,7 +461,6 @@ jct.non_compliant_options_html = `
 // Needs journal title
 // ----------------------------------------
 jct.fullyOA_tile = (journal) => {
-    let title = journal.title ? journal.title : journal.id;
     let fullyOA_tile_html = `
         <div class="col col--1of4">
             <article class="card" >
@@ -474,7 +473,6 @@ jct.fullyOA_tile = (journal) => {
                   Full <br>open access
                 </h4>
                 <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
-                <p><em>` + title + `</em> is a fully open access journal.</p>
             </article>
         </div>`;
     return jct.htmlToElement (fullyOA_tile_html);
@@ -508,7 +506,7 @@ jct.transformative_agreement_tile = (journal, institution_title, author_qualific
                   <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
                   Transformative <br>agreement
                 </h4>` + condition_text +
-                `<p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
+        `<p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_agreement_tile_html);
@@ -531,17 +529,15 @@ jct.transformative_journal_tile = (journal) => {
                 <h4 class="label">
                     <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a>
                     <br/><br/>
-                    Transformative <br>journal
-                </h4>
-                <p>Select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
-                <p>
-                    <span><em>` + title + `</em> is a transformative journal</span>
+                    <span>Transformative <br>journal</span>
                     <span alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
                         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
                         </svg>
                     </span>
-                </p>
+                </h4>
+                <p>Go ahead and submit. Remember to select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.
+                <p>Check <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noopener">here</a> to confirm if your funder will pay publishing fees.</p>
             </article>
         </div>`;
     return jct.htmlToElement(transformative_journal_tile_html);
@@ -589,9 +585,10 @@ jct.sa_rights_retention_tile = () => {
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
                     </svg>
                 </span>
-                <h4 class="label">Self-archiving using rights retention</h4>
-                <p>You have the right to self-archive the author accepted manuscript should you choose.
-                More information on how available <a href="#" id="jct_open_sa_rr_modal">here</a>.</p>
+                <h4 class="label">Compliance through self-archiving using rights retention</h4>
+                <p>Your funder’s grant conditions set out how you can retain sufficient rights to self-archive the Author
+                   Accepted Manuscript in any OA repository. Publishing fees do not apply with this route.</p>
+                <p><a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noopener">More information</a></p>
             </article>
         </div>`;
     return jct.htmlToElement(sa_rights_retention_tile_html);
@@ -1220,14 +1217,14 @@ jct.result_equals_chosen = (js) => {
     // js is the result request
     // The chosen journal id should exist in the list of ISSNs returned by the request. If no data, going with true
     let j_matches = (jct.chosen.journal && js.journal && js.journal[0]) ?
-                (js.journal[0].issn.includes(jct.chosen.journal.id)) : true;
+        (js.journal[0].issn.includes(jct.chosen.journal.id)) : true;
     // The funder ids should be equal. If no data, going with true
     let f_matches = (jct.chosen.funder && js.funder && js.funder[0]) ?
-                (jct.chosen.funder.id === js.funder[0].id) : true;
+        (jct.chosen.funder.id === js.funder[0].id) : true;
     // The institution may not exist in case of notHE.
     // The institution ids should be equal. If no data, going with true
     let i_matches = (jct.chosen.institution && js.institution && js.institution[0]) ?
-                (jct.chosen.institution.id === js.institution[0].id) : true;
+        (jct.chosen.institution.id === js.institution[0].id) : true;
     let result = j_matches && i_matches && f_matches;
     // Add missing details to jct.chosen (when a user doesn't select from drop down)
     if (result) {
@@ -1416,9 +1413,7 @@ jct.setup = (manageUrl=true) => {
         },
         optionsTemplate : function(obj) {
             let title = obj.title;
-            let id = obj.id;
-            let frag = '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
-            return frag;
+            return '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
         },
         selectedTemplate : function(obj) {
             return obj.title;
