@@ -29,6 +29,26 @@ jct.COMPLIANCE_ROUTES_LONG = {
     self_archiving: "Self-archiving"
 }
 
+jct.ui_text = jct_ui_text
+
+jct.card_html = {
+    card_icon: `<span className="card__icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 
+                  22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 
+                  0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 
+                  5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 
+                  1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 
+                  20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 
+                  11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 
+                  10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black">
+            </path>
+        </svg>
+    </span>`,
+    preferred_label: `<a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>`
+}
+
 // ----------------------------------------
 // html for input form
 // ----------------------------------------
@@ -94,14 +114,12 @@ jct.inputs_plugin_html =`
 // ----------------------------------------
 jct.results_plugin_html = `
     <header class="jct_compliance">
-        <h2  id="jct_compliant" style="display:none">
-            <strong>Yes</strong>, this combination is compliant.
-            <p class="jct_compliance--question">What options do I have?</p>
-        </h2>
-        <h2  id="jct_notcompliant" style="display:none">
-            <strong>No</strong>, this combination is not compliant.
-            <p class="jct_compliance--question">What can I do now?</p>
-        </h2>
+        <h2 data-aos="fade-up" data-aos-duration="2000" id="jct_compliant" style="display:none">`+
+            jct.ui_text.compliance.yes +
+        `</h2>
+        <h2 data-aos="fade-up" data-aos-duration="2000" id="jct_notcompliant" style="display:none">`+
+            jct.ui_text.compliance.no +
+        `</h2>
     </header>
 `;
 
@@ -119,37 +137,30 @@ jct.tiles_plugin_html = `
 // ----------------------------------------
 jct.non_compliant_options_html = `
     <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Check with an alternative journal</h4>
-            <p>Repeat your search with an alternative journals to see if it provides a route to compliance with your funder’s
-            Plan S aligned open access policy.</p>
+        <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+            <h4 class="label card__heading">jct.ui_text.tiles.non_compliant.journal.title</h4>
+            <p>jct.ui_text.tiles.non_compliant.journal.text</p>
         </article>
     </div>
 
     <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Check with a different funder</h4>
-            <p>If your research was funded by multiple Plan S funders, repeat your search using the name of one of the other funders.
-            The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
+        <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+            <h4 class="label card__heading">jct.ui_text.tiles.non_compliant.funder.title</h4>
+            <p>jct.ui_text.tiles.non_compliant.funder.text</p>
         </article>
     </div>
 
     <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Check with a different institution</h4>
-            <p>If you or other authors on your research article are affiliated with different institutions, repeat your
-            search with these alternative institutions. Transformative agreements, are made between publishers and (consortia of)
-            institutions. While the institution you searched does not currently have an agreement with the publisher of this
-            journal, one of your collaborator’s institutions may do.</p>
+        <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+            <h4 class="label card__heading">jct.ui_text.tiles.non_compliant.institution.title</h4>
+            <p>jct.ui_text.tiles.non_compliant.institution.text</p>
         </article>
     </div>
 
     <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Rights retention</h4>
-            <p>cOAlition S has developed a Rights Retention Strategy to give researchers supported by a cOAlition S Funder
-            the freedom to publish in their journal of choice, including subscription journals, whilst remaining fully compliant with Plan S.
-            <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank"  rel="noopener">More information on how to use it is available here</a>.</p>
+        <article class="card aos-init aos-animate" data-aos="fade-up" data-aos-duration="2000">
+            <h4 class="label card__heading">jct.ui_text.tiles.non_compliant.rights_retention.title</h4>
+            <p>jct.ui_text.tiles.non_compliant.rights_retention.text</p>
         </article>
     </div>
 `;
@@ -159,20 +170,14 @@ jct.non_compliant_options_html = `
 // Needs journal title
 // ----------------------------------------
 jct.fullyOA_tile = (journal) => {
-    let fullyOA_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon"><svg width="16" height="22" viewbox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.75 4.8125V8.9375H1.71531C0.769312 8.9375 0 9.70681 0 10.6528V20.2806C0 21.2286 0.771375 22 1.71875 22H13.4056C14.3536 22 15.125 21.2286 15.125 20.2806V10.6528C15.125 9.70681 14.3557 8.9375 13.4097 8.9375H4.125V4.8125C4.125 2.91706 5.66706 1.375 7.5625 1.375C9.45794 1.375 11 2.91706 11 4.8125V6.1875C11 6.567 11.3073 6.875 11.6875 6.875C12.0677 6.875 12.375 6.567 12.375 6.1875V4.8125C12.375 2.15875 10.2156 0 7.5625 0C4.90875 0 2.75 2.15875 2.75 4.8125ZM1.71531 10.3125C1.52762 10.3125 1.375 10.4651 1.375 10.6528V20.2806C1.375 20.4703 1.52969 20.625 1.71875 20.625H13.4056C13.5953 20.625 13.75 20.4703 13.75 20.2806V10.6528C13.75 10.4651 13.5974 10.3125 13.4097 10.3125H1.71531ZM6.875 17.1875C6.875 17.5677 7.183 17.875 7.5625 17.875C7.942 17.875 8.25 17.5677 8.25 17.1875V13.75C8.25 13.3698 7.942 13.0625 7.5625 13.0625C7.183 13.0625 6.875 13.3698 6.875 13.75V17.1875Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label card__heading">
-                  <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
-                  Full <br>open access
-                </h4>
-                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
-            </article>
-        </div>`;
+    let title = journal.title ? journal.title : journal.id;
+    let preferred = jct.ui_text.tiles.compliant.fully_oa.preferred ? jct.card_html.preferred_label : '';
+    let fullyOA_tile_html = `<div class="col col--1of4">` +
+        `<article class="card" data-aos="fade-up" data-aos-duration="2000">` + jct.card_html.card_icon +
+        `    <h4 class="label card__heading">` + preferred + jct.ui_text.tiles.compliant.fully_oa.title + `</h4>` +
+        `        <p>` + jct.ui_text.tiles.compliant.fully_oa.text `</p>` +
+        `</article>
+    </div>`;
     return jct.htmlToElement (fullyOA_tile_html);
 }
 
