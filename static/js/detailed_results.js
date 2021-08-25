@@ -155,11 +155,7 @@ jct.explain = (q) => {
 
     let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
         (compliant_routes_number > 0 ? compliant_routes : "") +
-<<<<<<< HEAD
         (non_compliant_routes_number > 0 ? non_compliant_routes : "") +
-=======
-        (noncomplicant_routes_number > 0 ? noncompliant_routes : "") +
->>>>>>> 577aa20 (Button to share results)
         (unknown_routes_number > 0 ? unknown_routes : "") + "</div>");
     detailed_results.append(elem);
 
