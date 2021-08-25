@@ -1016,12 +1016,16 @@ jct.setup = (manageUrl=true) => {
         },
         options : function(text, callback) {
             let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9xX]/;
+            let stripped_text;
             if (pattern.test(text)) {
+                stripped_text = (' ' + text).slice(1);
                 text = text.toUpperCase();
             } else {
-                text = text.toLowerCase().replace(' of','').replace('the ','');
+                stripped_text = (' ' + text).slice(1);
+                text = text.toLowerCase();
+                stripped_text = stripped_text.toLowerCase().replace('of ','').replace('the ','').replace('journal ', '');
             }
-            if (text.length > 1) {
+            if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
@@ -1046,8 +1050,6 @@ jct.setup = (manageUrl=true) => {
                 issnPrefix = "ISSN: ";
             }
             frag += ' <span class="jct__option_journal_issn">' + issnPrefix + issns + '</span></a> ';
-
-            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
         selectedTemplate : function(obj) {
@@ -1100,8 +1102,10 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
-            if (text.length > 1) {
+            let stripped_text = (' ' + text).slice(1);
+            text = text.toLowerCase();
+            stripped_text = stripped_text.toLowerCase().replace('of ','').replace('the ','');
+            if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
@@ -1135,8 +1139,10 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
-            if (text.length > 1) {
+            let stripped_text = (' ' + text).slice(1);
+            text = text.toLowerCase();
+            stripped_text = stripped_text.toLowerCase().replace('of ','').replace('the ','').replace('university ','');
+            if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
