@@ -818,7 +818,9 @@ jct.share_modal_html = `
                 </h2>
             </header>
             <div>
-                <p>To share this result, copy the following link</p>
+                <p>To share this result, copy the following link
+                    <button class="button button--primary" style="float: right;" onClick="jct.copy_results_url()">Copy</button>
+                </p>
                 <p id="jct_results_url"></p>
             </div>
         </div>
@@ -1611,6 +1613,13 @@ jct.display_results_url = () => {
     if (fom) {
         let url = jct.get_fom_url();
         fom.innerText = url;
+    }
+}
+
+jct.copy_results_url = () => {
+    let share_url = jct.d.gebi("jct_results_url");
+    if (share_url) {
+        navigator.clipboard.writeText(share_url.innerText)
     }
 }
 
