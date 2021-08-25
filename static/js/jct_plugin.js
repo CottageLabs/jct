@@ -1266,6 +1266,29 @@ jct.set_each_default = (type, value) => {
 }
 
 // ----------------------------------------
+// function to strip stop words from auto-suggest text
+// ----------------------------------------
+jct.strip_stop_words = (original_text, stop_words) => {
+    let stripped_text = (' ' + original_text).slice(1).toLowerCase();
+    stop_words.forEach((stop_word) => {
+        // example pattern "\\bjou[r]?[n]?[a]?[l]\\b"
+        // This will match jou, jour, journ, journa and journal
+        let pattern = ""
+        for (let i = 0; i < stop_word.length; i++) {
+            if (i < 3) {
+                pattern = pattern + stop_word[i]
+            } else {
+                pattern = pattern + '[' + stop_word[i] + ']?'
+            }
+        }
+        let regex = new RegExp('\\b' + pattern + '\\b');
+        let matches = stripped_text.match(regex);
+        if (matches) { stripped_text = stripped_text.replace(matches[0], '').replace(' ', '') };
+    })
+    return stripped_text;
+}
+
+// ----------------------------------------
 // Setup JCT
 // This maninly initializes clinput, CL's implementation of select 2
 // ----------------------------------------
@@ -1318,12 +1341,15 @@ jct.setup = (manageUrl=true) => {
         },
         options : function(text, callback) {
             let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9xX]/;
+            let stripped_text;
             if (pattern.test(text)) {
+                stripped_text = (' ' + text).slice(1);
                 text = text.toUpperCase();
             } else {
-                text = text.toLowerCase().replace(' of','').replace('the ','');
+                stripped_text = jct.strip_stop_words(text, ['of', 'the', 'journal'])
+                text = text.toLowerCase();
             }
-            if (text.length > 1) {
+            if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
@@ -1348,8 +1374,6 @@ jct.setup = (manageUrl=true) => {
                 issnPrefix = "ISSN: ";
             }
             frag += ' <span class="jct__option_journal_issn">' + issnPrefix + issns + '</span></a> ';
-
-            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
         selectedTemplate : function(obj) {
@@ -1402,8 +1426,9 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
-            if (text.length > 1) {
+            let stripped_text = jct.strip_stop_words(text, ['of', 'the'])
+            text = text.toLowerCase();
+            if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
@@ -1437,8 +1462,9 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
-            if (text.length > 1) {
+            let stripped_text = jct.strip_stop_words(text, ['of', 'the', 'university'])
+            text = text.toLowerCase();
+            if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);

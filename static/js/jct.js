@@ -964,6 +964,29 @@ jct.set_each_default = (type, value) => {
 }
 
 // ----------------------------------------
+// function to strip stop words from auto-suggest text
+// ----------------------------------------
+jct.strip_stop_words = (original_text, stop_words) => {
+    let stripped_text = (' ' + original_text).slice(1).toLowerCase();
+    stop_words.forEach((stop_word) => {
+        // example pattern "\\bjou[r]?[n]?[a]?[l]\\b"
+        // This will match jou, jour, journ, journa and journal
+        let pattern = ""
+        for (let i = 0; i < stop_word.length; i++) {
+            if (i < 3) {
+                pattern = pattern + stop_word[i]
+            } else {
+                pattern = pattern + '[' + stop_word[i] + ']?'
+            }
+        }
+        let regex = new RegExp('\\b' + pattern + '\\b');
+        let matches = stripped_text.match(regex);
+        if (matches) { stripped_text = stripped_text.replace(matches[0], '').replace(' ', '') };
+    })
+    return stripped_text;
+}
+
+// ----------------------------------------
 // Setup JCT
 // This maninly initializes clinput, CL's implementation of select 2
 // ----------------------------------------
@@ -1021,9 +1044,8 @@ jct.setup = (manageUrl=true) => {
                 stripped_text = (' ' + text).slice(1);
                 text = text.toUpperCase();
             } else {
-                stripped_text = (' ' + text).slice(1);
+                stripped_text = jct.strip_stop_words(text, ['of', 'the', 'journal'])
                 text = text.toLowerCase();
-                stripped_text = stripped_text.toLowerCase().replace('of ','').replace('the ','').replace('journal ', '');
             }
             if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
@@ -1102,9 +1124,8 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            let stripped_text = (' ' + text).slice(1);
+            let stripped_text = jct.strip_stop_words(text, ['of', 'the'])
             text = text.toLowerCase();
-            stripped_text = stripped_text.toLowerCase().replace('of ','').replace('the ','');
             if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
@@ -1139,9 +1160,8 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            let stripped_text = (' ' + text).slice(1);
+            let stripped_text = jct.strip_stop_words(text, ['of', 'the', 'university'])
             text = text.toLowerCase();
-            stripped_text = stripped_text.toLowerCase().replace('of ','').replace('the ','').replace('university ','');
             if (stripped_text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
