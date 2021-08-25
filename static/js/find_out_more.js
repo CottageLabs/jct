@@ -55,3 +55,15 @@ jct.display_results_url = () => {
         fom.innerText = url;
     }
 }
+
+jct.copy_results_url = () => {
+    let share_url = jct.d.gebi("jct_results_url");
+    if (share_url) {
+        navigator.clipboard.writeText(share_url.innerText)
+        // navigator.permissions.query({name: "clipboard-write"}).then(result => {
+        //     if (result.state == "granted" || result.state == "prompt") {
+        //         navigator.clipboard.writeText(share_url.innerHTML)
+        //     }
+        // });
+    }
+}
