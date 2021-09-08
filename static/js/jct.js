@@ -590,7 +590,6 @@ jct.d.each = (cls, key, val) => {
 // function to calculate if all data provided by the input boxes
 // ----------------------------------------
 jct._calculate_if_all_data_provided = () => {
-    jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("jct_notHE").checked)) {
         jct.suggesting = false;
         let qr = {issn: jct.chosen.journal.id};
@@ -1185,10 +1184,6 @@ jct.setup = (manageUrl=true) => {
         optionsLimit: 10,
         allowClear: true,
     });
-
-    jct.d.gebi("jct_journal").addEventListener("click", scroll_to_top_if_sticky)
-    jct.d.gebi("jct_funder").addEventListener("click", scroll_to_top_if_sticky)
-    jct.d.gebi("jct_institution").addEventListener("click", scroll_to_top_if_sticky)
 
     jct.d.gebi("jct_notHE").addEventListener("click", (event) => {
         if (event.target.checked && jct.chosen.institution) {
