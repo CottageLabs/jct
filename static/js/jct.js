@@ -692,8 +692,9 @@ jct.display_result = (js) => {
     if (!x.matches) {
         inputs_height = jct.d.gebi("jct_journal").offsetHeight
     }
-    window.scrollTo(0, results_section_top - inputs_height)
-    //results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
+    if (typeof window.i_am_a_widget == 'undefined'){
+        window.scrollTo(0, results_section_top - inputs_height)
+    }
 }
 
 // ----------------------------------------

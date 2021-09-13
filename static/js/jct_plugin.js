@@ -1,4 +1,10 @@
 
+// -------- i_am_a_widget --------
+
+window.i_am_a_widget = true;
+
+
+
 // -------- api_endpoint --------
 
 window.JCT_API_endpoint = 'https://api.journalcheckertool.org';
@@ -398,13 +404,11 @@ jct.results_plugin_html = `
     <header class="jct_compliance">
         <h2  id="jct_compliant" style="display:none">
             <strong>Yes</strong>, this combination is compliant.
-            <br/><br/>
-            What options do I have?
+            <p class="jct_compliance--question">What options do I have?</p>
         </h2>
         <h2  id="jct_notcompliant" style="display:none">
             <strong>No</strong>, this combination is not compliant.
-            <br/><br/>
-            What can I do now?
+            <p class="jct_compliance--question">What can I do now?</p>
         </h2>
     </header>
 `;
@@ -894,7 +898,6 @@ jct.d.each = (cls, key, val) => {
 // function to calculate if all data provided by the input boxes
 // ----------------------------------------
 jct._calculate_if_all_data_provided = () => {
-    jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("jct_notHE").checked)) {
         jct.suggesting = false;
         let qr = {issn: jct.chosen.journal.id};
@@ -989,6 +992,16 @@ jct.display_result = (js) => {
     else {
         jct._setComplianceTheme(false);
         jct._addNonCompliantOptions();
+    }
+
+    x = window.matchMedia("(max-width: 767px)")
+    let results_section_top = jct.d.gebi("jct_results_plugin").offsetTop
+    let inputs_height = 0
+    if (!x.matches) {
+        inputs_height = jct.d.gebi("jct_journal").offsetHeight
+    }
+    if (typeof window.i_am_a_widget == 'undefined'){
+        window.scrollTo(0, results_section_top - inputs_height)
     }
 }
 
@@ -1269,10 +1282,32 @@ jct.clinputs = {};
 jct.setup = (manageUrl=true) => {
     jct.setup_modals();
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
+    jct.inputs_offset = jct.d.gebi("jct_inputs_plugin").getBoundingClientRect().top
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
     jct.d.gebi("jct_tiles_plugin").innerHTML = jct.tiles_plugin_html;
     let f = jct.d.gebi("jct_funder");
     jct.suggesting = true;
+
+    window.onscroll = (e) => {
+        let inputs = jct.d.gebi("jct_inputs_plugin")
+        let label_height = jct.d.gebi("jct_journal-container").getElementsByTagName("label")[0].offsetHeight
+        let currentScrollPos = window.pageYOffset
+        x = window.matchMedia("(max-width: 767px)")
+        if (currentScrollPos > jct.inputs_offset && !x.matches) {
+            inputs.classList.add("sticky")
+        }
+        else {
+            inputs.classList.remove("sticky")
+        }
+
+    }
+
+    let scroll_to_top_if_sticky = () => {
+        if (jct.d.gebi("jct_inputs_plugin").classList.contains("sticky")) {
+            window.scrollTo(0, 0);
+        }
+    }
+
     jct.inputValues = {
         Journal: "",
         Funder: "",
