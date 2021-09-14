@@ -2,6 +2,7 @@
 
 .expression {
   display: flex;
+  height: 100%;
 
   label {
     margin-top: $spacing-05;
@@ -9,7 +10,8 @@
   }
 
   input, select {
-    margin-top: $spacing-02;
+    margin-top: 5px;
+    margin-bottom: 5px;
     width: 100%;
     background-color: $black;
   }

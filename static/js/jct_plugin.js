@@ -1,4 +1,10 @@
 
+// -------- i_am_a_widget --------
+
+window.JCT_WIDGET = true;
+
+
+
 // -------- api_endpoint --------
 
 window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
@@ -331,6 +337,8 @@ jct.COMPLIANCE_ROUTES_LONG = {
     self_archiving: "Self-archiving"
 }
 
+jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr', 'fully_oa_sa']
+
 // ----------------------------------------
 // html for input form
 // ----------------------------------------
@@ -397,8 +405,7 @@ jct.inputs_plugin_html =`
 jct.results_plugin_html = `
     <header class="jct_compliance">
         <h2  id="jct_compliant" style="display:none">
-            <strong>Yes</strong>, this combination is compliant.
-            <p class="jct_compliance--question">What options do I have?</p>
+            The following publishing options are aligned with your funder’s OA policy.
         </h2>
         <h2  id="jct_notcompliant" style="display:none">
             <strong>No</strong>, this combination is not compliant.
@@ -458,9 +465,8 @@ jct.non_compliant_options_html = `
 
 // ----------------------------------------
 // html for fully_oa tile in results
-// Needs journal title
 // ----------------------------------------
-jct.fullyOA_tile = (journal) => {
+jct.fullyOA_tile = (_chosen_data, _qualifications) => {
     let fullyOA_tile_html = `
         <div class="col col--1of4">
             <article class="card" >
@@ -480,13 +486,14 @@ jct.fullyOA_tile = (journal) => {
 
 // ----------------------------------------
 // html for transformative_agreement_tile in results
-// needs journal and institution_title
+// needs journal, institution title and author qualification
 // ----------------------------------------
-jct.transformative_agreement_tile = (journal, institution_title, author_qualification) => {
-    let title = journal.title ? journal.title : journal.id;
-    let publisher = journal.publisher ? journal.publisher : 'the publisher';
-    let institution = institution_title ? institution_title : 'the institution';
-    let condition_text = '';
+jct.transformative_agreement_tile = (chosen_data, qualifications) => {
+    let author_qualification = jct.author_qualification(qualifications)
+    let title = chosen_data.journal.title ? chosen_data.journal.title : chosen_data.journal.id;
+    let publisher = chosen_data.journal.publisher ? chosen_data.journal.publisher : 'the publisher';
+    let institution = chosen_data.institution.title ? chosen_data.institution.title : 'the institution';
+    let condition_text;
     if (author_qualification) {
         condition_text = `<p>` + author_qualification + `<br/><br/>` +
             `Other conditions may also be in place around publishing through this agreement. ` +
@@ -514,10 +521,8 @@ jct.transformative_agreement_tile = (journal, institution_title, author_qualific
 
 // ----------------------------------------
 // html for transformative_journal_tile in results
-// needs journal_title
 // ----------------------------------------
-jct.transformative_journal_tile = (journal) => {
-    let title = journal.title ? journal.title : journal.id;
+jct.transformative_journal_tile = (_chosen_data, _qualifications) => {
     let transformative_journal_tile_html = `
         <div class="col col--1of4">
             <article class="card" >
@@ -530,7 +535,7 @@ jct.transformative_journal_tile = (journal) => {
                     <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a>
                     <br/><br/>
                     <span>Transformative <br>journal</span>
-                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_tj_modal_button">
+                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_open_tj_modal">
                         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
                         </svg>
@@ -545,10 +550,8 @@ jct.transformative_journal_tile = (journal) => {
 
 // ----------------------------------------
 // html for self_archiving_tile in results
-// needs journal_title
 // ----------------------------------------
-jct.self_archiving_tile = (journal) => {
-    let title = journal.title ? journal.title : journal.id;
+jct.self_archiving_tile = (_chosen_data, _qualifications) => {
     let self_archiving_tile_html = `
         <div class="col col--1of4">
             <article class="card" >
@@ -557,16 +560,15 @@ jct.self_archiving_tile = (journal) => {
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
                     </svg>
                 </span>
-                <h4 class="label">Self-archiving</h4>
-                <p>Following acceptance deposit your author accepted manuscript in a repository without embargo and with <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>.</p>
-                <p>
-                    <span><em>` + title + `</em> has a Plan S aligned self-archiving policy. </span>
-                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_sa_modal_button" >
+                <h4 class="label">Self-archiving
+                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_open_sa_modal" >
                         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
                         </svg>
                     </span>
-                </p>
+                </h4>
+                <p>Upon acceptance, you can deposit your Author Accepted Manuscript in a repository without embargo and with a 
+                <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>. Publishing fees do not apply with this route. </p>
             </article>
         </div>`;
     return jct.htmlToElement(self_archiving_tile_html);
@@ -574,9 +576,8 @@ jct.self_archiving_tile = (journal) => {
 
 // ----------------------------------------
 // html for self_archiving_using_rights_retention_tile in results
-// needs journal_title
 // ----------------------------------------
-jct.sa_rights_retention_tile = () => {
+jct.sa_rights_retention_tile = (_chosen_data, _qualifications) => {
     let sa_rights_retention_tile_html = `
         <div class="col col--1of4">
             <article class="card" >
@@ -588,7 +589,7 @@ jct.sa_rights_retention_tile = () => {
                 <h4 class="label">Compliance through self-archiving using rights retention</h4>
                 <p>Your funder’s grant conditions set out how you can retain sufficient rights to self-archive the Author
                    Accepted Manuscript in any OA repository. Publishing fees do not apply with this route.</p>
-                <p><a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noopener">More information</a></p>
+                   <p><a href="#" id="jct_open_sa_rr_modal">More information</a></p>
             </article>
         </div>`;
     return jct.htmlToElement(sa_rights_retention_tile_html);
@@ -596,10 +597,8 @@ jct.sa_rights_retention_tile = () => {
 
 // ----------------------------------------
 // html for fullyOA_self_archiving_tile in results
-// needs journal_title
 // ----------------------------------------
-jct.fullyOA_self_archiving_tile = (journal) => {
-    let title = journal.title ? journal.title : journal.id;
+jct.fullyOA_self_archiving_tile = (_chosen_data, _qualifications) => {
     let oa_self_archiving_tile_html = `
         <div class="col col--1of4">
             <article class="card" >
@@ -609,9 +608,7 @@ jct.fullyOA_self_archiving_tile = (journal) => {
                     </svg>
                 </span>
                 <h4 class="label">Full open access<br>self-archiving</h4>
-                <p>Publication in this fully open access journal under a CC BY licence results in the right to self-archive the 
-                version of record as an additional route to compliance rather than an alternative route.</p>
-                <p><em>` + title + `</em> is a fully open access journal.</p>
+                <p>Upon publication, you have the right to self-archive the final published article as an additional route to compliance rather than an alternative route. </p>
             </article>
         </div>`;
     return jct.htmlToElement(oa_self_archiving_tile_html);
@@ -653,8 +650,7 @@ jct.tj_modal_html = `
                 <p>A <em>Transformative Journal</em> is a subscription/hybrid journal that is committed to transitioning
                     to a fully OA journal. It must gradually increase the share of OA content and offset subscription
                     income from payments for publishing services (to avoid double payments).</p>
-                <p>Check with your funder if they are able to pay the article publishing charge for transformative journals.
-                <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noopener">here</a>.</p>
+                <p>Check <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noopener">here</a> to confirm if your funder will pay publishing fees.</p>
             </div>
         </div>
     </div>
@@ -672,13 +668,13 @@ jct.sa_modal_html = `
                       </h2>
                 </header>
                 <div>
-                    <p>Self-archiving is sometimes referred to as <em>green open access</em>.</p>
-                    <p>Publish your article via the journals standard route and do not select any open access option (your
-                        funder may not cover the cost if you do and it does not enable compliance). Following acceptance
-                        of your peer reviewed manuscript, deposit the full text version of the author accepted manuscript
-                        (the version that includes changes requested by peer-reviewers) to a repository without embargo and
-                        under a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>.
-                        Your funder may require you to archive your article in a specific repository.</p>
+                    <p>Self-archiving is sometimes referred to as <em>green open access</em>. Publishing fees do not apply 
+                    with this route.</p>
+                    <p>Publish your article via the journal’s standard route and do not select an open access option. 
+                    Following acceptance, deposit the full text version of the author accepted manuscript (the version 
+                    that includes changes requested by peer-reviewers) to a repository without embargo and under a 
+                    <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>. 
+                    Your funder may require you to archive your article in a specific repository.</p>
                 </div>
             </div>
         </div>
@@ -691,16 +687,19 @@ jct.sa_rr_modal_html = `
     <div class="modal" id="jct_modal_sa_rr" style="display: none">
         <div class="modal-content" id="jct_modal_sa_rr_content">
             <header class="modal-header">
-                <h2>Self-archiving using rights retention
+                <h2>Compliance through self-archiving using rights retention
                     <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_sa_rr">&times;</span>
                 </h2>
             </header>
             <div>
-                <p><a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> has
-                    developed a Rights Retention Strategy to give researchers supported by a cOAlition S Funder the
-                    freedom to publish in their journal of choice, including subscription journals, whilst remaining fully
-                    compliant with Plan S. More information on how to use it is available
-                    <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noopener">here</a>.</p>
+                <p>The cOAlition S <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noopener">Rights Retention Strategy</a>
+                 sets out how you can retain sufficient rights to self-archive your Author Accepted Manuscript in any OA 
+                 repository at the time of publication with a CC BY license. When using this route to make your research 
+                 articles OA, no fees are payable to the publisher.</p>
+                 <p>Some subscription publishers may impose conditions -- via the License to Publish Agreement or otherwise 
+                 -- that prevent you from meeting your funders' OA requirements. Authors should check publication terms 
+                 before submitting a manuscript and should not sign a publishing contract that conflicts with funder 
+                 conditions. Contact your funder for more information and guidance.</p>
             </div>
         </div>
     </div>
@@ -908,7 +907,6 @@ jct.d.each = (cls, key, val) => {
 // function to calculate if all data provided by the input boxes
 // ----------------------------------------
 jct._calculate_if_all_data_provided = () => {
-    jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("jct_notHE").checked)) {
         jct.suggesting = false;
         let qr = {issn: jct.chosen.journal.id};
@@ -986,19 +984,8 @@ jct.display_result = (js) => {
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
-        let need_fully_oa_sa_tile = false;
-        js.results.forEach((r) => {
-            if (r.compliant === "yes") {
-                jct.add_tile(r, jct.chosen)
-                if (r.route === jct.COMPLIANCE_ROUTES_SHORT.fully_oa) {
-                    need_fully_oa_sa_tile = true;
-                }
-            }
-        })
-        if (need_fully_oa_sa_tile) {
-            // Add Fully oa SA tile after all other tiles
-            jct.add_fully_oa_sa_tile(jct.chosen)
-        }
+        let tiles_to_display = jct.get_tiles_to_display(js.results)
+        jct.display_tiles(tiles_to_display);
     }
     else {
         jct._setComplianceTheme(false);
@@ -1011,8 +998,9 @@ jct.display_result = (js) => {
     if (!x.matches) {
         inputs_height = jct.d.gebi("jct_journal").offsetHeight
     }
-    window.scrollTo(0, results_section_top - inputs_height)
-    //results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
+    if (typeof window.JCT_WIDGET == 'undefined'){
+        window.scrollTo(0, results_section_top - inputs_height)
+    }
 }
 
 // ----------------------------------------
@@ -1065,76 +1053,6 @@ jct._setComplianceTheme = (compliant) => {
 }
 
 // ----------------------------------------
-// function to add an appropriate tile for each type of response
-// ----------------------------------------
-jct.add_tile = (result, data) => {
-    let tile_type = result.route;
-    let tile;
-    let has_sa_rights_retention;
-    switch(tile_type) {
-        case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
-            tile = jct.fullyOA_tile(data.journal);
-            break;
-        case jct.COMPLIANCE_ROUTES_SHORT.ta:
-            tile = jct.transformative_agreement_tile(data.journal, data.institution.title, jct.author_qualification(result.qualifications));
-            break;
-        case jct.COMPLIANCE_ROUTES_SHORT.tj:
-            tile = jct.transformative_journal_tile(data.journal);
-            break;
-        case jct.COMPLIANCE_ROUTES_SHORT.sa:
-            has_sa_rights_retention = jct.sa_rights_retention_check(result);
-            if (has_sa_rights_retention) {
-                tile = jct.sa_rights_retention_tile();
-            } else {
-                tile = jct.self_archiving_tile(data.journal);
-            }
-            break;
-    }
-    jct.d.gebi("jct_paths_results").append(tile);
-    if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.tj){
-        jct.d.gebi('jct_tj_modal_button').addEventListener("click", () => {
-            let modal = jct.d.gebi('jct_modal_tj')
-            modal.style.display = 'block';
-        })
-    }
-    else if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.ta) {
-        jct.d.gebi('jct_open_ta_modal').addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal = jct.d.gebi('jct_modal_ta');
-            modal.style.display = 'block';
-        })
-    }
-    else if (tile_type === jct.COMPLIANCE_ROUTES_SHORT.sa){
-        if (has_sa_rights_retention) {
-            jct.d.gebi('jct_open_sa_rr_modal').addEventListener("click", (e) => {
-                e.preventDefault();
-                let modal = jct.d.gebi('jct_modal_sa_rr');
-                modal.style.display = 'block';
-            })
-        } else {
-            jct.d.gebi('jct_sa_modal_button').addEventListener("click", () => {
-                let modal = jct.d.gebi('jct_modal_sa')
-                modal.style.display = 'block';
-            })
-        }
-    }
-    let preferreds = jct.d.gebc("jct_open_preferred_modal");
-    for (let i = 0; i < preferreds.length; i++) {
-        let preferred = preferreds[i];
-        preferred.addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal = jct.d.gebi("jct_modal_preferred");
-            modal.style.display = "block";
-        });
-    }
-}
-
-jct.add_fully_oa_sa_tile = (data) => {
-    let tile = jct.fullyOA_self_archiving_tile(data.journal);
-    jct.d.gebi("jct_paths_results").append(tile);
-}
-
-// ----------------------------------------
 // function to check for self archiving rights retention route in result
 // ----------------------------------------
 jct.sa_rights_retention_check = (result) => {
@@ -1151,6 +1069,143 @@ jct.sa_rights_retention_check = (result) => {
     return has_rights_retention;
 }
 
+// ----------------------------------------
+// function to get the author qualification description
+// ----------------------------------------
+jct.author_qualification = (qualifications) => {
+    let author_qualification = '';
+    if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
+        for (let [key,values] of Object.entries(qualifications[0])) {
+            if (key === 'corresponding_authors' && key in jct.api_codes.qualification_ids &&
+                'description' in jct.api_codes.qualification_ids[key]) {
+                author_qualification = jct.api_codes.qualification_ids[key]['description'];
+            }
+        }
+    }
+    return author_qualification;
+}
+
+// ----------------------------------------
+// function to get tiles to display
+// ----------------------------------------
+jct.get_tiles_to_display = (results) => {
+    let tiles_to_display = {}
+    results.forEach((r) => {
+        if (r.compliant === "yes") {
+            switch (r.route) {
+                case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
+                    tiles_to_display['fully_oa'] = r
+                    tiles_to_display['fully_oa_sa'] = r
+                    break;
+                case jct.COMPLIANCE_ROUTES_SHORT.ta:
+                    tiles_to_display['ta'] = r
+                    break;
+                case jct.COMPLIANCE_ROUTES_SHORT.tj:
+                    tiles_to_display['tj'] = r
+                    break;
+                case jct.COMPLIANCE_ROUTES_SHORT.sa:
+                    let has_sa_rights_retention = jct.sa_rights_retention_check(r);
+                    if (has_sa_rights_retention) {
+                        tiles_to_display['sa_rr'] = r
+                    } else {
+                        tiles_to_display['sa'] = r
+                    }
+                    break;
+            }
+        }
+    })
+    if ('fully_oa' in tiles_to_display && 'sa' in tiles_to_display) {
+        delete tiles_to_display.sa;
+    }
+    return tiles_to_display;
+}
+
+// ----------------------------------------
+// Function to display the selected list of tiles
+// ----------------------------------------
+jct.display_tiles = (tiles_to_display) => {
+    let chosen_data = jct.chosen;
+    jct.ORDER_OF_TILES.forEach((tile_name) => {
+        if (tile_name in tiles_to_display) {
+            let result = tiles_to_display[tile_name];
+            let tile = jct.display_tile(tile_name, chosen_data, result);
+            jct.d.gebi("jct_paths_results").append(tile);
+            jct.activate_tile_modal(tile_name);
+        }
+    })
+    jct.activate_preferred_modal();
+}
+
+// ----------------------------------------
+// Function to display specific tile
+// ----------------------------------------
+jct.display_tile = (tile_name, chosen_data, result) => {
+    let tile;
+    switch (tile_name) {
+        case 'fully_oa':
+            tile = jct.fullyOA_tile(chosen_data, result.qualifications);
+            break;
+        case 'ta':
+            tile = jct.transformative_agreement_tile(chosen_data, result.qualifications);
+            break;
+        case 'tj':
+            tile = jct.transformative_journal_tile(chosen_data, result.qualifications);
+            break;
+        case 'sa':
+            tile = jct.self_archiving_tile(chosen_data, result.qualifications);
+            break;
+        case 'sa_rr':
+            tile  = jct.sa_rights_retention_tile(chosen_data, result.qualifications);
+            break;
+        case 'fully_oa_sa':
+            tile = jct.fullyOA_self_archiving_tile(chosen_data, result.qualifications);
+            break
+    }
+    return tile;
+}
+
+// ----------------------------------------
+// function to add event handler for a modal associated with a tile
+// ----------------------------------------
+jct.activate_tile_modal = (tile_name) => {
+    let modal_id = 'jct_open_' + tile_name + '_modal';
+    if (jct.d.gebi(modal_id)) {
+        jct.d.gebi(modal_id).addEventListener("click", () => {
+            let modal_name = 'jct_modal_' + tile_name;
+            let modal = jct.d.gebi(modal_name);
+            modal.style.display = 'block';
+        })
+    }
+}
+
+// ----------------------------------------
+// function to add event handler for modal associated with preferred tiles
+// ----------------------------------------
+jct.activate_preferred_modal = () => {
+    let preferred_tiles = jct.d.gebc("jct_open_preferred_modal");
+    for (let i = 0; i < preferred_tiles.length; i++) {
+        let preferred_tile = preferred_tiles[i];
+        preferred_tile.addEventListener("click", (e) => {
+            e.preventDefault();
+            let modal = jct.d.gebi("jct_modal_preferred");
+            modal.style.display = "block";
+        });
+    }
+}
+
+// ----------------------------------------
+// Function to scroll to the result tiles
+// ----------------------------------------
+jct.scroll_to_result_tiles = () => {
+    x = window.matchMedia("(max-width: 767px)")
+    let results_section_top = jct.d.gebi("jct_results_plugin").offsetTop
+    let inputs_height = 0
+    if (!x.matches) {
+        inputs_height = jct.d.gebi("jct_journal").offsetHeight
+    }
+    window.scrollTo(0, results_section_top - inputs_height)
+    //results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
+}
 
 // ----------------------------------------
 // function to do api calls
