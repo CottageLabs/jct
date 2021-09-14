@@ -580,7 +580,6 @@ jct.d.each = (cls, key, val) => {
 // function to calculate if all data provided by the input boxes
 // ----------------------------------------
 jct._calculate_if_all_data_provided = () => {
-    jct._setComplianceTheme();
     if (jct.chosen.journal && jct.chosen.funder && (jct.chosen.institution || jct.d.gebi("jct_notHE").checked)) {
         jct.suggesting = false;
         let qr = {issn: jct.chosen.journal.id};
@@ -665,7 +664,16 @@ jct.display_result = (js) => {
         jct._setComplianceTheme(false);
         jct._addNonCompliantOptions();
     }
-    jct.scroll_to_result_tiles();
+
+    x = window.matchMedia("(max-width: 767px)")
+    let results_section_top = jct.d.gebi("jct_results_plugin").offsetTop
+    let inputs_height = 0
+    if (!x.matches) {
+        inputs_height = jct.d.gebi("jct_journal").offsetHeight
+    }
+    if (typeof window.JCT_WIDGET == 'undefined'){
+        window.scrollTo(0, results_section_top - inputs_height)
+    }
 }
 
 // ----------------------------------------
