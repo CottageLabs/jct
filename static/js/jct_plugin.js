@@ -7,7 +7,7 @@ window.i_am_a_widget = true;
 
 // -------- api_endpoint --------
 
-window.JCT_API_endpoint = 'https://api.journalcheckertool.org';
+window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
 window.JCT_UI_BASE_URL = "https://journalcheckertool.org";
 
 
