@@ -1,1 +1,1 @@
-window.i_am_a_widget = true;
+window.JCT_WIDGET = true;

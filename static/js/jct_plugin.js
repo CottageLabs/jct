@@ -1,7 +1,7 @@
 
 // -------- i_am_a_widget --------
 
-window.i_am_a_widget = true;
+window.JCT_WIDGET = true;
 
 
 
@@ -1000,7 +1000,7 @@ jct.display_result = (js) => {
     if (!x.matches) {
         inputs_height = jct.d.gebi("jct_journal").offsetHeight
     }
-    if (typeof window.i_am_a_widget == 'undefined'){
+    if (typeof window.JCT_WIDGET == 'undefined'){
         window.scrollTo(0, results_section_top - inputs_height)
     }
 }
