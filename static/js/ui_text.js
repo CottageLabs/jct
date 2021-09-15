@@ -1,9 +1,8 @@
 jct_ui_text = {
     compliance: {
-        yes: "<strong>Yes</strong>, this combination is <br>compliant.<br/><br/>" +
-            "What options do I have?",
-        no: "<strong>No</strong>, this combination is <br>not compliant.<br/><br/>" +
-            "What can I do now?"
+        yes: "The following publishing options are aligned with your funder’s OA policy.",
+        no: "<strong>No</strong>, this combination is not compliant." +
+            "<p class=\"jct_compliance--question\">What can I do now?</p>"
     },
     tiles: {
       non_compliant: {
