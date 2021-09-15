@@ -2,7 +2,6 @@
 // Initial definitions
 // ----------------------------------------
 let jct = {
-    api: JCT_API_endpoint,
     delay: 500,
     cache: {},
     chosen: {},
@@ -30,6 +29,49 @@ jct.COMPLIANCE_ROUTES_LONG = {
 }
 
 jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr', 'fully_oa_sa']
+
+// ----------------------------------------
+// function to get the endpoints
+// ----------------------------------------
+jct.get_endpoint = (type) => {
+    let host;
+    let api;
+    let widget;
+    if (window.location.host === "localhost:1313") {
+        // dev
+        host = "http://localhost:1313";
+        api = "https://api.jct.cottagelabs.com";
+        widget = false;
+    } else if (window.location.host === "jct.cottagelabs.com") {
+        // test
+        host = "https://jct.cottagelabs.com";
+        api = "https://api.jct.cottagelabs.com";
+        widget = false;
+    }else if (window.location.host === "journalcheckertool.org") {
+        // live
+        host = "https://journalcheckertool.org";
+        api = "https://api.journalcheckertool.org";
+        widget = false;
+    } else {
+        host = "https://journalcheckertool.org";
+        api = "https://api.journalcheckertool.org";
+        widget = true;
+    }
+    switch(type) {
+        case 'host':
+            return host;
+        case 'api':
+            return api;
+        case 'widget':
+            return widget;
+    }
+}
+
+jct.api = jct.get_endpoint('api');
+
+jct.host = jct.get_endpoint('host');
+
+jct.widget = jct.get_endpoint('widget');
 
 // ----------------------------------------
 // html for input form
@@ -690,7 +732,7 @@ jct.display_result = (js) => {
     if (!x.matches) {
         inputs_height = jct.d.gebi("jct_journal").offsetHeight
     }
-    if (typeof window.JCT_WIDGET == 'undefined'){
+    if (jct.widget === false){
         window.scrollTo(0, results_section_top - inputs_height)
     }
 }

@@ -1,8 +1,5 @@
 jct.get_fom_url = () => {
-    let url = "";
-    if (window.JCT_UI_BASE_URL) {
-        url = window.JCT_UI_BASE_URL;
-    }
+    let url = jct.host;
     url += "/";
 
     let jid, fid, iid, not_he = false;
