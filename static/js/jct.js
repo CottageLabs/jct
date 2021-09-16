@@ -115,7 +115,7 @@ jct.tiles_plugin_html = `
 
 jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr', 'fully_oa_sa']
 
-jct.preferred_label = `<a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>`
+jct.preferred_label = `<a href="#" class="jct_open_preferred_modal"><em>${jct.ui_text.preferred}</em></a><br/><br/>`
 
 jct.card_icons = {
     fully_oa: `<span class="card__icon">

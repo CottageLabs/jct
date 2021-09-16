@@ -178,6 +178,7 @@ jct_ui_text = {
         no: "<strong>No</strong>, this combination is not compliant." +
             "<p class=\"jct_compliance--question\">What can I do now?</p>"
     },
+    preferred: 'Preferred',
     tiles: {
       journal_non_compliant: {
           icon: false,
@@ -314,12 +315,10 @@ jct_ui_text = {
                     version accepted for publication, including all changes made during peer review. The VoR contains all
                     the changes from the copyediting process, journal formatting/branding etc., but it is also the version
                     maintained and curated by the publisher, who has the responsibility to ensure that any corrections or
-                    retractions are applied in a timely and consistent way.
-                </p>
+                    retractions are applied in a timely and consistent way.</p>
                 <p>For these reasons, the preferred option is to ensure that the VoR is made Open Access. Where the VoR
                     can be made available in accordance with the Plan S principles, and there is a cost, many cOAlition S
-                    Organisations make funding available to cover these costs.
-                </p>`
+                    Organisations make funding available to cover these costs.</p>`
         },
         help: {
             title: `What’s this?`,
@@ -805,7 +804,7 @@ jct.tiles_plugin_html = `
 
 jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr', 'fully_oa_sa']
 
-jct.preferred_label = `<a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>`
+jct.preferred_label = `<a href="#" class="jct_open_preferred_modal"><em>${jct.ui_text.preferred}</em></a><br/><br/>`
 
 jct.card_icons = {
     fully_oa: `<span class="card__icon">
