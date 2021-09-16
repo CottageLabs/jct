@@ -171,6 +171,7 @@
     margin: 0; }
   #jct_plugin img {
     vertical-align: middle; }
+
 @keyframes pulse {
   0% {
     transform: scale(0.9); }
@@ -459,6 +460,7 @@
         animation-delay: 0.2s; }
       #jct_plugin .loading__dots div:nth-child(3) {
         animation-delay: 0.4s; }
+
 @keyframes bounce {
   to {
     opacity: 0.3;
@@ -548,7 +550,7 @@
       color: #585756;
       font-size: 0.833em; }
   #jct_plugin .patterned-section {
-    background-image: url("../img/bg.png");
+    background-image: url("/img/bg.png");
     background-size: cover;
     mix-blend-mode: multiply; }
     #jct_plugin .patterned-section .wave {
@@ -587,7 +589,7 @@
       color: #FFF; }
     #jct_plugin .query--compliant {
       background: #FABE5E;
-      background-image: url("../img/confetti.svg");
+      background-image: url("/img/confetti.svg");
       background-size: contain;
       color: #000; }
       #jct_plugin .query--compliant label {
@@ -660,7 +662,7 @@
       max-height: 100%; }
       #jct_plugin .results--compliant header {
         background-color: #FABE5E;
-        background-image: url("../img/confetti.svg");
+        background-image: url("/img/confetti.svg");
         background-size: contain; }
       #jct_plugin .results--compliant .wave svg {
         fill: #FABE5E; }
@@ -689,5 +691,3 @@
     margin-bottom: 20px; }
   #jct_plugin .loading {
     padding-bottom: 20px; }
-
-/*# sourceMappingURL=plugin.css.map */
