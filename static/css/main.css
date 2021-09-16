@@ -312,10 +312,12 @@ body {
       margin-top: 0;
       line-height: 50px; }
     body > header .sticky {
+      background-color: rgba(255, 255, 255, 0.5);
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 9999; }
+      z-index: 1;
+      height: 80px; }
       body > header .sticky > * label {
         display: none; }
       body > header .sticky > * .expression__checkbox {
@@ -483,12 +485,14 @@ button {
     margin-left: 1.5rem; }
 
 .expression {
-  display: flex; }
+  display: flex;
+  height: 100%; }
   .expression label {
     margin-top: 3rem;
     margin-bottom: 0.75rem; }
   .expression input, .expression select {
-    margin-top: 0.375rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
     width: 100%;
     background-color: #000; }
   .expression ::placeholder {
@@ -598,7 +602,7 @@ button {
   /* Hidden by default */
   position: fixed;
   /* Stay in place */
-  z-index: 1;
+  z-index: 9999;
   /* Sit on top */
   left: 0;
   top: 0;
