@@ -171,7 +171,6 @@
     margin: 0; }
   #jct_plugin img {
     vertical-align: middle; }
-
 @keyframes pulse {
   0% {
     transform: scale(0.9); }
@@ -230,10 +229,12 @@
         margin-top: 0;
         line-height: 50px; }
       #jct_plugin body > header .sticky {
+        background-color: rgba(255, 255, 255, 0.5);
         position: fixed;
         top: 0;
         width: 100%;
-        z-index: 9999; }
+        z-index: 1;
+        height: 80px; }
         #jct_plugin body > header .sticky > * label {
           display: none; }
         #jct_plugin body > header .sticky > * .expression__checkbox {
@@ -458,7 +459,6 @@
         animation-delay: 0.2s; }
       #jct_plugin .loading__dots div:nth-child(3) {
         animation-delay: 0.4s; }
-
 @keyframes bounce {
   to {
     opacity: 0.3;
@@ -468,7 +468,7 @@
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
-    z-index: 1;
+    z-index: 9999;
     /* Sit on top */
     left: 0;
     top: 0;
@@ -548,7 +548,7 @@
       color: #585756;
       font-size: 0.833em; }
   #jct_plugin .patterned-section {
-    background-image: url("/img/bg.png");
+    background-image: url("../img/bg.png");
     background-size: cover;
     mix-blend-mode: multiply; }
     #jct_plugin .patterned-section .wave {
@@ -587,7 +587,7 @@
       color: #FFF; }
     #jct_plugin .query--compliant {
       background: #FABE5E;
-      background-image: url("/img/confetti.svg");
+      background-image: url("../img/confetti.svg");
       background-size: contain;
       color: #000; }
       #jct_plugin .query--compliant label {
@@ -660,7 +660,7 @@
       max-height: 100%; }
       #jct_plugin .results--compliant header {
         background-color: #FABE5E;
-        background-image: url("/img/confetti.svg");
+        background-image: url("../img/confetti.svg");
         background-size: contain; }
       #jct_plugin .results--compliant .wave svg {
         fill: #FABE5E; }
@@ -689,3 +689,5 @@
     margin-bottom: 20px; }
   #jct_plugin .loading {
     padding-bottom: 20px; }
+
+/*# sourceMappingURL=plugin.css.map */
