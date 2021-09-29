@@ -1,10 +1,10 @@
 ---
-title: "Data Sources"
+title: "Data Sources Used By JCT"
 date: 2021-02-13T23:42:57Z
 description: "A description of the data sources used by Journal Checker Tool."
 ---
 
-# JCT Data sources
+# Data Sources Used By JCT
 
 A number of data sources are used by the JCT, primarily for two purposes.
 

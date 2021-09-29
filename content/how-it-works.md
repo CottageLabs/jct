@@ -42,7 +42,7 @@ as well as documents such as FAQs etc.
 
 ## <a name="data_sources"></a>Data Sources
 
-A number of data sources are used by the JCT to inform its calculation of Plan S compliance. These are [documented here](/data-sources).
+A number of data sources are used by the JCT to inform its calculation of *Plan S* compliance. These are documented in [Data Sources Used By JCT](/data-sources).
 
 
 
