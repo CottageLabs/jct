@@ -745,9 +745,7 @@ jct.author_qualification = (qualifications) => {
         for (let [key,values] of Object.entries(qualifications[0])) {
             if (key === 'corresponding_authors' && key in jct.api_codes.qualification_ids &&
                 'description' in jct.api_codes.qualification_ids[key]) {
-                let desc = jct.api_codes.qualification_ids[key]['description'];
-                // Capitalise the first letter
-                author_qualification = desc[0].toUpperCase() + desc.slice(1);
+                author_qualification = jct.api_codes.qualification_ids[key]['description'];
             }
         }
     }
