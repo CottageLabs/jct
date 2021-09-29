@@ -24,7 +24,7 @@ In addition to CrossRef and ROR, JCT uses the following datasources to inform it
 
 ### Open Access Button
 
-Open Access Button Permission System provides clear information on how 85% of papers can be self-archived. Information provided includes which versions can be shared, licenses allowed, computed deposit statements and embargoes. Open Access Button provides a curated data feed to JCT.
+Open Access Button Permission System provides clear information on how 85% of papers can be self-archived. Information provided includes which versions can be shared, licenses allowed, computed deposit statements and embargoes. [Open Access Button](https://openaccessbutton.org) provides a curated data feed to JCT.
 
 ### ESAC Agreement Registry
 
