@@ -337,7 +337,7 @@ jct.COMPLIANCE_ROUTES_LONG = {
     self_archiving: "Self-archiving"
 }
 
-jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr', 'fully_oa_sa']
+jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr']
 
 // ----------------------------------------
 // html for input form
@@ -408,8 +408,7 @@ jct.results_plugin_html = `
             The following publishing options are aligned with your funder’s OA policy.
         </h2>
         <h2  id="jct_notcompliant" style="display:none">
-            <strong>No</strong>, this combination is not compliant.
-            <p class="jct_compliance--question">What can I do now?</p>
+            There are no publishing options aligned with your funder’s OA policy.
         </h2>
     </header>
 `;
@@ -479,6 +478,7 @@ jct.fullyOA_tile = (_chosen_data, _qualifications) => {
                   Full <br>open access
                 </h4>
                 <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Upon publication, you have the right to self-archive the final published article as an additional route to compliance rather than an alternative route. </p>
             </article>
         </div>`;
     return jct.htmlToElement (fullyOA_tile_html);
@@ -593,25 +593,6 @@ jct.sa_rights_retention_tile = (_chosen_data, _qualifications) => {
             </article>
         </div>`;
     return jct.htmlToElement(sa_rights_retention_tile_html);
-}
-
-// ----------------------------------------
-// html for fullyOA_self_archiving_tile in results
-// ----------------------------------------
-jct.fullyOA_self_archiving_tile = (_chosen_data, _qualifications) => {
-    let oa_self_archiving_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon">
-                    <svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label">Full open access<br>self-archiving</h4>
-                <p>Upon publication, you have the right to self-archive the final published article as an additional route to compliance rather than an alternative route. </p>
-            </article>
-        </div>`;
-    return jct.htmlToElement(oa_self_archiving_tile_html);
 }
 
 // ----------------------------------------
@@ -1051,6 +1032,19 @@ jct.sa_rights_retention_check = (result) => {
 }
 
 // ----------------------------------------
+// function to check if fully oa route is compliant
+// ----------------------------------------
+jct.fully_oa_check = (results) => {
+    let has_fully_oa = false;
+    results.forEach((r) => {
+        if (r.compliant === "yes" && r.route === jct.COMPLIANCE_ROUTES_SHORT.fully_oa) {
+            has_fully_oa = true;
+        }
+    })
+    return has_fully_oa;
+}
+
+// ----------------------------------------
 // function to get the author qualification description
 // ----------------------------------------
 jct.author_qualification = (qualifications) => {
@@ -1071,12 +1065,12 @@ jct.author_qualification = (qualifications) => {
 // ----------------------------------------
 jct.get_tiles_to_display = (results) => {
     let tiles_to_display = {}
+    let has_fully_oa = jct.fully_oa_check(results);
     results.forEach((r) => {
         if (r.compliant === "yes") {
             switch (r.route) {
                 case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
                     tiles_to_display['fully_oa'] = r
-                    tiles_to_display['fully_oa_sa'] = r
                     break;
                 case jct.COMPLIANCE_ROUTES_SHORT.ta:
                     tiles_to_display['ta'] = r
@@ -1085,11 +1079,13 @@ jct.get_tiles_to_display = (results) => {
                     tiles_to_display['tj'] = r
                     break;
                 case jct.COMPLIANCE_ROUTES_SHORT.sa:
-                    let has_sa_rights_retention = jct.sa_rights_retention_check(r);
-                    if (has_sa_rights_retention) {
-                        tiles_to_display['sa_rr'] = r
-                    } else {
-                        tiles_to_display['sa'] = r
+                    if (!has_fully_oa) {
+                        let has_sa_rights_retention = jct.sa_rights_retention_check(r);
+                        if (has_sa_rights_retention) {
+                            tiles_to_display['sa_rr'] = r
+                        } else {
+                            tiles_to_display['sa'] = r
+                        }
                     }
                     break;
             }
@@ -1138,9 +1134,6 @@ jct.display_tile = (tile_name, chosen_data, result) => {
         case 'sa_rr':
             tile  = jct.sa_rights_retention_tile(chosen_data, result.qualifications);
             break;
-        case 'fully_oa_sa':
-            tile = jct.fullyOA_self_archiving_tile(chosen_data, result.qualifications);
-            break
     }
     return tile;
 }
@@ -1589,6 +1582,164 @@ jct.setup = (manageUrl=true) => {
         }
     }
 }
+
+
+
+// -------- api_codes --------
+
+jct.api_codes = {
+    type_ids: {
+        'fully_oa':                 'Open Access Journal Route',
+        'self_archiving':           'Self Archiving Route',
+        'ta':                       'Transformative Agreement Route',
+        'tj':                       'Transformative Journal Route'
+     },
+    compliance_ids: {
+        'yes':                      'Route offers compliance',
+         'no':                      'Route does not offer compliance',
+         'unknown':                 'Not known if route offers compliance'
+    },
+    qualification_ids: {
+        'name':                     'Please note,',
+        'doaj_under_review': {
+            description:            'this journal is currently under review for potential inclusion in DOAJ, it is yet to be ' +
+                                    'approved for inclusion within the public DOAJ database.',
+        },
+        'rights_retention_author_advice': {
+            description:            'your funder supports you to use the <a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">'+'' +
+                                    'cOAlition S rights retention strategy</a> as a route to compliance irrespective of the journal\'s self-archiving policy.',
+        },
+        'corresponding_authors': {
+            description:            'The corresponding author of the submitted article must be based at '+
+                                    'an institution within this transformative agreement for it to provide a route to compliance.',
+        },
+        'journal' : {
+            description:            'a transformative agreement is currently in force for this journal.',
+            start_date:             'Start date of the transformative agreement:',
+            end_date:               'End date of the transformative agreement:'
+        },
+        'institution':  {
+            description:            'a transformative agreement is currently in force for this institution.',
+            start_date:             'Start date of the transformative agreement:',
+            end_date:               'End date of the transformative agreement:'
+        }
+    },
+    fully_oa: {
+        'name':                     'Open Access Journal Route',
+        'statement': {
+            'yes':                  'You are able to comply with Plan S as this is a fully open access journal.',
+            'no':                   'You are not able to <b>comply with Plan S</b> via the fully open access journal route.',
+            'unknown':              'We are <b>unable to determine if you are complaint</b> via the fully open access journal route.',
+        },
+        'explanation': {
+            'yes':                  'The following checks in the Directory of Open Access Journals (DOAJ) were carried ' +
+                                    'out to determine if your chosen journal is an open access journal that enables compliance:',
+            'no':                   'The following checks in the Directory of Open Access Journals (DOAJ) were carried out ' +
+                                    'to determine that this is not a route to compliance:',
+            'unknown':              'The following checks in the Directory of Open Access Journals (DOAJ) were carried out to determine compliance:',
+        },
+        'FullOA.NotInDOAJ':         'This journal is not present in DOAJ.',
+        'FullOA.InProgressDOAJ':    'This journal is currently under review for potential inclusion in DOAJ.',
+        'FullOA.NotInProgressDOAJ': 'This journal is not currently under review at DOAJ.',
+        'FullOA.InDOAJ':            'This journal is present in DOAJ.',
+        'FullOA.Compliant':         'This journal enables you to publish under the following licences that are supported by your funder\'s policy:',
+            'FullOA.Compliant.Properties': {
+            'licence':              ''
+        },
+        'FullOA.Unknown':           'We were unable to determine if this journal provides a route to compliance.',
+        'FullOA.Unknown.Properties': {
+            'missing':              'The following required information was missing from the DOAJ record:'
+        },
+        'FullOA.NonCompliant':      'This journal does not enable you to publish under a CC BY or equivalent licence required for policy compliance.',
+        'FullOA.NonCompliant.Properties': {
+            'licence':               'The licences allowed by this journal are:'
+        },
+    },
+    self_archiving: {
+        'name':                     'Self Archiving Route',
+        'statement': {
+            'yes':                  'You are able to comply with Plan S via Self-archiving.',
+            'no':                   'Self-archiving does not enable <b>Plan S</b> compliance when publishing in this journal.',
+            'unknown':              'We are <b>unable to determine</b> if you are able to comply with Plan S via Self-archiving, when publishing in this journal.',
+        },
+        'explanation': {
+            'yes':                  "The following checks were carried out to determine whether the right exists to comply with " +
+                                    "Plan S via self-archiving. Data from Open Access Button Permissions (OAB Permissions) is used " +
+                                    "to see if the publisher's policy of self-archiving enables compliance. If it does not or if an " +
+                                    "unknown answer has been returned then the cOAlition S Implementation Roadmap data is checked " +
+                                    "to see if cOAlition S's Rights Retention Strategy provides a route to compliance:",
+            'no':                   'The following checks were carried out to determine that this is not a compliant route:',
+            'unknown':              'The following checks were carried out to determine compliance:',
+        },
+        'SA.InOAB':                 'This journal is present in OAB Permissions.',
+        'SA.NotInOAB':              'This journal is not present in OAB Permissions.',
+        'SA.OABNonCompliant':       "This journal's self-archiving policy does not enable compliance with your funder's open access policy, for the following reason(s):",
+        'SA.OABNonCompliant.Properties': {
+            'version':              'The manuscript version that can be archived is:',
+            'embargo':              'There is an embargo period (in months):',
+            'licence':              'The licence that can be used on the manuscript to be archived is:'
+        },
+        'SA.OABIncomplete':         'We were unable to determine if this journal provides a route to compliance.',
+        'SA.OABIncomplete.Properties': {
+            'missing':               'The following required information was missing from the OAB Permissions database:',
+        },
+        'SA.OABCompliant':          "This journals self-archiving policy aligns with your funder's open access policy.",
+        'SA.OABCompliant.Properties': {
+            'version':              'The manuscript version that can be archived is:',
+            'embargo':              'There is an embargo period (in months):',
+            'licence':              'The licence that can be used on the manuscript to be archived is:'
+        },
+        'SA.FunderRRNotActive': 	'Your funder has not implemented the ' +
+                                    '<a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">Plan S Rights Retention Strategy</a>.',
+        'SA.FunderRRActive':        'Your funder has implemented the ' +
+                                    '<a href="https://www.coalition-s.org/faq-theme/rights-licences/" target="_blank"  rel="noopener">Plan S Rights Retention Strategy</a>. ' +
+                                    'Rights retention takes precedence over the journal\'s self-archiving policy. It provides a route to ' +
+                                    'compliance irrespective of publisher imposed restrictions or embargo periods.',
+        'SA.Unknown':               'We are unable to determine if this journal provides a route to compliance via self-archiving due to missing information.',
+        'SA.NonCompliant':          'Self-archiving is not a route to compliance when publishing in this journal.',
+        'SA.Compliant':             'Self-archiving can be a route to compliance when publishing in this journal.'
+    },
+    ta: {
+        'name':                     'Transformative Agreement Route',
+        'statement': {
+            'yes':                  'You are able to comply with Plan S via a Transformative Agreement.',
+            'no':                   'You are not able to <b>comply with Plan S</b> via a Transformative Agreement.',
+            'unknown':              'We are <b>unable to determine</b> if you are able to comply with Plan S via a Transformative Agreement.',
+        },
+        'explanation': {
+            'yes':                  'The following checks were carried out on the JCT\'s Transformative Agreement Index to ' +
+                                    'determine if a Transformative Agreement is available that would enable compliance:',
+            'no':                   'The following checks were carried out on the JCT\'s Transformative Agreement Index to ' +
+                                    'determine if a Transformative Agreement is available that would enable compliance:',
+            'unknown':              'The following checks were carried out on the JCT\'s Transformative Agreement Index to determine compliance:',
+        },
+        'TA.NoTA':                  'No Transformative Agreement containing the selected journal and institution was found within our database.',
+        'TA.Exists':                'A Transformative Agreement containing the selected journal and institution was found within our database.',
+        'TA.NotActive':             'Our database shows that the Transformative Agreement containing the selected journal and institution has expired.',
+        'TA.Active':                'Our database shows that the Transformative Agreement containing the selected journal and institution is active.',
+        'TA.Unknown':               'We do not have sufficient information to determine if a Transformative Agreement is available to provide a route to compliance.',
+        'TA.NonCompliant':          'There is no Transformative Agreement available to provide a route to compliance.',
+        'TA.Compliant':             'A Transformative Agreement is available that can provide a route to compliance.',
+    },
+    tj: {
+        'name':                     'Transformative Journal Route',
+        'statement': {
+            'yes':                  'This journal is a Transformative Journal and therefore you <b>can comply with Plan S</b> via this route.',
+            'no':                   'This journal is not a Transformative Journal and therefore you <b>cannot comply with Plan S</b> via this route.',
+            'unknown':              'We are unable to determine if this journal is a Transformative Journal and therefore <b>unable to determine compliance</b> via this route.',
+        },
+        'explanation': {
+            'yes':                  'The following checks were carried out on the JCT\'s Transformative Journal Index to determine that this is a compliant route:',
+            'no':                   'The following checks were carried out on the JCT\'s Transformative Journal Index to determine that this is not a compliant route:',
+            'unknown':              'The following checks were carried out on the JCT\'s Transformative Journal Index to determine compliance:',
+        },
+        'TJ.NoTJ':                  'This journal is not a Transformative Journal.',
+        'TJ.Exists':                'This journal is a Transformative Journal.',
+        'TJ.NonCompliant':          'As this journal is not a Transformative Journal, this route to compliance is not available.',
+        'TJ.Compliant':             'This Transformative Journal provides a route to compliance.',
+    }
+}
+
 
 
 
