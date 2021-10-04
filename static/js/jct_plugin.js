@@ -7,7 +7,7 @@ window.JCT_WIDGET = true;
 
 // -------- api_endpoint --------
 
-window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
+window.JCT_API_endpoint = 'https://api.journalcheckertool.org';
 window.JCT_UI_BASE_URL = "https://journalcheckertool.org";
 
 
@@ -1144,7 +1144,8 @@ jct.display_tile = (tile_name, chosen_data, result) => {
 jct.activate_tile_modal = (tile_name) => {
     let modal_id = 'jct_open_' + tile_name + '_modal';
     if (jct.d.gebi(modal_id)) {
-        jct.d.gebi(modal_id).addEventListener("click", () => {
+        jct.d.gebi(modal_id).addEventListener("click", (e) => {
+            e.preventDefault();
             let modal_name = 'jct_modal_' + tile_name;
             let modal = jct.d.gebi(modal_name);
             modal.style.display = 'block';
