@@ -21,7 +21,7 @@ jct.api_codes = {
                                     'cOAlition S rights retention strategy</a> as a route to compliance irrespective of the journal\'s self-archiving policy.',
         },
         'corresponding_authors': {
-            description:            'the corresponding author of the submitted article must be based at '+
+            description:            'The corresponding author of the submitted article must be based at '+
                                     'an institution within this transformative agreement for it to provide a route to compliance.',
         },
         'journal' : {

@@ -1,7 +1,7 @@
 // Basic HTML elements
 
 html {
-	font-size: 18px;
+  font-size: 18px;
   scroll-behavior: smooth;
 
   @media only screen and (min-width: 1024px) {
@@ -10,9 +10,9 @@ html {
 }
 
 body {
-	line-height: 1.45;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-family: 'Open Sans', sans-serif;
 
   > header {
@@ -24,13 +24,34 @@ body {
       margin-top: 0;
       line-height: 50px;
     }
+
+    .sticky {
+      background-color: rgba(255,255,255,0.5);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+      height: 80px;
+
+      > * label {
+        display: none;
+      }
+
+      > * .expression__checkbox {
+        display: none;
+      }
+
+      > * .expression__operator {
+        margin-top: 0.625rem;
+      }
+    }
   }
 }
 
 h1, h2, h3, h4, h5, h6 {
-	margin: 2.75rem 0 1rem;
-	font-weight: 300;
-	line-height: 1.15;
+  margin: 2.75rem 0 1rem;
+  font-weight: 300;
+  line-height: 1.15;
 
   a {
     text-decoration: none;
@@ -39,27 +60,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-	font-size: $typescale-01;
+  font-size: $typescale-01;
 }
 
 h2 {
-	font-size: $typescale-02;
+  font-size: $typescale-02;
 }
 
 h3 {
-	font-size: $typescale-03;
+  font-size: $typescale-03;
 }
 
 h4 {
-	font-size: $typescale-04;
+  font-size: $typescale-04;
 }
 
 h5 {
-	font-size: $typescale-05;
+  font-size: $typescale-05;
 }
 
 h6, small {
-	font-size: $typescale-06;
+  font-size: $typescale-06;
 }
 
 p {
@@ -134,3 +155,5 @@ footer {
     }
   }
 }
+
+
