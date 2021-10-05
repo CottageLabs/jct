@@ -3,6 +3,7 @@
 // ----------------------------------------
 let jct = {
     api: JCT_API_endpoint,
+    host: JCT_UI_BASE_URL,
     delay: 500,
     cache: {},
     chosen: {},
@@ -481,6 +482,24 @@ jct.feedback_modal_html = `
     </div>
 `;
 
+jct.share_modal_html = `
+    <div class="modal" id="jct_modal_share" style="display: none">
+        <div class="modal-content" id="jct_modal_share_content">
+            <header class="modal-header">
+                <h2>Share this result
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_share">&times;</span>
+                </h2>
+            </header>
+            <div>
+                <p>To share this result, copy the following link
+                    <button class="button button--primary" style="float: right;" onClick="jct.copy_results_url()">Copy</button>
+                </p>
+                <p id="jct_results_url"></p>
+            </div>
+        </div>
+    </div>
+`;
+
 // ----------------------------------------
 // Function add modal containers
 // ----------------------------------------
@@ -492,7 +511,8 @@ jct.add_modal_containers = (modal_div, only_feedback=false) => {
             jct.sa_modal_html +
             jct.sa_rr_modal_html +
             jct.preferred_modal_html +
-            jct.help_modal_html;
+            jct.help_modal_html +
+            jct.share_modal_html;
     }
     modal_div.innerHTML = modal_container_html;
 }
