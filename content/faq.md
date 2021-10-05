@@ -107,6 +107,9 @@ If you are unsure about your preferred journal's ISSN, you should be able to fin
 We don't necessarily know all the acronyms and name variants for all institutions.  Try
 looking for your institution by its full name or any other names it is known by.
 
+## What data sources does the JCT use?
+The JCT uses a number of data sources to both create the lists of journal titles and institutions used in its search tool, as well as to inform the *Plan S* compliance calculations. Read more about this on the [*Data Sources Used By JCT*](/data-sources) page.
+
 ## How does the JCT calculate its results?
 
-You can read a little more about how the JCT works - how it is configured, the data sources it relies on, the algorithms it uses, its API and data outputs - on the [*How the Journal Checker Tool works*](/how-it-works) page.
+You can read a little more about how the JCT works - how it is configured, the algorithms it uses, its API and data outputs - on the [*How the Journal Checker Tool works*](/how-it-works) page.
