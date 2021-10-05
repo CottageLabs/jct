@@ -2,6 +2,8 @@
 // Initial definitions
 // ----------------------------------------
 let jct = {
+    api: JCT_API_endpoint,
+    host: JCT_UI_BASE_URL,
     delay: 500,
     cache: {},
     chosen: {},
@@ -28,50 +30,7 @@ jct.COMPLIANCE_ROUTES_LONG = {
     self_archiving: "Self-archiving"
 }
 
-jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr', 'fully_oa_sa']
-
-// ----------------------------------------
-// function to get the endpoints
-// ----------------------------------------
-jct.get_endpoint = (type) => {
-    let host;
-    let api;
-    let widget;
-    if (window.location.host === "localhost:1313") {
-        // dev
-        host = "http://localhost:1313";
-        api = "https://api.jct.cottagelabs.com";
-        widget = false;
-    } else if (window.location.host === "jct.cottagelabs.com") {
-        // test
-        host = "https://jct.cottagelabs.com";
-        api = "https://api.jct.cottagelabs.com";
-        widget = false;
-    }else if (window.location.host === "journalcheckertool.org") {
-        // live
-        host = "https://journalcheckertool.org";
-        api = "https://api.journalcheckertool.org";
-        widget = false;
-    } else {
-        host = "https://journalcheckertool.org";
-        api = "https://api.journalcheckertool.org";
-        widget = true;
-    }
-    switch(type) {
-        case 'host':
-            return host;
-        case 'api':
-            return api;
-        case 'widget':
-            return widget;
-    }
-}
-
-jct.api = jct.get_endpoint('api');
-
-jct.host = jct.get_endpoint('host');
-
-jct.widget = jct.get_endpoint('widget');
+jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr']
 
 // ----------------------------------------
 // html for input form
@@ -142,8 +101,7 @@ jct.results_plugin_html = `
             The following publishing options are aligned with your funder’s OA policy.
         </h2>
         <h2  id="jct_notcompliant" style="display:none">
-            <strong>No</strong>, this combination is not compliant.
-            <p class="jct_compliance--question">What can I do now?</p>
+            There are no publishing options aligned with your funder’s OA policy.
         </h2>
     </header>
 `;
@@ -213,6 +171,7 @@ jct.fullyOA_tile = (_chosen_data, _qualifications) => {
                   Full <br>open access
                 </h4>
                 <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
+                <p>Upon publication, you have the right to self-archive the final published article as an additional route to compliance rather than an alternative route. </p>
             </article>
         </div>`;
     return jct.htmlToElement (fullyOA_tile_html);
@@ -327,25 +286,6 @@ jct.sa_rights_retention_tile = (_chosen_data, _qualifications) => {
             </article>
         </div>`;
     return jct.htmlToElement(sa_rights_retention_tile_html);
-}
-
-// ----------------------------------------
-// html for fullyOA_self_archiving_tile in results
-// ----------------------------------------
-jct.fullyOA_self_archiving_tile = (_chosen_data, _qualifications) => {
-    let oa_self_archiving_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon">
-                    <svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label">Full open access<br>self-archiving</h4>
-                <p>Upon publication, you have the right to self-archive the final published article as an additional route to compliance rather than an alternative route. </p>
-            </article>
-        </div>`;
-    return jct.htmlToElement(oa_self_archiving_tile_html);
 }
 
 // ----------------------------------------
@@ -732,7 +672,7 @@ jct.display_result = (js) => {
     if (!x.matches) {
         inputs_height = jct.d.gebi("jct_journal").offsetHeight
     }
-    if (jct.widget === false){
+    if (typeof window.JCT_WIDGET == 'undefined'){
         window.scrollTo(0, results_section_top - inputs_height)
     }
 }
@@ -804,6 +744,19 @@ jct.sa_rights_retention_check = (result) => {
 }
 
 // ----------------------------------------
+// function to check if fully oa route is compliant
+// ----------------------------------------
+jct.fully_oa_check = (results) => {
+    let has_fully_oa = false;
+    results.forEach((r) => {
+        if (r.compliant === "yes" && r.route === jct.COMPLIANCE_ROUTES_SHORT.fully_oa) {
+            has_fully_oa = true;
+        }
+    })
+    return has_fully_oa;
+}
+
+// ----------------------------------------
 // function to get the author qualification description
 // ----------------------------------------
 jct.author_qualification = (qualifications) => {
@@ -824,12 +777,12 @@ jct.author_qualification = (qualifications) => {
 // ----------------------------------------
 jct.get_tiles_to_display = (results) => {
     let tiles_to_display = {}
+    let has_fully_oa = jct.fully_oa_check(results);
     results.forEach((r) => {
         if (r.compliant === "yes") {
             switch (r.route) {
                 case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
                     tiles_to_display['fully_oa'] = r
-                    tiles_to_display['fully_oa_sa'] = r
                     break;
                 case jct.COMPLIANCE_ROUTES_SHORT.ta:
                     tiles_to_display['ta'] = r
@@ -838,11 +791,13 @@ jct.get_tiles_to_display = (results) => {
                     tiles_to_display['tj'] = r
                     break;
                 case jct.COMPLIANCE_ROUTES_SHORT.sa:
-                    let has_sa_rights_retention = jct.sa_rights_retention_check(r);
-                    if (has_sa_rights_retention) {
-                        tiles_to_display['sa_rr'] = r
-                    } else {
-                        tiles_to_display['sa'] = r
+                    if (!has_fully_oa) {
+                        let has_sa_rights_retention = jct.sa_rights_retention_check(r);
+                        if (has_sa_rights_retention) {
+                            tiles_to_display['sa_rr'] = r
+                        } else {
+                            tiles_to_display['sa'] = r
+                        }
                     }
                     break;
             }
@@ -891,9 +846,6 @@ jct.display_tile = (tile_name, chosen_data, result) => {
         case 'sa_rr':
             tile  = jct.sa_rights_retention_tile(chosen_data, result.qualifications);
             break;
-        case 'fully_oa_sa':
-            tile = jct.fullyOA_self_archiving_tile(chosen_data, result.qualifications);
-            break
     }
     return tile;
 }
@@ -904,7 +856,8 @@ jct.display_tile = (tile_name, chosen_data, result) => {
 jct.activate_tile_modal = (tile_name) => {
     let modal_id = 'jct_open_' + tile_name + '_modal';
     if (jct.d.gebi(modal_id)) {
-        jct.d.gebi(modal_id).addEventListener("click", () => {
+        jct.d.gebi(modal_id).addEventListener("click", (e) => {
+            e.preventDefault();
             let modal_name = 'jct_modal_' + tile_name;
             let modal = jct.d.gebi(modal_name);
             modal.style.display = 'block';
