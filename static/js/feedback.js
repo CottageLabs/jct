@@ -1,4 +1,5 @@
 jct.setup_feedback_modal = () => {
+    // WARNING: Feedback modal uses generic id names. If embedding in the plugin, need to change id names
     if (jct.d.gebi('feedback')) {
         jct.d.gebi('feedback').addEventListener("click", (e) => {
             e.preventDefault();
