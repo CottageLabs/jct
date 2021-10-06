@@ -1,17 +1,17 @@
 jct.explain = (q) => {
     let detailed_results = jct.d.gebi("jct_detailed_results_section")
     detailed_results.innerHTML = "";
-    let compliant_routes = `<h2>Compliant Routes</h2>`
-    let non_compliant_routes = `<h2>Non-Compliant Routes</h2>`
-    let unknown_routes = `<h2>Unknown Routes</h2>`
+    let compliant_routes = `<h2>${jct.lang.explain.supporting_data.compliant_routes}</h2>`
+    let non_compliant_routes = `<h2>${jct.lang.explain.supporting_data.non_compliant_routes}</h2>`
+    let unknown_routes = `<h2>${jct.lang.explain.supporting_data.unknown_routes}</h2>`
     let compliant_routes_number = 0;
     let non_compliant_routes_number = 0;
     let unknown_routes_number = 0;
 
     q.results.forEach((r) => {
-        let name = jct.api_codes[r.route]['name'];
-        let statement = jct.api_codes[r.route]['statement'][r.compliant];
-        let explanation = jct.api_codes[r.route]['explanation'][r.compliant];
+        let name = jct.lang.explain.routes[r.route].label; // jct.api_codes[r.route]['name'];
+        let statement = jct.lang.explain.routes[r.route][r.compliant].statement// jct.api_codes[r.route]['statement'][r.compliant];
+        let explanation = jct.lang.explain.routes[r.route][r.compliant].explanation// jct.api_codes[r.route]['explanation'][r.compliant];
         let qualification = jct.get_qualifications(r.qualifications);
         let route = `<h3>` + name + `</h3>` +
                     `<p>`  + statement + `</p>` +
@@ -21,7 +21,7 @@ jct.explain = (q) => {
         let is_in_doaj = jct.is_in_doaj(r.route, r.log);
         let is_in_progress_doaj = jct.is_in_progress_doaj(r.route, r.log);
         if (r.log) {
-            let route_defined = r.route in jct.api_codes;
+            let route_defined = r.route in jct.lang.api_codes.logs;
             r.log.forEach((log) => {
                 let action = log.code;
                 if (is_in_doaj && action === 'FullOA.NotInProgressDOAJ') {
@@ -30,18 +30,18 @@ jct.explain = (q) => {
                 if (is_in_progress_doaj && action === 'FullOA.NotInDOAJ') {
                     return;
                 }
-                if (route_defined && log.code in jct.api_codes[r.route]) {
-                    action = jct.api_codes[r.route][log.code];
+                if (route_defined && log.code in jct.lang.api_codes.logs[r.route]) {
+                    action = jct.lang.api_codes.logs[r.route][log.code];
                 }
                 let parameters = ''
                 if (log.parameters) {
                     for (let [parameter,values] of Object.entries(log.parameters)) {
                         let parent_key = log.code + '.Properties';
-                        if (route_defined && parent_key in jct.api_codes[r.route] &&
-                            parameter in jct.api_codes[r.route][parent_key] &&
-                            jct.api_codes[r.route][parent_key][parameter]) {
+                        if (route_defined && parent_key in jct.lang.api_codes.logs[r.route] &&
+                            parameter in jct.lang.api_codes.logs[r.route][parent_key] &&
+                            jct.lang.api_codes.logs[r.route][parent_key][parameter]) {
                             // The key is displayed irrespective of the value existing
-                            parameters += jct.api_codes[r.route][parent_key][parameter] + "<br/>";
+                            parameters += jct.lang.api_codes.logs[r.route][parent_key][parameter] + "<br/>";
                         }
 
                         if (values && values.length > 0) {
@@ -114,20 +114,20 @@ jct.explain = (q) => {
 
     let text =
         `
-        <h3>Your query</h3>
+        <h3>${jct.lang.explain.your_query.title}</h3>
 
-        <p>You asked us to calculate whether you can comply with Plan S under the following conditions:
+        <p>${jct.lang.explain.your_query.text}
 
         <ul>
-            <li>Journal: </li>
+            <li>${jct.lang.explain.your_query.journal_label}: </li>
             <ul class="second">
                 <li> ` + journal + `</li>
-                <li> Publisher: ` + publisher + `</li>
+                <li> ${jct.lang.explain.your_query.publisher_label}: ` + publisher + `</li>
             </ul>
-            <li>Funder: ` + jct.chosen.funder.title + `</li>`
+            <li>${jct.lang.explain.your_query.funder_label}: ` + jct.chosen.funder.title + `</li>`
 
     if (jct.chosen.institution){
-        inner_text = 'Institution: ' + jct.chosen.institution.title;
+        inner_text = `${jct.lang.explain.your_query.institution_label}: ` + jct.chosen.institution.title;
         if (jct.chosen.institution.alternate && !(/^[a-zA-Z0-9 ]+$/.test(jct.chosen.institution.alternate))) {
             inner_text += ' (' + jct.chosen.institution.alternate + ')';
         }
@@ -142,9 +142,10 @@ jct.explain = (q) => {
             <li>` + inner_text + `</li>`
     }
     else {
-        text += `<li>Not part of Higher Education</li>`
+        text += `<li>${jct.lang.explain.your_query.unaffiliated}</li>`
     }
 
+    // FIXME: hold off on this bit until we do a full reimplementation of the explain section
     text +=
         `</ul>
 
@@ -193,14 +194,14 @@ jct.get_qualifications = (qualifications) => {
     let qualification = '';
     if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
         for (let [key,values] of Object.entries(qualifications[0])) {
-            if (key in jct.api_codes.qualification_ids && 'description' in jct.api_codes.qualification_ids[key]) {
-                qualification = jct.api_codes.qualification_ids[key]['description'] + "<br/>";
+            if (key in jct.lang.api_codes.qualifications && 'description' in jct.lang.api_codes.qualifications[key]) {
+                qualification = jct.lang.api_codes.qualifications[key]['description'] + "<br/>";
                 if (values) {
                     for (let [k2,v2] of Object.entries(values)) {
                         if (v2) {
                             let label = k2;
-                            if (key in jct.api_codes.qualification_ids && k2 in jct.api_codes.qualification_ids[key]) {
-                                label = jct.api_codes.qualification_ids[key][k2]
+                            if (key in jct.lang.api_codes.qualifications && k2 in jct.lang.api_codes.qualifications[key]) {
+                                label = jct.lang.api_codes.qualifications[key][k2]
                             }
                             qualification += label + ' ' + v2 + "<br/>";
                         }
@@ -210,7 +211,7 @@ jct.get_qualifications = (qualifications) => {
         }
     }
     if (qualification) {
-        return `<p>` + jct.api_codes.qualification_ids.name + ` ` + qualification + `</p>`;
+        return `<p>` + jct.lang.explain.supporting_data.qualifications_prefix + ` ` + qualification + `</p>`;
     }
     return qualification
 }
@@ -241,13 +242,13 @@ jct.version_rename = (val) => {
     let new_val;
     switch(val) {
         case "publishedVersion":
-            new_val = "Published version";
+            new_val = jct.lang.explain.versions.publishedVersion;
             break;
         case "acceptedVersion":
-            new_val = "Accepted version";
+            new_val = jct.lang.explain.versions.acceptedVersion;
             break;
         case "submittedVersion":
-            new_val = "Submitted version";
+            new_val = jct.lang.explain.versions.submittedVersion;
             break;
         default:
             new_val = val;
