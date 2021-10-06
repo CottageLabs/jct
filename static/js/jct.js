@@ -621,13 +621,13 @@ jct.display_result = (js) => {
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
-        let cardsToDisplay = jct.getCardsToDisplay(jct.config, js.results);
-        jct.displayCards(cardsToDisplay, js.results);
     }
     else {
         jct._setComplianceTheme(false);
-        jct._addNonCompliantOptions();
+        // jct._addNonCompliantOptions();
     }
+    let cardsToDisplay = jct.getCardsToDisplay(jct.config, js.results);
+    jct.displayCards(cardsToDisplay, js.results);
 
     x = window.matchMedia("(max-width: 767px)")
     let results_section_top = jct.d.gebi("jct_results_plugin").offsetTop
@@ -776,11 +776,11 @@ jct.author_qualification = (qualifications) => {
 // Function to display the selected list of tiles
 // ----------------------------------------
 jct.displayCards = (cardsToDisplay, result) => {
-    let chosen_data = jct.chosen;
+    // let chosen_data = jct.chosen;
     for (let i = 0; i < cardsToDisplay.length; i++) {
-        let card = cardsToDisplay[i];
-        let tile = jct.display_tile(card.id, chosen_data, result);
-        jct.d.gebi("jct_paths_results").append(tile);
+        let cardConfig = cardsToDisplay[i];
+        let card = jct.buildCard(cardConfig, jct.lang, result, jct.chosen);
+        jct.d.gebi("jct_paths_results").append(jct.htmlToElement(card));
     }
     // jct.ORDER_OF_TILES.forEach((tile_name) => {
     //     if (tile_name in tiles_to_display) {
@@ -796,27 +796,92 @@ jct.displayCards = (cardsToDisplay, result) => {
 // ----------------------------------------
 // Function to display specific tile
 // ----------------------------------------
-jct.display_tile = (tile_name, chosen_data, result) => {
-    let tile;
-    switch (tile_name) {
-        case 'fully_oa':
-            tile = jct.fullyOA_tile(chosen_data, result.qualifications);
-            break;
-        case 'ta':
-            tile = jct.transformative_agreement_tile(chosen_data, result.qualifications);
-            break;
-        case 'tj':
-            tile = jct.transformative_journal_tile(chosen_data, result.qualifications);
-            break;
-        case 'self_archiving':
-            tile = jct.self_archiving_tile(chosen_data, result.qualifications);
-            break;
-        case 'sa_rr':
-            tile  = jct.sa_rights_retention_tile(chosen_data, result.qualifications);
-            break;
+
+jct.buildCard = function(cardConfig, uiText, results, choices) {
+    // img: cards.[card_id].icon
+    // site.preferred
+    // cards.[card_id].title
+    //
+    // cards.[card_id].body.default
+    // cards.[card_id].body.[compliant route id]
+
+    let cardText = uiText.cards[cardConfig.id];
+
+    // get the icon if it exists, and the icon identifier is not "false" (the string).
+    let icon = "";
+    if (cardText.icon && cardText.icon !== "false") {
+        icon = uiText.icons[cardText.icon];
+        if (icon === undefined) {
+            icon = "";
+        }
     }
-    return tile;
+
+    let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
+    let modal = cardConfig.hasOwnProperty("modal") ? `<a href="#" class="modal-trigger" data-modal="${cardConfig.modal}">${uiText.site.card_modal}</a>` : "";
+
+    let body = "";
+    if (cardText.body.hasOwnProperty("default")) {
+        body += cardText.body.default;
+    }
+
+    let compliantRoutes = [];
+    for (let i = 0; i < results.length; i++) {
+        let r = results[i];
+        if (r.compliant === "yes") {
+            compliantRoutes.push(r.route);
+        }
+    }
+
+    if (cardConfig.hasOwnProperty("display_if_compliant")) {
+        for (let i = 0; i < cardConfig.display_if_compliant.length; i++) {
+            let route = cardConfig.display_if_compliant[i];
+            if (compliantRoutes.includes(route)) {
+                if (cardText.body.hasOwnProperty(route)) {
+                    body += cardText.body[route];
+                }
+            }
+        }
+    }
+
+    body = body.replace("{title}", choices.journal.title);
+    body = body.replace("{funder}", choices.funder.title);
+    body = body.replace("{publisher}", choices.journal.publisher);
+    body = body.replace("{institution}", choices.institution.title);
+
+    return `<div class="col col--1of4">
+        <article class="card">
+            ${icon}
+            <h4 class="label card__heading">
+                ${preferred}
+                <span>${cardText.title}</span>
+            </h4>
+            ${body}
+            <p>${modal}</p>
+        </article>
+    </div>`;
 }
+
+// jct.display_tile = (tile_name, chosen_data, result) => {
+//     let tile;
+//     switch (tile_name) {
+//         case 'fully_oa':
+//             tile = jct.fullyOA_tile(chosen_data, result.qualifications);
+//             break;
+//         case 'ta':
+//             tile = jct.transformative_agreement_tile(chosen_data, result.qualifications);
+//             break;
+//         case 'tj':
+//             tile = jct.transformative_journal_tile(chosen_data, result.qualifications);
+//             break;
+//         case 'self_archiving':
+//             tile = jct.self_archiving_tile(chosen_data, result.qualifications);
+//             break;
+//         case 'sa_rr':
+//             tile  = jct.sa_rights_retention_tile(chosen_data, result.qualifications);
+//             break;
+//     }
+//     return tile;
+// }
 
 // ----------------------------------------
 // function to add event handler for a modal associated with a tile
