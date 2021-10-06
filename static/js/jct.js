@@ -104,10 +104,139 @@ jct.tiles_plugin_html = `
 `;
 
 // ----------------------------------------
-// Tiles
+// Cards
 // ----------------------------------------
 
-jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr']
+jct.getCardsToDisplay = function(config, results) {
+
+    function _matches(cardConfig, results) {
+        return _matches_routes(cardConfig.match_routes, results) &&
+            _matches_qualifications(cardConfig.match_qualifications, results);
+    }
+
+    function _matches_routes(routes, results) {
+        if (!routes) {
+            return true;
+        }
+
+        let compliantRoutes = [];
+        for (let i = 0; i < results.length; i++) {
+            let r = results[i];
+            if (r.compliant === "yes") {
+                compliantRoutes.push(r.route);
+            }
+        }
+
+        if (routes.must) {
+            for (let i = 0; i < routes.must.length; i++) {
+                let mr = routes.must[i];
+                if (!compliantRoutes.includes(mr)) {
+                    return false;
+                }
+            }
+        }
+
+        if (routes.not) {
+            for (let i = 0; i < routes.not.length; i++) {
+                let nr = routes.not[i];
+                if (compliantRoutes.includes(nr)) {
+                    return false;
+                }
+            }
+        }
+
+        if (routes.or) {
+            for (let i = 0; i < routes.or.length; i++) {
+                let or = routes.or[i];
+                if (compliantRoutes.includes(or)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    function _matches_qualifications(qualifications, results) {
+        if (!qualifications) {
+            return true;
+        }
+
+        if (qualifications.must) {
+            for (let i = 0; i < qualifications.must.length; i++) {
+                let mq = qualifications.must[i];
+                if (!_hasQualification(mq, results)) {
+                    return false;
+                }
+            }
+        }
+
+        if (qualifications.not) {
+            for (let i = 0; i < qualifications.not.length; i++) {
+                let nq = qualifications.not[i];
+                if (_hasQualification(nq, results)) {
+                    return false;
+                }
+            }
+        }
+
+        if (qualifications.or) {
+            for (let i = 0; i < qualifications.or.length; i++) {
+                let oq = qualifications.or[i];
+                if (_hasQualification(oq, results)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    function _hasQualification(path, results) {
+        let bits = path.split(".");
+        for (let i = 0; i < results.length; i++) {
+            let r = results[i];
+            if (bits[0] === r.route) {
+                if ("qualifications" in r) {
+                    for (let j = 0; j < r.qualifications.length; j++) {
+                        let qual = r.qualifications[j];
+                        if (Object.keys(qual).includes(bits[1])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // list the cards to display
+    let cards = [];
+    for (let i = 0; i < config.cards.length; i++) {
+        let cardConfig = config.cards[i];
+        if (_matches(cardConfig, results)) {
+            cards.push(cardConfig);
+        }
+    }
+
+    // sort them according to the correct order
+    let sorted_cards = []
+    for (let i = 0; i < config.card_order.length; i++) {
+        let next = config.card_order[i];
+        for (let j = 0; j < cards.length; j++) {
+            let card = cards[j];
+            if (card.id === next) {
+                sorted_cards.push(card);
+            }
+        }
+    }
+
+    return sorted_cards;
+}
+
+// jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr']
 
 jct.preferred_label = `<a href="#" class="jct_open_preferred_modal"><em>${jct.lang.site.preferred}</em></a><br/><br/>`
 
@@ -206,25 +335,26 @@ jct.fullyOA_tile = (_chosen_data, _qualifications) => {
 // ----------------------------------------
 jct.transformative_agreement_tile = (chosen_data, qualifications) => {
     // text
-    let author_qualification = jct.author_qualification(qualifications)
-    let title = chosen_data.journal.title ? chosen_data.journal.title : chosen_data.journal.id;
-    let publisher = chosen_data.journal.publisher ? chosen_data.journal.publisher : 'the publisher';
-    let institution = chosen_data.institution.title ? chosen_data.institution.title : 'the institution';
-    let condition_text;
-    if (author_qualification) {
-        condition_text = `<p>${author_qualification}<br/><br/>
-            Other conditions may also be in place around publishing through this agreement.
-            <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
-    } else {
-        condition_text = `<p>Conditions may be in place around publishing through this agreement. 
-            <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
-    }
-    let text = `${condition_text} 
-        <p><em>${title}</em> is part of a transformative agreement between <em>${publisher}</em> and <em>${institution}</em></p>`
-
-    let ta_tile_html = jct.build_tile('ta', text);
-
-    return jct.htmlToElement(ta_tile_html);
+    // let author_qualification = jct.author_qualification(qualifications)
+    // let title = chosen_data.journal.title ? chosen_data.journal.title : chosen_data.journal.id;
+    // let publisher = chosen_data.journal.publisher ? chosen_data.journal.publisher : 'the publisher';
+    // let institution = chosen_data.institution.title ? chosen_data.institution.title : 'the institution';
+    // let condition_text;
+    // if (author_qualification) {
+    //     condition_text = `<p>${author_qualification}<br/><br/>
+    //         Other conditions may also be in place around publishing through this agreement.
+    //         <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    // } else {
+    //     condition_text = `<p>Conditions may be in place around publishing through this agreement.
+    //         <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    // }
+    // let text = `${condition_text}
+    //     <p><em>${title}</em> is part of a transformative agreement between <em>${publisher}</em> and <em>${institution}</em></p>`
+    //
+    // let ta_tile_html = jct.build_tile('ta', text);
+    //
+    // return jct.htmlToElement(ta_tile_html);
+    return jct.htmlToElement("TA");
 }
 
 // ----------------------------------------
@@ -491,8 +621,8 @@ jct.display_result = (js) => {
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
-        let tiles_to_display = jct.get_tiles_to_display(js.results)
-        jct.display_tiles(tiles_to_display);
+        let cardsToDisplay = jct.getCardsToDisplay(jct.config, js.results);
+        jct.displayCards(cardsToDisplay, js.results);
     }
     else {
         jct._setComplianceTheme(false);
@@ -596,9 +726,9 @@ jct.author_qualification = (qualifications) => {
     let author_qualification = '';
     if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
         for (let [key,values] of Object.entries(qualifications[0])) {
-            if (key === 'corresponding_authors' && key in jct.api_codes.qualification_ids &&
-                'description' in jct.api_codes.qualification_ids[key]) {
-                author_qualification = jct.api_codes.qualification_ids[key]['description'];
+            if (key === 'corresponding_authors' && key in jct.lang.api_codes.qualifications &&
+                'description' in jct.lang.api_codes.qualifications[key]) {
+                author_qualification = jct.lang.api_codes.qualifications[key]['description'];
             }
         }
     }
@@ -608,54 +738,59 @@ jct.author_qualification = (qualifications) => {
 // ----------------------------------------
 // function to get tiles to display
 // ----------------------------------------
-jct.get_tiles_to_display = (results) => {
-    let tiles_to_display = {}
-    let has_fully_oa = jct.fully_oa_check(results);
-    results.forEach((r) => {
-        if (r.compliant === "yes") {
-            switch (r.route) {
-                case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
-                    tiles_to_display['fully_oa'] = r
-                    break;
-                case jct.COMPLIANCE_ROUTES_SHORT.ta:
-                    tiles_to_display['ta'] = r
-                    break;
-                case jct.COMPLIANCE_ROUTES_SHORT.tj:
-                    tiles_to_display['tj'] = r
-                    break;
-                case jct.COMPLIANCE_ROUTES_SHORT.sa:
-                    if (!has_fully_oa) {
-                        let has_sa_rights_retention = jct.sa_rights_retention_check(r);
-                        if (has_sa_rights_retention) {
-                            tiles_to_display['sa_rr'] = r
-                        } else {
-                            tiles_to_display['sa'] = r
-                        }
-                    }
-                    break;
-            }
-        }
-    })
-    if ('fully_oa' in tiles_to_display && 'sa' in tiles_to_display) {
-        delete tiles_to_display.sa;
-    }
-    return tiles_to_display;
-}
+// jct.get_tiles_to_display = (results) => {
+//     let tiles_to_display = {}
+//     let has_fully_oa = jct.fully_oa_check(results);
+//     results.forEach((r) => {
+//         if (r.compliant === "yes") {
+//             switch (r.route) {
+//                 case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
+//                     tiles_to_display['fully_oa'] = r
+//                     break;
+//                 case jct.COMPLIANCE_ROUTES_SHORT.ta:
+//                     tiles_to_display['ta'] = r
+//                     break;
+//                 case jct.COMPLIANCE_ROUTES_SHORT.tj:
+//                     tiles_to_display['tj'] = r
+//                     break;
+//                 case jct.COMPLIANCE_ROUTES_SHORT.sa:
+//                     if (!has_fully_oa) {
+//                         let has_sa_rights_retention = jct.sa_rights_retention_check(r);
+//                         if (has_sa_rights_retention) {
+//                             tiles_to_display['sa_rr'] = r
+//                         } else {
+//                             tiles_to_display['sa'] = r
+//                         }
+//                     }
+//                     break;
+//             }
+//         }
+//     })
+//     if ('fully_oa' in tiles_to_display && 'sa' in tiles_to_display) {
+//         delete tiles_to_display.sa;
+//     }
+//     return tiles_to_display;
+// }
 
 // ----------------------------------------
 // Function to display the selected list of tiles
 // ----------------------------------------
-jct.display_tiles = (tiles_to_display) => {
+jct.displayCards = (cardsToDisplay, result) => {
     let chosen_data = jct.chosen;
-    jct.ORDER_OF_TILES.forEach((tile_name) => {
-        if (tile_name in tiles_to_display) {
-            let result = tiles_to_display[tile_name];
-            let tile = jct.display_tile(tile_name, chosen_data, result);
-            jct.d.gebi("jct_paths_results").append(tile);
-            jct.activate_tile_modal(tile_name);
-        }
-    })
-    jct.activate_preferred_modal();
+    for (let i = 0; i < cardsToDisplay.length; i++) {
+        let card = cardsToDisplay[i];
+        let tile = jct.display_tile(card.id, chosen_data, result);
+        jct.d.gebi("jct_paths_results").append(tile);
+    }
+    // jct.ORDER_OF_TILES.forEach((tile_name) => {
+    //     if (tile_name in tiles_to_display) {
+    //         let result = tiles_to_display[tile_name];
+    //         let tile = jct.display_tile(tile_name, chosen_data, result);
+    //         jct.d.gebi("jct_paths_results").append(tile);
+    //         jct.activate_tile_modal(tile_name);
+    //     }
+    // })
+    // jct.activate_preferred_modal();
 }
 
 // ----------------------------------------
@@ -673,7 +808,7 @@ jct.display_tile = (tile_name, chosen_data, result) => {
         case 'tj':
             tile = jct.transformative_journal_tile(chosen_data, result.qualifications);
             break;
-        case 'sa':
+        case 'self_archiving':
             tile = jct.self_archiving_tile(chosen_data, result.qualifications);
             break;
         case 'sa_rr':

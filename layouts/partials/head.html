@@ -23,6 +23,8 @@
         <script type="text/javascript" src="/js/detailed_results.js?v={{.Site.Params.jctAssetsVersion}}"></script>
         <script type="text/javascript" src="/js/clinput.js?v={{.Site.Params.jctAssetsVersion}}"></script>
         <script type="text/javascript" src="/js/ready.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+        <!-- FIXME: this should only be included if this is a dev instance -->
+        <script type="text/javascript" src="/js/devui.js?v={{.Site.Params.jctAssetsVersion}}"></script>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=URL"></script>
     {{ end }}
     {{ if .Site.GoogleAnalytics }}
