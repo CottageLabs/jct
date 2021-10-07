@@ -305,6 +305,65 @@ jct.build_modal = (modal_id) => {
     return modal_html;
 }
 
+//////////////////////////////////////////////
+// Funder autocomplete
+
+jct.indexFunders = function() {
+    for (let i = 0; i < jct.funderlist.length; i++) {
+        let funder = jct.funderlist[i];
+        let tokens = []
+        tokens = tokens.concat(jct.tokenise(funder.country));
+        tokens = tokens.concat(jct.tokenise(funder.name));
+        tokens = tokens.concat(jct.tokenise(funder.abbr));
+        funder.tokens = tokens
+    }
+}
+
+jct.tokenise = function(str) {
+    if (!str) { return [] }
+    return str.trim().split(" ").map(x => x.trim().toLowerCase())
+}
+
+jct.searchFunders = function(str) {
+    let searchTokens = jct.tokenise(str);
+
+    // find all matching records
+    let matches = {};
+    for (let j = 0; j < jct.funderlist.length; j++) {
+        let funder = jct.funderlist[j];
+        for (let i = 0; i < searchTokens.length; i++) {
+            let st = searchTokens[i];
+            for (let k = 0; k < funder.tokens.length; k++) {
+                let ft = funder.tokens[k]
+                let idx = ft.indexOf(st);
+                if (idx > -1) {
+                    let add = 1;
+                    if (idx === 0) {
+                        add = 2;
+                    }
+                    if (matches.hasOwnProperty(funder.id)) {
+                        matches[funder.id].score += add;
+                    } else {
+                        matches[funder.id] = {"record" : funder, "score" : add}
+                    }
+                }
+            }
+        }
+    }
+
+    // sort the records by score
+    let matchIds = Object.keys(matches);
+    let matchRecords = []
+    for (let i = 0; i < matchIds.length; i++) {
+        let id = matchIds[i];
+        matchRecords.push(matches[id]);
+    }
+    matchRecords.sort((a, b) => a.score < b.score ? 1 : -1);
+
+    return matchRecords
+}
+
+
 // ----------------------------------------
 // Function _emptyElement
 // ----------------------------------------
@@ -689,7 +748,7 @@ jct.jx = (route,q,after,api) => {
     }
     if (!q === false) {
         let searchParams = new URLSearchParams(q);
-        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
+        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)}
     }
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url.href);
@@ -944,26 +1003,36 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
             if (text.length > 1) {
-                let ourcb = (xhr) => {
-                    let js = JSON.parse(xhr.response);
-                    callback(js.data);
-                }
-                jct.jx('/suggest/funder/'+text, false, ourcb);
+                let results = jct.searchFunders(text);
+                let options = results.map((x) => x.record);
+                callback(options);
             }
         },
         optionsTemplate : function(obj) {
-            let title = obj.title;
-            return '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
+            let entry = obj.name;
+            if (obj.country) {
+                entry += ", " + obj.country;
+            }
+            if (obj.abbr) {
+                entry += " (" + obj.abbr + ")";
+            }
+            return '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + entry + '</span>';
         },
         selectedTemplate : function(obj) {
-            return obj.title;
+            let entry = obj.name;
+            if (obj.country) {
+                entry += ", " + obj.country;
+            }
+            if (obj.abbr) {
+                entry += " (" + obj.abbr;
+            }
+            return entry;
         },
         onChoice: function(e,el) {
             jct.choose(e,el, "funder");
         },
-        rateLimit: 400,
+        rateLimit: 0,
         optionsLimit: 10,
         allowClear: true,
     });
@@ -1075,6 +1144,9 @@ jct.setup = (manageUrl=true) => {
             window.history.replaceState("", "", "/");
         }
     }
+
+    // index the funders for autocomplete
+    jct.indexFunders();
 
     // finally, bind all the modals on the page
     jct.bindModals();
