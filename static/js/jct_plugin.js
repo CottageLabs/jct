@@ -326,9 +326,7 @@ let jct = {
 };
 
 jct.d = document;
-
 jct.d.gebi = document.getElementById;
-
 jct.d.gebc = document.getElementsByClassName;
 
 jct.COMPLIANCE_ROUTES_SHORT = {
@@ -864,19 +862,6 @@ jct.sa_rights_retention_check = (result) => {
         })
     }
     return has_rights_retention;
-}
-
-// ----------------------------------------
-// function to check if fully oa route is compliant
-// ----------------------------------------
-jct.fully_oa_check = (results) => {
-    let has_fully_oa = false;
-    results.forEach((r) => {
-        if (r.compliant === "yes" && r.route === jct.COMPLIANCE_ROUTES_SHORT.fully_oa) {
-            has_fully_oa = true;
-        }
-    })
-    return has_fully_oa;
 }
 
 // ----------------------------------------
