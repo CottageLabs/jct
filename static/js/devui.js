@@ -43,7 +43,7 @@ devui.responses.tj = devui.makeAPIResponse(["tj"], ["fully_oa", "ta", "self_arch
 devui.responses.non_compliant = devui.makeAPIResponse([], ["tj", "ta", "self_archiving", "fully_oa"], [])
 devui.responses.max = devui.makeAPIResponse(["self_archiving", "fully_oa", "ta", "tj"], [], ["corresponding_authors"])
 
-devui.api_response = devui.responses.non_compliant;
+devui.api_response = devui.responses.max;
 devui.chosen = {
     "journal":{
         "title":"Aging",

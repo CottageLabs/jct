@@ -8,7 +8,8 @@ let jct = {
     cache: {},
     chosen: {},
     latest_response: null,
-    lang: JCT_LANG
+    lang: JCT_LANG,
+    modal_setup : {}
 };
 
 jct.d = document;
@@ -236,286 +237,72 @@ jct.getCardsToDisplay = function(config, results) {
     return sorted_cards;
 }
 
-// jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr']
+////////////////////////////////////////////////
+// Modal handling
 
-jct.preferred_label = `<a href="#" class="jct_open_preferred_modal"><em>${jct.lang.site.preferred}</em></a><br/><br/>`
-
-// FIXME: I don't think we need these, just keeping them around until I'm sure
-// jct.card_icons = {
-//     tj_modal: `<span alt="circle help icon" class="helpicon_img tile_help" id="jct_open_tj_modal">
-//         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-//             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5
-//                 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178
-//                 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293
-//                 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425
-//                 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193
-//                 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182
-//                 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055
-//                 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969
-//                 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622
-//                 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814
-//                 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662
-//                 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831
-//                 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139
-//                 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051
-//                 61.1579 89.542 58.542 89.542Z" fill="black"/>
-//         </svg>
-//     </span>`,
-//     sa_modal: `<span alt="circle help icon" class="helpicon_img tile_help" id="jct_open_sa_modal" >
-//         <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-//             <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5
-//                 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178
-//                 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293
-//                 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425
-//                 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193
-//                 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182
-//                 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055
-//                 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969
-//                 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622
-//                 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814
-//                 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662
-//                 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831
-//                 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139
-//                 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051
-//                 61.1579 89.542 58.542 89.542Z" fill="black"/>
-//         </svg>
-//     </span>`
-// }
-
-// FIXME: this currently won't work until we bring in card.js
-jct.build_tile = (tile_name, customised_text = '') => {
-    return `<div class="col col--1of4">
-        <article class="card">
-            <h4 class="label card__heading">
-                ${tile_name}
-            </h4>
-            ${customised_text}
-        </article>
-    </div>`;
-    // if (!tile_name in jct.ui_text.tiles) {
-    //     return '';
-    // }
-    // let config_data = jct.ui_text.tiles[tile_name];
-    // let icon = config_data.icon && config_data.icon in jct.card_icons ? jct.card_icons[config_data.icon] : '';
-    // let preferred = config_data.preferred ? jct.preferred_label : '';
-    // let modal_icon = config_data.modal_icon && config_data.modal_icon in jct.card_icons ? jct.card_icons[config_data.modal_icon] : '';
-    // return `<div class="col col--1of4">
-    //     <article class="card">
-    //         ${icon}
-    //         <h4 class="label card__heading">
-    //             ${preferred}
-    //             <span>${config_data.title}</span>
-    //             ${modal_icon}
-    //         </h4>
-    //         ${config_data.text} ${customised_text}
-    //     </article>
-    // </div>`;
+jct.bindModals = function() {
+    let triggers = document.getElementsByClassName("modal-trigger");
+    for (let i = 0; i < triggers.length; i++) {
+        let trigger = triggers[i];
+        trigger.removeEventListener("click", jct.modalTrigger);
+        trigger.addEventListener("click", jct.modalTrigger)
+    }
 }
 
-// ----------------------------------------
-// html for non compliant tiles
-// ----------------------------------------
-jct.non_compliant_options_html =
-    jct.build_tile('journal_non_compliant') +
-    jct.build_tile('funder_non_compliant') +
-    jct.build_tile('institution_non_compliant') +
-    jct.build_tile('rights_retention_non_compliant');
-
-// ----------------------------------------
-// html for fully_oa tile in results
-// ----------------------------------------
-jct.fullyOA_tile = (_chosen_data, _qualifications) => {
-    let fullyOA_tile_html = jct.build_tile('fully_oa');
-    return jct.htmlToElement (fullyOA_tile_html);
+jct.modalTrigger = function(event) {
+    event.preventDefault();
+    let element = event.target;
+    let modalId = element.getAttribute("data-modal");
+    let modal = jct.build_modal(modalId);
+    jct.modalShow(modal);
+    if (jct.modal_setup.hasOwnProperty(modalId)) {
+        jct.modal_setup[modalId]();
+    }
 }
 
-// ----------------------------------------
-// html for transformative_agreement_tile in results
-// needs journal, institution title and author qualification
-// ----------------------------------------
-jct.transformative_agreement_tile = (chosen_data, qualifications) => {
-    // text
-    // let author_qualification = jct.author_qualification(qualifications)
-    // let title = chosen_data.journal.title ? chosen_data.journal.title : chosen_data.journal.id;
-    // let publisher = chosen_data.journal.publisher ? chosen_data.journal.publisher : 'the publisher';
-    // let institution = chosen_data.institution.title ? chosen_data.institution.title : 'the institution';
-    // let condition_text;
-    // if (author_qualification) {
-    //     condition_text = `<p>${author_qualification}<br/><br/>
-    //         Other conditions may also be in place around publishing through this agreement.
-    //         <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
-    // } else {
-    //     condition_text = `<p>Conditions may be in place around publishing through this agreement.
-    //         <a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
-    // }
-    // let text = `${condition_text}
-    //     <p><em>${title}</em> is part of a transformative agreement between <em>${publisher}</em> and <em>${institution}</em></p>`
-    //
-    // let ta_tile_html = jct.build_tile('ta', text);
-    //
-    // return jct.htmlToElement(ta_tile_html);
-    return jct.htmlToElement("TA");
+jct.modalShow = function(content) {
+    let modal_div = jct.d.gebi("jct_modal_container");
+    modal_div.innerHTML = content;
+
+    let closers = document.getElementsByClassName("jct_modal_close");
+    for (let i = 0; i < closers.length; i++) {
+        closers[i].addEventListener("click", (e) => {
+            jct.closeModal();
+        });
+    }
+
+    window.addEventListener("click", jct._windowCloseModal)
 }
 
-// ----------------------------------------
-// html for transformative_journal_tile in results
-// ----------------------------------------
-jct.transformative_journal_tile = (_chosen_data, _qualifications) => {
-    let tj_tile_html = jct.build_tile('tj');
-    return jct.htmlToElement(tj_tile_html);
+jct.closeModal = function() {
+    let modal_div = jct.d.gebi("jct_modal_container");
+    modal_div.innerText = "";
+    window.removeEventListener("click", jct._windowCloseModal)
 }
 
-// ----------------------------------------
-// html for self_archiving_tile in results
-// ----------------------------------------
-jct.self_archiving_tile = (_chosen_data, _qualifications) => {
-    let sa_tile_html = jct.build_tile('sa');
-    return jct.htmlToElement(sa_tile_html);
+jct._windowCloseModal = function(e) {
+    let modals = [].slice.call(jct.d.gebc("modal"));
+    if (modals.includes(e.target)){
+        jct.closeModal();
+    }
 }
 
-// ----------------------------------------
-// html for self_archiving_using_rights_retention_tile in results
-// ----------------------------------------
-jct.sa_rights_retention_tile = (_chosen_data, _qualifications) => {
-    text = '<p><a href="#" id="jct_open_sa_rr_modal">More information</a></p>';
-    let sa_rr_tile_html = jct.build_tile('sa_rr', text);
-    return jct.htmlToElement(sa_rr_tile_html);
-}
-
-// ----------------------------------------
-// html for fullyOA_self_archiving_tile in results
-// ----------------------------------------
-jct.fullyOA_self_archiving_tile = (_chosen_data, _qualifications) => {
-    let fully_oa_sa_tile_html = jct.build_tile('fully_oa_sa');
-    return jct.htmlToElement(fully_oa_sa_tile_html);
-}
-
-// FIXME: this won't work until we introduce general modals
-jct.build_modal = (modal_type) => {
-    // if (!modal_type in jct.ui_text.modals) {
-    //     return '';
-    // }
-    // let config_data = jct.ui_text.modals[modal_type];
-    // let modal_html = `<div class="modal" id="jct_modal_${modal_type}" style="display: none">
-    //     <div class="modal-content" id="jct_modal_${modal_type}_content">
-    //         <header class="modal-header">
-    //             <h2>${config_data.title}
-    //                 <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_type}">&times;</span>
-    //             </h2>
-    //         </header>
-    //         <div>${config_data.text}</div>
-    //     </div>
-    // </div>`
-    // return modal_html;
-}
-
-// ----------------------------------------
-// html for transformative agreement modal
-// ----------------------------------------
-jct.ta_modal_html = jct.build_modal('ta');
-
-// ----------------------------------------
-// html for transformative journal modal
-// ----------------------------------------
-jct.tj_modal_html = jct.build_modal('tj');
-
-// ----------------------------------------
-// html for self archiving modal
-// ----------------------------------------
-jct.sa_modal_html = jct.build_modal('sa');
-
-// ----------------------------------------
-// html for self archiving using rights retention modal
-// ----------------------------------------
-jct.sa_rr_modal_html = jct.build_modal('sa_rr');
-
-// ----------------------------------------
-// html for preferred results modal
-// ----------------------------------------
-jct.preferred_modal_html = jct.build_modal('preferred');
-
-// ----------------------------------------
-// html for help modal (what is PlanS)
-// ----------------------------------------
-jct.help_modal_html = jct.build_modal('help');
-
-// ----------------------------------------
-// html for feedback modal
-// ----------------------------------------
-jct.feedback_modal_html = jct.build_modal('feedback');
-
-jct.share_modal_html = `
-    <div class="modal" id="jct_modal_share" style="display: none">
-        <div class="modal-content" id="jct_modal_share_content">
+jct.build_modal = (modal_id) => {
+    let modalText = jct.lang.modals[modal_id];
+    if (!modalText) {
+        return "";
+    }
+    let modal_html = `<div class="modal" id="jct_modal_${modal_id}" style="display: block">
+        <div class="modal-content" id="jct_modal_${modal_id}_content">
             <header class="modal-header">
-                <h2>Share this result
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_share">&times;</span>
+                <h2>${modalText.title}
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>
                 </h2>
             </header>
-            <div>
-                <p>To share this result, copy the following link
-                    <button class="button button--primary" style="float: right;" onClick="jct.copy_results_url()">Copy</button>
-                </p>
-                <p id="jct_results_url"></p>
-            </div>
+            <div>${modalText.body}</div>
         </div>
-    </div>
-`;
-
-// ----------------------------------------
-// Function add modal containers
-// ----------------------------------------
-jct.add_modal_containers = (modal_div, only_feedback=false) => {
-    let modal_container_html = jct.feedback_modal_html;
-    if (only_feedback === false) {
-        modal_container_html += jct.ta_modal_html +
-            jct.tj_modal_html +
-            jct.sa_modal_html +
-            jct.sa_rr_modal_html +
-            jct.preferred_modal_html +
-            jct.help_modal_html +
-            jct.share_modal_html;
-    }
-    modal_div.innerHTML = modal_container_html;
-}
-
-// ----------------------------------------
-// Function to setup modal on the page
-// ----------------------------------------
-// FIXME: need to be replaced with general approach to modal opening
-jct.setup_modals = (only_feedback=false) => {
-    // let modal_div = jct.d.gebi("jct_modal_container");
-    // if (modal_div.children.length === 0) {
-    //     // Add the modal html and event handlers
-    //     jct.add_modal_containers(modal_div, only_feedback);
-    //
-    //     if (jct.d.gebi('feedback')) {
-    //         jct.setup_feedback_modal();
-    //     }
-    //
-    //     if (jct.d.gebi('jct_open_help_modal')) {
-    //         jct.d.gebi('jct_open_help_modal').addEventListener("click", (e) => {
-    //             e.preventDefault();
-    //             let modal = jct.d.gebi('jct_modal_help');
-    //             modal.style.display = 'block';
-    //         })
-    //     }
-    //
-    //     window.onclick = (e) => {
-    //         let modals = [].slice.call(jct.d.gebc("modal"));
-    //         if (modals.includes(e.target)){
-    //             e.target.style.display = "none";
-    //         }
-    //     }
-    //
-    //     jct.d.each("jct_modal_close", (el) => {
-    //         el.addEventListener("click", (e) => {
-    //             let id = e.target.getAttribute("data-id");
-    //             let modal = document.getElementById(id);
-    //             modal.style.display = "none";
-    //         })
-    //     })
-    // }
+    </div>`
+    return modal_html;
 }
 
 // ----------------------------------------
@@ -611,6 +398,7 @@ jct.success = (xhr) => {
     if (jct.d.gebi("jct_find_out_more")) {
         jct.setup_fom_url();
     }
+    jct.bindModals();
 }
 
 //-----------------------------------------
@@ -782,15 +570,6 @@ jct.displayCards = (cardsToDisplay, result) => {
         let card = jct.buildCard(cardConfig, jct.lang, result, jct.chosen);
         jct.d.gebi("jct_paths_results").append(jct.htmlToElement(card));
     }
-    // jct.ORDER_OF_TILES.forEach((tile_name) => {
-    //     if (tile_name in tiles_to_display) {
-    //         let result = tiles_to_display[tile_name];
-    //         let tile = jct.display_tile(tile_name, chosen_data, result);
-    //         jct.d.gebi("jct_paths_results").append(tile);
-    //         jct.activate_tile_modal(tile_name);
-    //     }
-    // })
-    // jct.activate_preferred_modal();
 }
 
 // ----------------------------------------
@@ -882,36 +661,6 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
 //     }
 //     return tile;
 // }
-
-// ----------------------------------------
-// function to add event handler for a modal associated with a tile
-// ----------------------------------------
-jct.activate_tile_modal = (tile_name) => {
-    let modal_id = 'jct_open_' + tile_name + '_modal';
-    if (jct.d.gebi(modal_id)) {
-        jct.d.gebi(modal_id).addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal_name = 'jct_modal_' + tile_name;
-            let modal = jct.d.gebi(modal_name);
-            modal.style.display = 'block';
-        })
-    }
-}
-
-// ----------------------------------------
-// function to add event handler for modal associated with preferred tiles
-// ----------------------------------------
-jct.activate_preferred_modal = () => {
-    let preferred_tiles = jct.d.gebc("jct_open_preferred_modal");
-    for (let i = 0; i < preferred_tiles.length; i++) {
-        let preferred_tile = preferred_tiles[i];
-        preferred_tile.addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal = jct.d.gebi("jct_modal_preferred");
-            modal.style.display = "block";
-        });
-    }
-}
 
 // ----------------------------------------
 // Function to scroll to the result tiles
@@ -1065,7 +814,6 @@ jct.set_each_default = (type, value) => {
 // ----------------------------------------
 jct.clinputs = {};
 jct.setup = (manageUrl=true) => {
-    jct.setup_modals();
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
     jct.inputs_offset = jct.d.gebi("jct_inputs_plugin").getBoundingClientRect().top
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
@@ -1327,4 +1075,7 @@ jct.setup = (manageUrl=true) => {
             window.history.replaceState("", "", "/");
         }
     }
+
+    // finally, bind all the modals on the page
+    jct.bindModals();
 }

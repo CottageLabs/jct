@@ -1,3 +1,11 @@
+jct.lang.modals.share_results = {
+    title: "Share this result",
+    body: `<p>To share this result, copy the following link
+            <button class="button button--primary" style="float: right;" onClick="jct.copy_results_url()">Copy</button>
+        </p>
+        <p id="jct_results_url"></p>`
+}
+
 jct.explain = (q) => {
     let detailed_results = jct.d.gebi("jct_detailed_results_section")
     detailed_results.innerHTML = "";
@@ -178,16 +186,10 @@ jct.explain = (q) => {
             a.print();
         })
     }
+}
 
-    let share = jct.d.gebi('jct_share_results');
-    if (share) {
-        jct.d.gebi('jct_share_results').addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal = jct.d.gebi('jct_modal_share');
-            modal.style.display = 'block';
-        });
-        jct.display_results_url();
-    }
+jct.modal_setup.share_results = function () {
+    jct.display_results_url();
 }
 
 jct.get_qualifications = (qualifications) => {
