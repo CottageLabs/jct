@@ -7,24 +7,70 @@ jct.lang.modals.share_results = {
 }
 
 jct.explain = (q) => {
+    // start by clearing anything that was in the explain section before
     let detailed_results = jct.d.gebi("jct_detailed_results_section")
     detailed_results.innerHTML = "";
-    let compliant_routes = `<h2>${jct.lang.explain.supporting_data.compliant_routes}</h2>`
-    let non_compliant_routes = `<h2>${jct.lang.explain.supporting_data.non_compliant_routes}</h2>`
-    let unknown_routes = `<h2>${jct.lang.explain.supporting_data.unknown_routes}</h2>`
-    let compliant_routes_number = 0;
-    let non_compliant_routes_number = 0;
-    let unknown_routes_number = 0;
 
+    let yq = jct._yourQuery(q);
+    let routes = jct._renderRoutes(q);
+
+    let compliant = "";
+    if (routes.compliant.length > 0) {
+        compliant = `<h2>${jct.lang.explain.supporting_data.compliant_routes}</h2>` + routes.compliant.join("");
+    }
+
+    let non_compliant = "";
+    if (routes.non_compliant.length > 0) {
+        non_compliant = `<h2>${jct.lang.explain.supporting_data.non_compliant_routes}</h2>` + routes.non_compliant.join("");
+    }
+
+    let unknown = "";
+    if (routes.unknown.length > 0) {
+        unknown = `<h2>${jct.lang.explain.supporting_data.unknown_routes}</h2>` + routes.unknown.join("");
+    }
+
+    let elem = jct.htmlToElement(`<div id='jct_detailed_result_text'>${yq} ${compliant} ${non_compliant} ${unknown}</div>`);
+    detailed_results.append(elem);
+
+    jct._resultPrint();
+}
+
+jct._resultPrint = () => {
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.addEventListener("click", () => {
+            let a = window.open('', '', 'height=500, width=500');
+            let compliance = jct.d.gebc("jct_compliance")[0];
+            let results_to_print = jct.d.gebi("jct_detailed_result_text");
+            let share_url = jct.d.gebi("jct_results_url");
+            let share_text = ''
+            if (share_url) {
+                share_text = `To view these results, visit <a href="`+ share_url.innerHTML +`">`+ share_url.innerHTML + `</a>`
+            }
+            a.document.write(compliance.innerHTML);
+            a.document.write(results_to_print.innerHTML);
+            a.document.write(share_text);
+            a.document.close();
+            a.print();
+        })
+    }
+}
+
+jct._renderRoutes = (q) => {
+    let response = {
+        compliant: [],
+        non_compliant: [],
+        unknown: []
+    }
     q.results.forEach((r) => {
-        let name = jct.lang.explain.routes[r.route].label; // jct.api_codes[r.route]['name'];
-        let statement = jct.lang.explain.routes[r.route][r.compliant].statement// jct.api_codes[r.route]['statement'][r.compliant];
-        let explanation = jct.lang.explain.routes[r.route][r.compliant].explanation// jct.api_codes[r.route]['explanation'][r.compliant];
+        let name = jct.lang.explain.routes[r.route].label;
+        let statement = jct.lang.explain.routes[r.route][r.compliant].statement;
+        let explanation = jct.lang.explain.routes[r.route][r.compliant].explanation;
         let qualification = jct.get_qualifications(r.qualifications);
         let route = `<h3>` + name + `</h3>` +
-                    `<p>`  + statement + `</p>` +
-                    `<p>`  + qualification + `</p>` +
-                    `<p>`  + explanation + `</p>`;
+            `<p>`  + statement + `</p>` +
+            `<p>`  + qualification + `</p>` +
+            `<p>`  + explanation + `</p>`;
 
         let is_in_doaj = jct.is_in_doaj(r.route, r.log);
         let is_in_progress_doaj = jct.is_in_progress_doaj(r.route, r.log);
@@ -32,6 +78,8 @@ jct.explain = (q) => {
             let route_defined = r.route in jct.lang.api_codes.logs;
             r.log.forEach((log) => {
                 let action = log.code;
+                // FIXME: these seem very specific, I don't think they should be here, but I need
+                // to understand them before I can factor them out
                 if (is_in_doaj && action === 'FullOA.NotInProgressDOAJ') {
                     return;
                 }
@@ -71,61 +119,44 @@ jct.explain = (q) => {
         }
 
         if (r.compliant === "yes") {
-            compliant_routes_number++;
-            compliant_routes += route;
+            response.compliant.push(route);
         } else if (r.compliant === "no") {
-            non_compliant_routes_number++;
-            non_compliant_routes += route;
+            response.non_compliant.push(route);
         } else {
-            unknown_routes_number++;
-            unknown_routes += route;
+            response.unknown.push(route);
         }
     });
 
-    let blurb_for_count = "";
-    [compliant_routes_number,
-     non_compliant_routes_number,
-     unknown_routes_number].forEach((num, index) => {
-        let human_num = (num === 0) ? 'no' : num;
-        switch(index) {
-            case 0:
-                if (num === 1) {
-                    blurb_for_count += '1 route that enables compliance, ';
-                } else {
-                    blurb_for_count += human_num + ' routes that enable compliance, ';
-                }
-                break;
-            case 1:
-                if (num === 1) {
-                    blurb_for_count += '1 non-compliant route and ';
-                } else {
-                    blurb_for_count += human_num + ' non-compliant routes and ';
-                }
-                break;
-            case 2:
-                if (num === 1) {
-                    blurb_for_count += '1 undetermined route.';
-                } else {
-                    blurb_for_count += human_num + ' undetermined routes.';
-                }
-                break;
-        }
-    })
-    let issns = jct.chosen.journal.issn.join(", ");
-    let publisher = jct.chosen.journal.publisher !== undefined ? jct.chosen.journal.publisher : "Not known";
+    return response;
+}
 
-    let journal = "Unknown Title"
+jct._yourQuery = (q) => {
+    let compliant_count = 0;
+    let non_compliant_count = 0;
+    let unknown_count = 0;
+
+    for (let i = 0; i < q.results.length; i++) {
+        let result = q.results[i];
+        if (result.compliant === "yes") {
+            compliant_count++;
+        } else if (result.compliant === "no") {
+            non_compliant_count++;
+        } else {
+            unknown_count++;
+        }
+    }
+
+    let issns = jct.chosen.journal.issn.join(", ");
+    let publisher = jct.chosen.journal.publisher !== undefined ? jct.chosen.journal.publisher : jct.lang.explain.your_query.publisher_not_known;
+
+    let journal = jct.lang.explain.your_query.journal_title_unknown;
     if (jct.chosen.journal.title) {
         journal = jct.chosen.journal.title;
     }
     journal += " (ISSN: " + issns + ")";
 
-    let text =
-        `
-        <h3>${jct.lang.explain.your_query.title}</h3>
-
+    let text = `<h3>${jct.lang.explain.your_query.title}</h3>
         <p>${jct.lang.explain.your_query.text}
-
         <ul>
             <li>${jct.lang.explain.your_query.journal_label}: </li>
             <ul class="second">
@@ -135,7 +166,7 @@ jct.explain = (q) => {
             <li>${jct.lang.explain.your_query.funder_label}: ` + jct.chosen.funder.title + `</li>`
 
     if (jct.chosen.institution){
-        inner_text = `${jct.lang.explain.your_query.institution_label}: ` + jct.chosen.institution.title;
+        let inner_text = `${jct.lang.explain.your_query.institution_label}: ` + jct.chosen.institution.title;
         if (jct.chosen.institution.alternate && !(/^[a-zA-Z0-9 ]+$/.test(jct.chosen.institution.alternate))) {
             inner_text += ' (' + jct.chosen.institution.alternate + ')';
         }
@@ -145,47 +176,23 @@ jct.explain = (q) => {
         if (jct.chosen.institution.id) {
             inner_text += ' (ROR: ' + jct.chosen.institution.id + ')';
         }
-        text +=
-            `
-            <li>` + inner_text + `</li>`
+        text += `<li>` + inner_text + `</li>`
     }
     else {
         text += `<li>${jct.lang.explain.your_query.unaffiliated}</li>`
     }
 
-    // FIXME: hold off on this bit until we do a full reimplementation of the explain section
-    text +=
-        `</ul>
+    let statement = jct.lang.explain.your_query.statement;
+    statement = statement.replace("{date}", new Date(q.request.started).toUTCString());
+    statement = statement.replace("{compliant}", compliant_count);
+    statement = statement.replace("{compliant_plural}", compliant_count !== 1 ? "s" : "");
+    statement = statement.replace("{non_compliant}", non_compliant_count);
+    statement = statement.replace("{non_compliant_plural}", non_compliant_count !== 1 ? "s" : "");
+    statement = statement.replace("{unknown}", unknown_count);
+    statement = statement.replace("{unknown_plural}", unknown_count !== 1 ? "s" : "");
 
-        We carried out this query at ` + new Date(q.request.started).toUTCString() +
-        `, and found ` + blurb_for_count + `
-        </p>
-    `
-
-    let elem = jct.htmlToElement("<div id='jct_detailed_result_text'>" + text +
-        (compliant_routes_number > 0 ? compliant_routes : "") +
-        (non_compliant_routes_number > 0 ? non_compliant_routes : "") +
-        (unknown_routes_number > 0 ? unknown_routes : "") + "</div>");
-    detailed_results.append(elem);
-
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.addEventListener("click", () => {
-            let a = window.open('', '', 'height=500, width=500');
-            let compliance = jct.d.gebc("jct_compliance")[0];
-            let results_to_print = jct.d.gebi("jct_detailed_result_text");
-            let share_url = jct.d.gebi("jct_results_url");
-            let share_text = ''
-            if (share_url) {
-                share_text = `To view these results, visit <a href="`+ share_url.innerHTML +`">`+ share_url.innerHTML + `</a>`
-            }
-            a.document.write(compliance.innerHTML);
-            a.document.write(results_to_print.innerHTML);
-            a.document.write(share_text);
-            a.document.close();
-            a.print();
-        })
-    }
+    text += `</ul>${statement}</p>`;
+    return text;
 }
 
 jct.modal_setup.share_results = function () {
