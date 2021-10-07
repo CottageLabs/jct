@@ -684,7 +684,12 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
     body = body.replace("{title}", choices.journal.title);
     body = body.replace("{funder}", choices.funder.title);
     body = body.replace("{publisher}", choices.journal.publisher);
-    body = body.replace("{institution}", choices.institution.title);
+
+    if (choices.institution) {
+        body = body.replace("{institution}", choices.institution.title);
+    } else {
+        body = body.replace("{institution}", uiText.site.card_institution_missing);
+    }
 
     return `<div class="col col--1of4">
         <article class="card">
