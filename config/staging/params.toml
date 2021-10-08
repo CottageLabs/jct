@@ -1,2 +1,4 @@
 [apidocs]
     apiURL = "https://api.jct.cottagelabs.com/"
+[results]
+    populate = false

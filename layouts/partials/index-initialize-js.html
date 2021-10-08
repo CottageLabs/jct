@@ -1,4 +1,6 @@
 <script>
     jct.setup();
-    {{/*devui.setup();*/}}
+    {{ if .Site.Params.Results.populate }}
+    devui.setup();
+    {{ end }}
 </script>

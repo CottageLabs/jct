@@ -1,6 +1,6 @@
 [main]
-    aosAssetsVersion = "2.2.0"
-    jctAssetsVersion = "2.2.0"
+    aosAssetsVersion = "2.3.4"
+    jctAssetsVersion = "2.3.4"
     feedbackButton = "Send us feedback"
     alert = "The information provided by the <em>Journal Checker Tool</em> represents cOAlition S’s current understanding in relation to the policies of the journals contained within it. We will endeavour to keep it up to date and accurate, but we do not accept any liability in relation to any errors or omissions."
     comingSoon = "Coming Soon"
@@ -24,3 +24,4 @@
     restartButton = "Start over"
     explainButton = "Explain this result"
     printButton = "Print"
+    populate = true
