@@ -163,7 +163,7 @@ jct._yourQuery = (q) => {
                 <li> ` + journal + `</li>
                 <li> ${jct.lang.explain.your_query.publisher_label}: ` + publisher + `</li>
             </ul>
-            <li>${jct.lang.explain.your_query.funder_label}: ` + jct.chosen.funder.title + `</li>`
+            <li>${jct.lang.explain.your_query.funder_label}: ` + jct.chosen.funder.name + `</li>`
 
     if (jct.chosen.institution){
         let inner_text = `${jct.lang.explain.your_query.institution_label}: ` + jct.chosen.institution.title;
