@@ -322,19 +322,16 @@ let jct = {
     chosen: {},
     latest_response: null,
     lang: JCT_LANG,
-    modal_setup : {}
+    modal_setup : {},
+    clinputs: {}
 };
 
 jct.d = document;
 jct.d.gebi = document.getElementById;
 jct.d.gebc = document.getElementsByClassName;
 
-jct.COMPLIANCE_ROUTES_SHORT = {
-    fully_oa: "fully_oa",
-    ta: "ta",
-    tj: "tj",
-    sa: "self_archiving"
-}
+////////////////////////////////////////////////////////
+// HTML Fragments for Application structure
 
 // ----------------------------------------
 // html for input form
@@ -415,9 +412,8 @@ jct.tiles_plugin_html = `
     </section>
 `;
 
-// ----------------------------------------
-// Cards
-// ----------------------------------------
+/////////////////////////////////////////////////////////
+// Cards and card management
 
 jct.getCardsToDisplay = function(config, results) {
 
@@ -548,6 +544,90 @@ jct.getCardsToDisplay = function(config, results) {
     return sorted_cards;
 }
 
+// ----------------------------------------
+// Function to display the selected list of tiles
+// ----------------------------------------
+jct.displayCards = (cardsToDisplay, result) => {
+    // let chosen_data = jct.chosen;
+    for (let i = 0; i < cardsToDisplay.length; i++) {
+        let cardConfig = cardsToDisplay[i];
+        let card = jct.buildCard(cardConfig, jct.lang, result, jct.chosen);
+        jct.d.gebi("jct_paths_results").append(jct.htmlToElement(card));
+    }
+}
+
+// ----------------------------------------
+// Function to display specific card
+// ----------------------------------------
+jct.buildCard = function(cardConfig, uiText, results, choices) {
+    // img: cards.[card_id].icon
+    // site.preferred
+    // cards.[card_id].title
+    //
+    // cards.[card_id].body.default
+    // cards.[card_id].body.[compliant route id]
+
+    let cardText = uiText.cards[cardConfig.id];
+
+    // get the icon if it exists, and the icon identifier is not "false" (the string).
+    let icon = "";
+    if (cardText.icon && cardText.icon !== "false") {
+        icon = uiText.icons[cardText.icon];
+        if (icon === undefined) {
+            icon = "";
+        }
+    }
+
+    let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
+    let modal = cardConfig.hasOwnProperty("modal") ? `<a href="#" class="modal-trigger" data-modal="${cardConfig.modal}">${uiText.site.card_modal}</a>` : "";
+
+    let body = "";
+    if (cardText.body.hasOwnProperty("default")) {
+        body += cardText.body.default;
+    }
+
+    let compliantRoutes = [];
+    for (let i = 0; i < results.length; i++) {
+        let r = results[i];
+        if (r.compliant === "yes") {
+            compliantRoutes.push(r.route);
+        }
+    }
+
+    if (cardConfig.hasOwnProperty("display_if_compliant")) {
+        for (let i = 0; i < cardConfig.display_if_compliant.length; i++) {
+            let route = cardConfig.display_if_compliant[i];
+            if (compliantRoutes.includes(route)) {
+                if (cardText.body.hasOwnProperty(route)) {
+                    body += cardText.body[route];
+                }
+            }
+        }
+    }
+
+    body = body.replace("{title}", choices.journal.title);
+    body = body.replace("{funder}", choices.funder.title);
+    body = body.replace("{publisher}", choices.journal.publisher);
+
+    if (choices.institution) {
+        body = body.replace("{institution}", choices.institution.title);
+    } else {
+        body = body.replace("{institution}", uiText.site.card_institution_missing);
+    }
+
+    return `<div class="col col--1of4">
+        <article class="card">
+            ${icon}
+            <h4 class="label card__heading">
+                ${preferred}
+                <span>${cardText.title}</span>
+            </h4>
+            ${body}
+            <p>${modal}</p>
+        </article>
+    </div>`;
+}
+
 ////////////////////////////////////////////////
 // Modal handling
 
@@ -675,6 +755,9 @@ jct.searchFunders = function(str) {
 }
 
 
+////////////////////////////////////////////////
+// Utilities
+
 // ----------------------------------------
 // Function _emptyElement
 // ----------------------------------------
@@ -698,6 +781,42 @@ jct.d.each = (cls, key, val) => {
 };
 
 // ----------------------------------------
+// function to do api calls
+// ----------------------------------------
+jct.jx = (route,q,after,api) => {
+    let base_url = api ? api : jct.api;
+    let url;
+    if (route) {
+        url = new URL(route, base_url);
+    } else {
+        url = new URL(base_url);
+    }
+    if (!q === false) {
+        let searchParams = new URLSearchParams(q);
+        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)}
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url.href);
+    xhr.send();
+    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
+    xhr.onprogress = (e) => { jct.progress(e); };
+    xhr.onerror = () => { jct.error(); };
+}
+
+// ----------------------------------------
+// handy function to add html to elements
+// ----------------------------------------
+jct.htmlToElement = (html) => {
+    let template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+///////////////////////////////////////////////////////
+// Query lifecycle functions
+
+// ----------------------------------------
 // function to calculate if all data provided by the input boxes
 // ----------------------------------------
 jct._calculate_if_all_data_provided = () => {
@@ -711,25 +830,6 @@ jct._calculate_if_all_data_provided = () => {
         jct.jx('/calculate', qr);
         jct.d.gebi("jct_loading").style.display = "block";
     }
-}
-
-// ----------------------------------------
-// function to set focus on next element after choosing from auto suggestion and
-// calculate if all data provided
-// ----------------------------------------
-jct.choose = (e, el, which) => {
-    let id = el["id"];
-    let title = el["title"];
-    jct.chosen[which] = el;
-    if (which === 'journal') {
-        jct.d.gebi('jct_funder').focus();
-    } else if (which === 'funder') {
-        jct.d.gebi('jct_institution').focus();
-    } else {
-        jct.d.gebi('jct_institution').blur();
-        jct.d.gebi('jct_notHE').checked = false;
-    }
-    jct._calculate_if_all_data_provided();
 }
 
 // ----------------------------------------
@@ -799,13 +899,6 @@ jct.display_result = (js) => {
 }
 
 // ----------------------------------------
-// function to add non compliant html response
-// ----------------------------------------
-jct._addNonCompliantOptions = () => {
-    jct.d.gebi("jct_paths_results").innerHTML = jct.non_compliant_options_html;
-}
-
-// ----------------------------------------
 // function to set the theme (add appropriate div classes) based on compliance of results
 // ----------------------------------------
 jct._setComplianceTheme = (compliant) => {
@@ -848,183 +941,6 @@ jct._setComplianceTheme = (compliant) => {
 }
 
 // ----------------------------------------
-// function to check for self archiving rights retention route in result
-// ----------------------------------------
-jct.sa_rights_retention_check = (result) => {
-    // check if qualification with id rights_retention_author_advice exists
-    // in the result
-    let has_rights_retention = false;
-    if ("qualifications" in result) {
-        result.qualifications.forEach((q) => {
-            if ("rights_retention_author_advice" in q) {
-                has_rights_retention = true;
-            }
-        })
-    }
-    return has_rights_retention;
-}
-
-// ----------------------------------------
-// function to get the author qualification description
-// ----------------------------------------
-jct.author_qualification = (qualifications) => {
-    let author_qualification = '';
-    if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
-        for (let [key,values] of Object.entries(qualifications[0])) {
-            if (key === 'corresponding_authors' && key in jct.lang.api_codes.qualifications &&
-                'description' in jct.lang.api_codes.qualifications[key]) {
-                author_qualification = jct.lang.api_codes.qualifications[key]['description'];
-            }
-        }
-    }
-    return author_qualification;
-}
-
-// ----------------------------------------
-// function to get tiles to display
-// ----------------------------------------
-// jct.get_tiles_to_display = (results) => {
-//     let tiles_to_display = {}
-//     let has_fully_oa = jct.fully_oa_check(results);
-//     results.forEach((r) => {
-//         if (r.compliant === "yes") {
-//             switch (r.route) {
-//                 case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
-//                     tiles_to_display['fully_oa'] = r
-//                     break;
-//                 case jct.COMPLIANCE_ROUTES_SHORT.ta:
-//                     tiles_to_display['ta'] = r
-//                     break;
-//                 case jct.COMPLIANCE_ROUTES_SHORT.tj:
-//                     tiles_to_display['tj'] = r
-//                     break;
-//                 case jct.COMPLIANCE_ROUTES_SHORT.sa:
-//                     if (!has_fully_oa) {
-//                         let has_sa_rights_retention = jct.sa_rights_retention_check(r);
-//                         if (has_sa_rights_retention) {
-//                             tiles_to_display['sa_rr'] = r
-//                         } else {
-//                             tiles_to_display['sa'] = r
-//                         }
-//                     }
-//                     break;
-//             }
-//         }
-//     })
-//     if ('fully_oa' in tiles_to_display && 'sa' in tiles_to_display) {
-//         delete tiles_to_display.sa;
-//     }
-//     return tiles_to_display;
-// }
-
-// ----------------------------------------
-// Function to display the selected list of tiles
-// ----------------------------------------
-jct.displayCards = (cardsToDisplay, result) => {
-    // let chosen_data = jct.chosen;
-    for (let i = 0; i < cardsToDisplay.length; i++) {
-        let cardConfig = cardsToDisplay[i];
-        let card = jct.buildCard(cardConfig, jct.lang, result, jct.chosen);
-        jct.d.gebi("jct_paths_results").append(jct.htmlToElement(card));
-    }
-}
-
-// ----------------------------------------
-// Function to display specific tile
-// ----------------------------------------
-
-jct.buildCard = function(cardConfig, uiText, results, choices) {
-    // img: cards.[card_id].icon
-    // site.preferred
-    // cards.[card_id].title
-    //
-    // cards.[card_id].body.default
-    // cards.[card_id].body.[compliant route id]
-
-    let cardText = uiText.cards[cardConfig.id];
-
-    // get the icon if it exists, and the icon identifier is not "false" (the string).
-    let icon = "";
-    if (cardText.icon && cardText.icon !== "false") {
-        icon = uiText.icons[cardText.icon];
-        if (icon === undefined) {
-            icon = "";
-        }
-    }
-
-    let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
-    let modal = cardConfig.hasOwnProperty("modal") ? `<a href="#" class="modal-trigger" data-modal="${cardConfig.modal}">${uiText.site.card_modal}</a>` : "";
-
-    let body = "";
-    if (cardText.body.hasOwnProperty("default")) {
-        body += cardText.body.default;
-    }
-
-    let compliantRoutes = [];
-    for (let i = 0; i < results.length; i++) {
-        let r = results[i];
-        if (r.compliant === "yes") {
-            compliantRoutes.push(r.route);
-        }
-    }
-
-    if (cardConfig.hasOwnProperty("display_if_compliant")) {
-        for (let i = 0; i < cardConfig.display_if_compliant.length; i++) {
-            let route = cardConfig.display_if_compliant[i];
-            if (compliantRoutes.includes(route)) {
-                if (cardText.body.hasOwnProperty(route)) {
-                    body += cardText.body[route];
-                }
-            }
-        }
-    }
-
-    body = body.replace("{title}", choices.journal.title);
-    body = body.replace("{funder}", choices.funder.title);
-    body = body.replace("{publisher}", choices.journal.publisher);
-
-    if (choices.institution) {
-        body = body.replace("{institution}", choices.institution.title);
-    } else {
-        body = body.replace("{institution}", uiText.site.card_institution_missing);
-    }
-
-    return `<div class="col col--1of4">
-        <article class="card">
-            ${icon}
-            <h4 class="label card__heading">
-                ${preferred}
-                <span>${cardText.title}</span>
-            </h4>
-            ${body}
-            <p>${modal}</p>
-        </article>
-    </div>`;
-}
-
-// jct.display_tile = (tile_name, chosen_data, result) => {
-//     let tile;
-//     switch (tile_name) {
-//         case 'fully_oa':
-//             tile = jct.fullyOA_tile(chosen_data, result.qualifications);
-//             break;
-//         case 'ta':
-//             tile = jct.transformative_agreement_tile(chosen_data, result.qualifications);
-//             break;
-//         case 'tj':
-//             tile = jct.transformative_journal_tile(chosen_data, result.qualifications);
-//             break;
-//         case 'self_archiving':
-//             tile = jct.self_archiving_tile(chosen_data, result.qualifications);
-//             break;
-//         case 'sa_rr':
-//             tile  = jct.sa_rights_retention_tile(chosen_data, result.qualifications);
-//             break;
-//     }
-//     return tile;
-// }
-
-// ----------------------------------------
 // Function to scroll to the result tiles
 // ----------------------------------------
 jct.scroll_to_result_tiles = () => {
@@ -1036,81 +952,6 @@ jct.scroll_to_result_tiles = () => {
     }
     window.scrollTo(0, results_section_top - inputs_height)
     //results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
-}
-
-// ----------------------------------------
-// function to do api calls
-// ----------------------------------------
-jct.jx = (route,q,after,api) => {
-    let base_url = api ? api : jct.api;
-    let url;
-    if (route) {
-        url = new URL(route, base_url);
-    } else {
-        url = new URL(base_url);
-    }
-    if (!q === false) {
-        let searchParams = new URLSearchParams(q);
-        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)}
-    }
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', url.href);
-    xhr.send();
-    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
-    xhr.onprogress = (e) => { jct.progress(e); };
-    xhr.onerror = () => { jct.error(); };
-}
-
-// ----------------------------------------
-// handy function to add html to elements
-// ----------------------------------------
-jct.htmlToElement = (html) => {
-    let template = document.createElement('template');
-    html = html.trim(); // Never return a text node of whitespace as the result
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-// ----------------------------------------
-// function to show detailed results
-// ----------------------------------------
-jct.d.show_detailed_results = () => {
-    let explainResults = jct.d.gebi("jct_explain_results");
-    if (explainResults) {
-        explainResults.innerHTML = 'Hide explanation';
-    }
-    jct.d.gebi('jct_detailed_results').style.display = "flex";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'initial';
-    }
-}
-
-// ----------------------------------------
-// function to hide detailed results
-// ----------------------------------------
-jct.d.hide_detailed_results = () => {
-    let explainResults = jct.d.gebi("jct_explain_results");
-    if (explainResults) {
-        explainResults.innerHTML = 'Explain this result';
-    }
-    jct.d.gebi('jct_detailed_results').style.display = "none";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'none';
-    }
-}
-
-// ----------------------------------------
-// function to toggle detailed results
-// ----------------------------------------
-jct.d.toggle_detailed_results = () => {
-    let section = jct.d.gebi('jct_detailed_results');
-    if (section.style.display === "none") {
-        jct.d.show_detailed_results();
-    } else {
-        jct.d.hide_detailed_results();
-    }
 }
 
 // ----------------------------------------
@@ -1158,6 +999,28 @@ jct.result_equals_chosen = (js) => {
     return result;
 }
 
+///////////////////////////////////////////////////////
+// Autosuggest input box management
+
+// ----------------------------------------
+// function to set focus on next element after choosing from auto suggestion and
+// calculate if all data provided
+// ----------------------------------------
+jct.choose = (e, el, which) => {
+    let id = el["id"];
+    let title = el["title"];
+    jct.chosen[which] = el;
+    if (which === 'journal') {
+        jct.d.gebi('jct_funder').focus();
+    } else if (which === 'funder') {
+        jct.d.gebi('jct_institution').focus();
+    } else {
+        jct.d.gebi('jct_institution').blur();
+        jct.d.gebi('jct_notHE').checked = false;
+    }
+    jct._calculate_if_all_data_provided();
+}
+
 // ----------------------------------------
 // function to apply default values to the select boxes
 // and which runs the compliance check if all boxes are set
@@ -1170,11 +1033,57 @@ jct.set_each_default = (type, value) => {
     jct.clinputs[type].setChoice(value, doChoose);
 }
 
+//////////////////////////////////////////////////////////////
+// Toggling detailed results
+
 // ----------------------------------------
-// Setup JCT
-// This maninly initializes clinput, CL's implementation of select 2
+// function to show detailed results
 // ----------------------------------------
-jct.clinputs = {};
+jct.d.show_detailed_results = () => {
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Hide explanation';
+    }
+    jct.d.gebi('jct_detailed_results').style.display = "flex";
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'initial';
+    }
+}
+
+// ----------------------------------------
+// function to hide detailed results
+// ----------------------------------------
+jct.d.hide_detailed_results = () => {
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Explain this result';
+    }
+    jct.d.gebi('jct_detailed_results').style.display = "none";
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'none';
+    }
+}
+
+// ----------------------------------------
+// function to toggle detailed results
+// ----------------------------------------
+jct.d.toggle_detailed_results = () => {
+    let section = jct.d.gebi('jct_detailed_results');
+    if (section.style.display === "none") {
+        jct.d.show_detailed_results();
+    } else {
+        jct.d.hide_detailed_results();
+    }
+}
+
+//////////////////////////////////////////////////////////
+// Initialisation
+
+// ----------------------------------------
+// Setup JCT on a fresh page
+// ----------------------------------------
 jct.setup = (manageUrl=true) => {
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
     jct.inputs_offset = jct.d.gebi("jct_inputs_plugin").getBoundingClientRect().top
@@ -1252,8 +1161,6 @@ jct.setup = (manageUrl=true) => {
                 issnPrefix = "ISSN: ";
             }
             frag += ' <span class="jct__option_journal_issn">' + issnPrefix + issns + '</span></a> ';
-
-            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
         selectedTemplate : function(obj) {
