@@ -28,5 +28,5 @@ Open Access Button Permission System provides clear information on how 85% of pa
 
 ### ESAC Agreement Registry
 
-[The ESAC Agreement Registry](https://esac-initiative.org/about/transformative-agreements/agreement-registry/) is a community-curated registry of *[Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/)* (TAs) between publishers on the one hand and academic institutions (mainly represented in consortia) on the other. The Plan S policy for recognising a TA requires that it be registered in ESAC. Therefore, the JCT derives its list of recognised TAs from the ESAC website.
+[The ESAC Agreement Registry](https://esac-initiative.org/about/transformative-agreements/agreement-registry/) is a community-curated registry of *[Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/)* (TAs) between publishers on the one hand and academic institutions (mainly represented in consortia) on the other. The Plan S policy for recognising a TA requires that it be registered in ESAC and offer authors the option to publisher under a CC-BY licence. Therefore, the JCT derives its list of recognised TAs from the ESAC website.
 
