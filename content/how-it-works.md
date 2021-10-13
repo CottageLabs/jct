@@ -42,39 +42,7 @@ as well as documents such as FAQs etc.
 
 ## <a name="data_sources"></a>Data Sources
 
-A number of data sources are used by the JCT to inform its calculation of Plan S compliance.
-
-### DOAJ (Directory of Open Access Journals)
-
-[DOAJ](https://doaj.org/) provides a high quality, manually curated list of fully OA journals, and is therefore 
-perfectly suited to the *full OA* compliance check for Plan S. DOAJ provides a curated data feed to JCT.
-
-### Open Access Button
-
-Open Access Button Permission System provides clear information on how 85% of papers can be self-archived. Information 
-provided includes which versions can be shared, licenses allowed, computed deposit statements and embargoes. Open 
-Access Button provides a curated data feed to JCT.
-
-### ESAC Agreement Registry
-
-[The ESAC Agreement Registry](https://esac-initiative.org/about/transformative-agreements/agreement-registry/) is a 
-community-curated registry of *[Transformative Agreements](https://esac-initiative.org/about/transformative-agreements/)* (TAs) 
-between publishers on the one hand and consortia representing academic institutions on the other. The Plan S policy for 
-recognising a TA requires that it be registered in ESAC. Therefore, the JCT derives its list of recognised TAs from the 
-ESAC website.
-
-### ROR (Research Organisation Registry)
-
-JCT uses the [ROR](https://ror.org) identifier to uniquely identify academic institutions in the system.
-
-### Other data sources
-
-JCT makes use of other data sources to supply information about journals and institutions - including:
-
-* [Crossref](https://www.crossref.org/) 
-* [ISSN Portal](https://portal.issn.org)
-* [GRID](https://www.grid.ac)
-* [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page)
+A number of data sources are used by the JCT to inform its calculation of *Plan S* compliance. These are documented in [Data Sources Used By JCT](/data-sources).
 
 
 

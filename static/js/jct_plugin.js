@@ -311,6 +311,7 @@ clinput.init = (params) => {
 // ----------------------------------------
 let jct = {
     api: JCT_API_endpoint,
+    host: JCT_UI_BASE_URL,
     delay: 500,
     cache: {},
     chosen: {},
@@ -789,6 +790,24 @@ jct.feedback_modal_html = `
     </div>
 `;
 
+jct.share_modal_html = `
+    <div class="modal" id="jct_modal_share" style="display: none">
+        <div class="modal-content" id="jct_modal_share_content">
+            <header class="modal-header">
+                <h2>Share this result
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_share">&times;</span>
+                </h2>
+            </header>
+            <div>
+                <p>To share this result, copy the following link
+                    <button class="button button--primary" style="float: right;" onClick="jct.copy_results_url()">Copy</button>
+                </p>
+                <p id="jct_results_url"></p>
+            </div>
+        </div>
+    </div>
+`;
+
 // ----------------------------------------
 // Function add modal containers
 // ----------------------------------------
@@ -800,7 +819,8 @@ jct.add_modal_containers = (modal_div, only_feedback=false) => {
             jct.sa_modal_html +
             jct.sa_rr_modal_html +
             jct.preferred_modal_html +
-            jct.help_modal_html;
+            jct.help_modal_html +
+            jct.share_modal_html;
     }
     modal_div.innerHTML = modal_container_html;
 }
@@ -1746,50 +1766,68 @@ jct.api_codes = {
 
 // -------- find_out_more --------
 
+jct.get_fom_url = () => {
+    let url = jct.host;
+    url += "/";
+
+    let jid, fid, iid, not_he = false;
+    try {
+        jid = jct.chosen.journal.id;
+    } catch {}
+    try {
+        fid = jct.chosen.funder.id;
+    } catch {}
+    try {
+        iid = jct.chosen.institution.id;
+    } catch {}
+    try {
+        not_he = jct.d.gebi('jct_notHE').checked;
+    } catch {}
+
+    let args = [];
+    if (jid) {
+        args.push("issn=" + jid);
+    }
+    if (fid) {
+        args.push("funder=" + fid);
+    }
+    if (iid) {
+        args.push("ror=" + iid);
+    }
+    if (not_he) {
+        args.push("not_he=" + not_he);
+    }
+
+    if (args.length > 0) {
+        let query = args.join("&");
+        url += "?" + query;
+    }
+    return url;
+}
+
 jct.setup_fom_url = () => {
     let fom = jct.d.gebi("jct_find_out_more");
     if (fom) {
-        let url = "";
-        if (window.JCT_UI_BASE_URL) {
-            url = window.JCT_UI_BASE_URL;
-        }
-        url += "/";
-
-        let jid, fid, iid, not_he = false;
-        try {
-            jid = jct.chosen.journal.id;
-        } catch {}
-        try {
-            fid = jct.chosen.funder.id;
-        } catch {}
-        try {
-            iid = jct.chosen.institution.id;
-        } catch {}
-        try {
-            not_he = jct.d.gebi('jct_notHE').checked;
-        } catch {}
-
-        let args = [];
-        if (jid) {
-            args.push("issn=" + jid);
-        }
-        if (fid) {
-            args.push("funder=" + fid);
-        }
-        if (iid) {
-            args.push("ror=" + iid);
-        }
-        if (not_he) {
-            args.push("not_he=" + not_he);
-        }
-
-        if (args.length > 0) {
-            let query = args.join("&");
-            url += "?" + query;
-        }
+        let url = jct.get_fom_url();
         fom.setAttribute("href", url);
     }
 }
+
+jct.display_results_url = () => {
+    let fom = jct.d.gebi("jct_results_url");
+    if (fom) {
+        let url = jct.get_fom_url();
+        fom.innerText = url;
+    }
+}
+
+jct.copy_results_url = () => {
+    let share_url = jct.d.gebi("jct_results_url");
+    if (share_url) {
+        navigator.clipboard.writeText(share_url.innerText)
+    }
+}
+
 
 
 // -------- feedback --------

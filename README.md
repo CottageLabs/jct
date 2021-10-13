@@ -20,9 +20,11 @@ See [BuildingTheWebsite.md](BuildingTheWebsite.md)
 
 ### Creating the jct_plugin javascript file
 1. The plugin uses jct_plugin.js. This is a combination of the following files
+    - i_am_a_widget.js
     - api_endpoint.js
     - clinput.js
     - jct.js
+    - api_codes.js
     - find_out_more.js
     - feedback.js
     - plugin.js
