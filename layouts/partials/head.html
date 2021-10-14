@@ -13,15 +13,20 @@
     <link href="/css/main.css?v={{.Site.Params.jctAssetsVersion}}" rel='stylesheet' type='text/css'>
 
     <script type="text/javascript" src="/js/api_endpoint.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/default_lang.js?v={{.Site.Params.jctAssetsVersion}}"></script>
     <script type="text/javascript" src="/js/jct.js?v={{.Site.Params.jctAssetsVersion}}"></script>
     <script type="text/javascript" src="/js/feedback.js?v={{.Site.Params.jctAssetsVersion}}"></script>
     {{ if .IsHome }}
-        <script type="text/javascript" src="/js/api_codes.js?v={{.Site.Params.jctAssetsVersion}}"></script>
-        <script type="text/javascript" src="/js/find_out_more.js?v={{.Site.Params.jctAssetsVersion}}"></script>
-        <script type="text/javascript" src="/js/detailed_results.js?v={{.Site.Params.jctAssetsVersion}}"></script>
-        <script type="text/javascript" src="/js/clinput.js?v={{.Site.Params.jctAssetsVersion}}"></script>
-        <script type="text/javascript" src="/js/ready.js?v={{.Site.Params.jctAssetsVersion}}"></script>
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=URL"></script>
+    <script type="text/javascript" src="/js/default_config.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/funders.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/find_out_more.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/detailed_results.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/clinput.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    <script type="text/javascript" src="/js/ready.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    {{ if .Site.Params.Results.populate }}
+    <script type="text/javascript" src="/js/devui.js?v={{.Site.Params.jctAssetsVersion}}"></script>
+    {{ end }}
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=URL"></script>
     {{ end }}
     {{ if .Site.GoogleAnalytics }}
         {{- partial "google-analytics.html" . }}

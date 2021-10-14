@@ -7,30 +7,18 @@ let jct = {
     delay: 500,
     cache: {},
     chosen: {},
-    latest_response: null
+    latest_response: null,
+    lang: JCT_LANG,
+    modal_setup : {},
+    clinputs: {}
 };
 
 jct.d = document;
-
 jct.d.gebi = document.getElementById;
-
 jct.d.gebc = document.getElementsByClassName;
 
-jct.COMPLIANCE_ROUTES_SHORT = {
-    fully_oa: "fully_oa",
-    ta: "ta",
-    tj: "tj",
-    sa: "self_archiving"
-}
-
-jct.COMPLIANCE_ROUTES_LONG = {
-    fully_oa: "Full open access",
-    ta: "Transformative agreement",
-    tj: "Transformative journal",
-    self_archiving: "Self-archiving"
-}
-
-jct.ORDER_OF_TILES = ['fully_oa', 'ta', 'tj', 'sa', 'sa_rr']
+////////////////////////////////////////////////////////
+// HTML Fragments for Application structure
 
 // ----------------------------------------
 // html for input form
@@ -97,12 +85,8 @@ jct.inputs_plugin_html =`
 // ----------------------------------------
 jct.results_plugin_html = `
     <header class="jct_compliance">
-        <h2  id="jct_compliant" style="display:none">
-            The following publishing options are aligned with your funder’s OA policy.
-        </h2>
-        <h2  id="jct_notcompliant" style="display:none">
-            There are no publishing options aligned with your funder’s OA policy.
-        </h2>
+        <h2 id="jct_compliant" style="display:none">${jct.lang.site.compliant}</h2>
+        <h2 id="jct_notcompliant" style="display:none">${jct.lang.site.non_compliant}</h2>
     </header>
 `;
 
@@ -115,445 +99,351 @@ jct.tiles_plugin_html = `
     </section>
 `;
 
-// ----------------------------------------
-// html for non compliant option
-// ----------------------------------------
-jct.non_compliant_options_html = `
-    <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Check with an alternative journal</h4>
-            <p>Repeat your search with an alternative journals to see if it provides a route to compliance with your funder’s
-            Plan S aligned open access policy.</p>
-        </article>
-    </div>
+/////////////////////////////////////////////////////////
+// Cards and card management
 
-    <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Check with a different funder</h4>
-            <p>If your research was funded by multiple Plan S funders, repeat your search using the name of one of the other funders.
-            The implementation timeline for Plan S aligned open access policies is not the same for all funders, therefore results may vary by funder.</p>
-        </article>
-    </div>
+jct.getCardsToDisplay = function(config, results) {
 
-    <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Check with a different institution</h4>
-            <p>If you or other authors on your research article are affiliated with different institutions, repeat your
-            search with these alternative institutions. Transformative agreements, are made between publishers and (consortia of)
-            institutions. While the institution you searched does not currently have an agreement with the publisher of this
-            journal, one of your collaborator’s institutions may do.</p>
-        </article>
-    </div>
-
-    <div class="col col--1of4">
-        <article class="card" >
-            <h4 class="label card__heading">Rights retention</h4>
-            <p>cOAlition S has developed a Rights Retention Strategy to give researchers supported by a cOAlition S Funder
-            the freedom to publish in their journal of choice, including subscription journals, whilst remaining fully compliant with Plan S.
-            <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank"  rel="noopener">More information on how to use it is available here</a>.</p>
-        </article>
-    </div>
-`;
-
-// ----------------------------------------
-// html for fully_oa tile in results
-// ----------------------------------------
-jct.fullyOA_tile = (_chosen_data, _qualifications) => {
-    let fullyOA_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon"><svg width="16" height="22" viewbox="0 0 16 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.75 4.8125V8.9375H1.71531C0.769312 8.9375 0 9.70681 0 10.6528V20.2806C0 21.2286 0.771375 22 1.71875 22H13.4056C14.3536 22 15.125 21.2286 15.125 20.2806V10.6528C15.125 9.70681 14.3557 8.9375 13.4097 8.9375H4.125V4.8125C4.125 2.91706 5.66706 1.375 7.5625 1.375C9.45794 1.375 11 2.91706 11 4.8125V6.1875C11 6.567 11.3073 6.875 11.6875 6.875C12.0677 6.875 12.375 6.567 12.375 6.1875V4.8125C12.375 2.15875 10.2156 0 7.5625 0C4.90875 0 2.75 2.15875 2.75 4.8125ZM1.71531 10.3125C1.52762 10.3125 1.375 10.4651 1.375 10.6528V20.2806C1.375 20.4703 1.52969 20.625 1.71875 20.625H13.4056C13.5953 20.625 13.75 20.4703 13.75 20.2806V10.6528C13.75 10.4651 13.5974 10.3125 13.4097 10.3125H1.71531ZM6.875 17.1875C6.875 17.5677 7.183 17.875 7.5625 17.875C7.942 17.875 8.25 17.5677 8.25 17.1875V13.75C8.25 13.3698 7.942 13.0625 7.5625 13.0625C7.183 13.0625 6.875 13.3698 6.875 13.75V17.1875Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label card__heading">
-                  <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
-                  Full <br>open access
-                </h4>
-                <p>Go ahead and submit. Remember to select a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.</p>
-                <p>Upon publication, you have the right to self-archive the final published article as an additional route to compliance rather than an alternative route. </p>
-            </article>
-        </div>`;
-    return jct.htmlToElement (fullyOA_tile_html);
-}
-
-// ----------------------------------------
-// html for transformative_agreement_tile in results
-// needs journal, institution title and author qualification
-// ----------------------------------------
-jct.transformative_agreement_tile = (chosen_data, qualifications) => {
-    let author_qualification = jct.author_qualification(qualifications)
-    let title = chosen_data.journal.title ? chosen_data.journal.title : chosen_data.journal.id;
-    let publisher = chosen_data.journal.publisher ? chosen_data.journal.publisher : 'the publisher';
-    let institution = chosen_data.institution.title ? chosen_data.institution.title : 'the institution';
-    let condition_text;
-    if (author_qualification) {
-        condition_text = `<p>` + author_qualification + `<br/><br/>` +
-            `Other conditions may also be in place around publishing through this agreement. ` +
-            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
-    } else {
-        condition_text = `<p>Conditions may be in place around publishing through this agreement. ` +
-            `<a href="#" id="jct_open_ta_modal">Make sure to read this information</a>.</p>`
+    function _matches(cardConfig, results) {
+        return _matches_routes(cardConfig.match_routes, results) &&
+            _matches_qualifications(cardConfig.match_qualifications, results);
     }
-    let transformative_agreement_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon"><svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 4.8125C0 5.192 0.308 5.5 0.6875 5.5H4.125V17.1875V19.25C4.125 20.7666 5.35838 22 6.875 22H19.25C20.7666 22 22 20.7666 22 19.25V17.1875C22 16.8073 21.6927 16.5 21.3125 16.5H19.25V2.75C19.25 1.23337 18.0166 0 16.5 0H2.75C1.23337 0 0 1.23337 0 2.75V4.8125ZM17.875 2.75C17.875 1.99169 17.2583 1.375 16.5 1.375H5.13107C5.36564 1.7797 5.5 2.24942 5.5 2.75V4.8125V17.1875V19.25C5.5 20.0083 6.11669 20.625 6.875 20.625C7.63331 20.625 8.25 20.0083 8.25 19.25V17.1875C8.25 16.8073 8.558 16.5 8.9375 16.5H17.875V2.75ZM9.625 17.875H18.5625H20.625V19.25C20.625 20.0083 20.0083 20.625 19.25 20.625H9.25607C9.49064 20.2203 9.625 19.7506 9.625 19.25V17.875ZM1.375 2.75C1.375 1.99169 1.99169 1.375 2.75 1.375C3.50831 1.375 4.125 1.99169 4.125 2.75V4.125H1.375V2.75ZM15.8125 5.5H7.5625C7.183 5.5 6.875 5.192 6.875 4.8125C6.875 4.433 7.183 4.125 7.5625 4.125H15.8125C16.1927 4.125 16.5 4.433 16.5 4.8125C16.5 5.192 16.1927 5.5 15.8125 5.5ZM7.5625 8.25H15.8125C16.1927 8.25 16.5 7.942 16.5 7.5625C16.5 7.183 16.1927 6.875 15.8125 6.875H7.5625C7.183 6.875 6.875 7.183 6.875 7.5625C6.875 7.942 7.183 8.25 7.5625 8.25ZM15.8125 11H7.5625C7.183 11 6.875 10.692 6.875 10.3125C6.875 9.933 7.183 9.625 7.5625 9.625H15.8125C16.1927 9.625 16.5 9.933 16.5 10.3125C16.5 10.692 16.1927 11 15.8125 11ZM7.5625 13.75H11.6875C12.0677 13.75 12.375 13.4427 12.375 13.0625C12.375 12.6823 12.0677 12.375 11.6875 12.375H7.5625C7.183 12.375 6.875 12.6823 6.875 13.0625C6.875 13.4427 7.183 13.75 7.5625 13.75Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label">
-                  <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a><br/><br/>
-                  Transformative <br>agreement
-                </h4>` + condition_text +
-        `<p><em>` + title + `</em> is part of a transformative agreement between <em>` + publisher + `</em> and <em>` + institution +`</em></p>
-            </article>
-        </div>`;
-    return jct.htmlToElement(transformative_agreement_tile_html);
-}
 
-// ----------------------------------------
-// html for transformative_journal_tile in results
-// ----------------------------------------
-jct.transformative_journal_tile = (_chosen_data, _qualifications) => {
-    let transformative_journal_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon">
-                    <svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.3125 21.3125C10.3125 21.6927 10.6205 22 11 22C11.3795 22 11.6875 21.6927 11.6875 21.3125V0.6875C11.6875 0.308 11.3795 0 11 0C10.6205 0 10.3125 0.308 10.3125 0.6875V21.3125ZM8.25 19.25H1.71737C0.770687 19.25 0 18.4793 0 17.5326V4.455C0 3.51519 0.765188 2.75 1.705 2.75H8.18744C8.56694 2.75 8.87494 3.058 8.87494 3.4375C8.87494 3.817 8.56694 4.125 8.18744 4.125H1.705C1.52281 4.125 1.375 4.27281 1.375 4.455V17.5319C1.375 17.7176 1.53175 17.875 1.71737 17.875H8.25C8.6295 17.875 8.9375 18.1823 8.9375 18.5625C8.9375 18.9427 8.6295 19.25 8.25 19.25ZM19.3118 18.5625C19.3118 18.1844 19.6211 17.875 19.9993 17.875C20.3774 17.875 20.6868 18.1844 20.6868 18.5625C20.6868 18.9406 20.3774 19.25 19.9993 19.25C19.6211 19.25 19.3118 18.9406 19.3118 18.5625ZM17.2493 18.5625C17.2493 18.1844 17.5586 17.875 17.9368 17.875C18.3149 17.875 18.6243 18.1844 18.6243 18.5625C18.6243 18.9406 18.3149 19.25 17.9368 19.25C17.5586 19.25 17.2493 18.9406 17.2493 18.5625ZM15.1868 18.5625C15.1868 18.1844 15.4961 17.875 15.8743 17.875C16.2524 17.875 16.5618 18.1844 16.5618 18.5625C16.5618 18.9406 16.2524 19.25 15.8743 19.25C15.4961 19.25 15.1868 18.9406 15.1868 18.5625ZM13.1243 18.5625C13.1243 18.1844 13.4336 17.875 13.8118 17.875C14.1899 17.875 14.4993 18.1844 14.4993 18.5625C14.4993 18.9406 14.1899 19.25 13.8118 19.25C13.4336 19.25 13.1243 18.9406 13.1243 18.5625ZM20.6249 17.3731C20.6249 16.995 20.9343 16.6856 21.3124 16.6856C21.6905 16.6856 21.9999 16.995 21.9999 17.3731C21.9999 17.7588 21.6905 18.0606 21.3124 18.0606C20.9343 18.0606 20.6249 17.7581 20.6249 17.3731ZM20.6249 15.3106C20.6249 14.9325 20.9343 14.6231 21.3124 14.6231C21.6905 14.6231 21.9999 14.9325 21.9999 15.3106C21.9999 15.6963 21.6905 15.9981 21.3124 15.9981C20.9343 15.9981 20.6249 15.6956 20.6249 15.3106ZM20.6249 13.2481C20.6249 12.87 20.9343 12.5606 21.3124 12.5606C21.6905 12.5606 21.9999 12.87 21.9999 13.2481C21.9999 13.6338 21.6905 13.9356 21.3124 13.9356C20.9343 13.9356 20.6249 13.6331 20.6249 13.2481ZM20.6249 11.1925C20.6249 10.8075 20.9343 10.4981 21.3124 10.4981C21.6905 10.4981 21.9999 10.8075 21.9999 11.1925C21.9999 11.5706 21.6905 11.8731 21.3124 11.8731C20.9343 11.8731 20.6249 11.5706 20.6249 11.1925ZM20.6249 9.12313C20.6249 8.745 20.9343 8.4425 21.3124 8.4425C21.6905 8.4425 21.9999 8.745 21.9999 9.12313C21.9999 9.50813 21.6905 9.8175 21.3124 9.8175C20.9343 9.8175 20.6249 9.50813 20.6249 9.12313ZM20.6249 7.0675C20.6249 6.6825 20.9343 6.37313 21.3124 6.37313C21.6905 6.37313 21.9999 6.6825 21.9999 7.0675C21.9999 7.44562 21.6905 7.74813 21.3124 7.74813C20.9343 7.74813 20.6249 7.44562 20.6249 7.0675ZM20.6249 4.99813C20.6249 4.62 20.9343 4.3175 21.3124 4.3175C21.6905 4.3175 21.9999 4.62 21.9999 4.99813C21.9999 5.38312 21.6905 5.6925 21.3124 5.6925C20.9343 5.6925 20.6249 5.38312 20.6249 4.99813ZM20.3155 4.125H20.3086C19.9305 4.09062 19.6555 3.76063 19.683 3.3825C19.7174 3.00437 20.0474 2.7225 20.4324 2.75688H20.4255C20.8036 2.79125 21.0855 3.12125 21.058 3.49938C21.0236 3.85688 20.728 4.13188 20.3705 4.13188C20.359 4.13188 20.3473 4.12974 20.337 4.12785C20.3287 4.12635 20.3213 4.125 20.3155 4.125ZM17.6205 3.4375C17.6205 3.05938 17.9299 2.75 18.308 2.75C18.6861 2.75 18.9955 3.05938 18.9955 3.4375C18.9955 3.81562 18.6861 4.125 18.308 4.125C17.9299 4.125 17.6205 3.81562 17.6205 3.4375ZM15.558 3.4375C15.558 3.05938 15.8674 2.75 16.2455 2.75C16.6236 2.75 16.933 3.05938 16.933 3.4375C16.933 3.81562 16.6236 4.125 16.2455 4.125C15.8674 4.125 15.558 3.81562 15.558 3.4375ZM13.4955 3.4375C13.4955 3.05938 13.8049 2.75 14.183 2.75C14.5611 2.75 14.8705 3.05938 14.8705 3.4375C14.8705 3.81562 14.5611 4.125 14.183 4.125C13.8049 4.125 13.4955 3.81562 13.4955 3.4375Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label">
-                    <a href="#" class="jct_open_preferred_modal"><em>Preferred</em></a>
-                    <br/><br/>
-                    <span>Transformative <br>journal</span>
-                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_open_tj_modal">
-                        <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
-                        </svg>
-                    </span>
-                </h4>
-                <p>Go ahead and submit. Remember to select the open access publishing option with a <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a> to ensure compliance.
-                <p>Check <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noopener">here</a> to confirm if your funder will pay publishing fees.</p>
-            </article>
-        </div>`;
-    return jct.htmlToElement(transformative_journal_tile_html);
-}
-
-// ----------------------------------------
-// html for self_archiving_tile in results
-// ----------------------------------------
-jct.self_archiving_tile = (_chosen_data, _qualifications) => {
-    let self_archiving_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon">
-                    <svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label">Self-archiving
-                    <span alt="circle help icon" class="helpicon_img tile_help" id="jct_open_sa_modal" >
-                        <svg width="25" height="25" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M120 62.5C120 94.2564 94.2564 120 62.5 120C30.7436 120 5 94.2564 5 62.5C5 30.7436 30.7436 5 62.5 5C94.2564 5 120 30.7436 120 62.5ZM125 62.5C125 97.0178 97.0178 125 62.5 125C27.9822 125 0 97.0178 0 62.5C0 27.9822 27.9822 0 62.5 0C97.0178 0 125 27.9822 125 62.5ZM56.293 78.1533V79.9238H60.2168V79.2539C60.2168 76.1595 60.4561 73.8307 60.9346 72.2676C61.445 70.7044 62.2425 69.221 63.3271 67.8174C64.4437 66.3818 66.0228 64.8027 68.0645 63.0801C69.8509 61.5807 71.4779 60.193 72.9453 58.917C74.4128 57.6091 75.6569 56.2692 76.6777 54.8975C77.7305 53.4938 78.5439 51.9785 79.1182 50.3516C79.6924 48.7246 79.9795 46.8265 79.9795 44.6572C79.9795 39.1702 78.3047 34.8636 74.9551 31.7373C71.6055 28.5791 67.0117 27 61.1738 27C58.6536 27 56.1973 27.2552 53.8047 27.7656C51.444 28.276 48.5091 29.2969 45 30.8281L46.7705 34.6562C49.3226 33.4121 51.6992 32.5189 53.9004 31.9766C56.1016 31.4023 58.4622 31.1152 60.9824 31.1152C65.321 31.1152 68.8141 32.3115 71.4619 34.7041C74.1416 37.0967 75.4814 40.3187 75.4814 44.3701C75.4814 46.8584 74.987 49.0596 73.998 50.9736C73.0091 52.8877 71.3662 54.8177 69.0693 56.7637L64.7148 60.5439C61.4928 63.3831 59.2757 66.0469 58.0635 68.5352C56.8831 71.0234 56.293 74.2295 56.293 78.1533ZM58.542 89.542C55.9899 89.542 54.7139 91.1051 54.7139 94.2314C54.7139 97.3577 55.9899 98.9209 58.542 98.9209C61.1579 98.9209 62.4658 97.3577 62.4658 94.2314C62.4658 91.1051 61.1579 89.542 58.542 89.542Z" fill="black"/>
-                        </svg>
-                    </span>
-                </h4>
-                <p>Upon acceptance, you can deposit your Author Accepted Manuscript in a repository without embargo and with a 
-                <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>. Publishing fees do not apply with this route. </p>
-            </article>
-        </div>`;
-    return jct.htmlToElement(self_archiving_tile_html);
-}
-
-// ----------------------------------------
-// html for self_archiving_using_rights_retention_tile in results
-// ----------------------------------------
-jct.sa_rights_retention_tile = (_chosen_data, _qualifications) => {
-    let sa_rights_retention_tile_html = `
-        <div class="col col--1of4">
-            <article class="card" >
-                <span class="card__icon">
-                    <svg width="22" height="22" viewbox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 5.15831C22 5.98803 21.4085 6.68203 20.625 6.84086V20.2778C20.625 21.2273 19.8523 22 18.9028 22H3.09719C2.14775 22 1.375 21.2273 1.375 20.2778V6.84086C0.591483 6.68203 0 5.98803 0 5.15831V1.71669C0 0.77 0.77 0 1.71669 0H20.2833C21.23 0 22 0.77 22 1.71669V5.15831ZM20.2833 5.5H19.9375H2.0625H1.71669C1.52831 5.5 1.375 5.34669 1.375 5.15831V1.71669C1.375 1.52831 1.52831 1.375 1.71669 1.375H20.2833C20.4717 1.375 20.625 1.52831 20.625 1.71669V5.15831C20.625 5.34669 20.4717 5.5 20.2833 5.5ZM2.75 20.2778V6.875H19.25V20.2778C19.25 20.4689 19.0939 20.625 18.9028 20.625H3.09719C2.90606 20.625 2.75 20.4689 2.75 20.2778ZM7.5625 11H14.4375C14.8177 11 15.125 10.692 15.125 10.3125C15.125 9.933 14.8177 9.625 14.4375 9.625H7.5625C7.183 9.625 6.875 9.933 6.875 10.3125C6.875 10.692 7.183 11 7.5625 11Z" fill="black"></path>
-                    </svg>
-                </span>
-                <h4 class="label">Compliance through self-archiving using rights retention</h4>
-                <p>Your funder’s grant conditions set out how you can retain sufficient rights to self-archive the Author
-                   Accepted Manuscript in any OA repository. Publishing fees do not apply with this route.</p>
-                   <p><a href="#" id="jct_open_sa_rr_modal">More information</a></p>
-            </article>
-        </div>`;
-    return jct.htmlToElement(sa_rights_retention_tile_html);
-}
-
-// ----------------------------------------
-// html for transformative agreement modal
-// ----------------------------------------
-jct.ta_modal_html = `
-    <div class="modal" id="jct_modal_ta" style="display: none">
-        <div class="modal-content" id="jct_modal_ta_content">
-            <header class="modal-header">
-                <h2>Transformative agreements
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_ta">&times;</span>
-                </h2>
-            </header>
-            <div>
-                <p>Consult your institution’s library prior to submitting to this journal. </p>
-                <p><em>Transformative agreements</em> may have eligibility criteria or limits on publication numbers
-                    in place that the Journal Checker Tool is currently not able to check. </p>
-            </div>
-        </div>
-    </div>
-`;
-
-// ----------------------------------------
-// html for transformative journal modal
-// ----------------------------------------
-jct.tj_modal_html = `
-    <div class="modal" id="jct_modal_tj" style="display: none">
-        <div class="modal-content" id="jct_modal_tj_content">
-            <header class="modal-header">
-                <h2>
-                    Transformative journals
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_tj">&times;</span>
-                </h2>
-            </header>
-            <div>
-                <p>A <em>Transformative Journal</em> is a subscription/hybrid journal that is committed to transitioning
-                    to a fully OA journal. It must gradually increase the share of OA content and offset subscription
-                    income from payments for publishing services (to avoid double payments).</p>
-                <p>Check <a href="https://www.coalition-s.org/plan-s-funders-implementation/" target="_blank" rel="noopener">here</a> to confirm if your funder will pay publishing fees.</p>
-            </div>
-        </div>
-    </div>
-`;
-
-// ----------------------------------------
-// html for self archiving modal
-// ----------------------------------------
-jct.sa_modal_html = `
-    <div class="modal" id="jct_modal_sa" style="display: none">
-            <div class="modal-content" id="jct_modal_sa_content">
-                <header class="modal-header">
-                      <h2>Self-archiving
-                          <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_sa">&times;</span>
-                      </h2>
-                </header>
-                <div>
-                    <p>Self-archiving is sometimes referred to as <em>green open access</em>. Publishing fees do not apply 
-                    with this route.</p>
-                    <p>Publish your article via the journal’s standard route and do not select an open access option. 
-                    Following acceptance, deposit the full text version of the author accepted manuscript (the version 
-                    that includes changes requested by peer-reviewers) to a repository without embargo and under a 
-                    <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY licence</a>. 
-                    Your funder may require you to archive your article in a specific repository.</p>
-                </div>
-            </div>
-        </div>
-`;
-
-// ----------------------------------------
-// html for self archiving using rights retention modal
-// ----------------------------------------
-jct.sa_rr_modal_html = `
-    <div class="modal" id="jct_modal_sa_rr" style="display: none">
-        <div class="modal-content" id="jct_modal_sa_rr_content">
-            <header class="modal-header">
-                <h2>Compliance through self-archiving using rights retention
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_sa_rr">&times;</span>
-                </h2>
-            </header>
-            <div>
-                <p>The cOAlition S <a href="https://www.coalition-s.org/wp-content/uploads/2020/10/RRS_onepager.pdf" target="_blank" rel="noopener">Rights Retention Strategy</a>
-                 sets out how you can retain sufficient rights to self-archive your Author Accepted Manuscript in any OA 
-                 repository at the time of publication with a CC BY license. When using this route to make your research 
-                 articles OA, no fees are payable to the publisher.</p>
-                 <p>Some subscription publishers may impose conditions -- via the License to Publish Agreement or otherwise 
-                 -- that prevent you from meeting your funders' OA requirements. Authors should check publication terms 
-                 before submitting a manuscript and should not sign a publishing contract that conflicts with funder 
-                 conditions. Contact your funder for more information and guidance.</p>
-            </div>
-        </div>
-    </div>
-`;
-
-// ----------------------------------------
-// html for preferred results modal
-// ----------------------------------------
-jct.preferred_modal_html = `
-    <div class="modal" id="jct_modal_preferred" style="display: none">
-        <div class="modal-content" id="jct_modal_preferred_content">
-            <header class="modal-header">
-                <h2>Preferred Route to OA
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_preferred">&times;</span>
-                </h2>
-            </header>
-            <div>
-                <p>The Version of Record (VoR) is different from the Author Accepted Manuscript (AAM). The AAM is the
-                    version accepted for publication, including all changes made during peer review. The VoR contains all
-                    the changes from the copyediting process, journal formatting/branding etc., but it is also the version
-                    maintained and curated by the publisher, who has the responsibility to ensure that any corrections or
-                    retractions are applied in a timely and consistent way.
-                </p>
-                <p>For these reasons, the preferred option is to ensure that the VoR is made Open Access. Where the VoR
-                    can be made available in accordance with the Plan S principles, and there is a cost, many cOAlition S
-                    Organisations make funding available to cover these costs.
-                </p>
-            </div>
-        </div>
-    </div>
-`;
-
-// ----------------------------------------
-// html for help modal (what is PlanS)
-// ----------------------------------------
-jct.help_modal_html = `
-    <div class="modal" id="jct_modal_help" style="display: none">
-        <div class="modal-content" id="jct_modal_help_content">
-            <header class="modal-header">
-                <h2>What’s this?
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_help">&times;</span>
-                </h2>
-            </header>
-            <div>
-                <p>Plan S aims for full and immediate Open Access to peer-reviewed scholarly publications from research funded by public and private grants.
-                  <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> is the
-                  coalition of research funding and performing organisations that have committed to implementing Plan S.
-                  The goal of cOAlition S is to accelerate the transition to a scholarly publishing system that is characterised
-                  by immediate, free online access to, and largely unrestricted use and re-use (full Open Access) of scholarly publications. </p>
-                <p>The Journal Checker Tool enables researchers to check whether they can comply with their funders Plan S
-                aligned OA policy based on the combination of journal, funder(s) and the institution(s) affiliated with
-                the research to be published. The tool currently only identifies routes to open access compliance for
-                Plan S aligned policies.</p>
-                <p>This is a <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a> project.</p>
-                <p>
-                    <a href="/notices#privacy_notice">Privacy Notice</a> •
-                    <a href="/notices#disclaimer_and_copyright">Disclaimer & Copyright</a>
-                </p>
-            </div>
-        </div>
-    </div>
-`;
-
-// ----------------------------------------
-// html for feedback modal
-// ----------------------------------------
-jct.feedback_modal_html = `
-    <div class="modal" id="jct_modal_feedback" style="display: none">
-        <div class="modal-content" id="contact">
-            <header class="modal-header">
-                <h2>Feedback? Suggestion? Contact us here.
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_feedback">&times;</span>
-                 </h2>
-            </header>
-            <p>This tool is delivered by <a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a>. </p>
-            <p>If you believe that there is an error in the result given by the tool or how the tool is functioning please use this form. Your current search details will be automatically included in your feedback. We will respond within 3 working days.</p>
-            <form id="contact_form">
-                <div class="modal-inputs">
-                    <label for="name">Name</label>
-                    <input class="contact_input" type="text" id="name" name="name" placeholder="Your name..">
-                </div>
-                <div class="modal-inputs">
-                    <label for="email">Email</label>
-                    <input class="contact_input" type="email" id="email" name="email" placeholder="Your email..">
-                </div>
-                <div class="modal-inputs">
-                    <label for="message">Comment</label>
-                    <textarea class="contact_input" id="message" name="message" placeholder="Write something.."></textarea>
-                </div>
-                <div class="modal-inputs">
-                    <button class="button button--primary contact_submit" type="submit">
-                        <svg width="24" height="25" viewbox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.88002 24.4048C4.99391 24.4685 5.11979 24.5 5.24492 24.5C5.4165 24.5 5.58734 24.4416 5.72445 24.3269L10.9109 20.0044H14.2242C19.6018 20.0044 23.9768 15.6286 23.9768 10.2518C23.9768 4.87501 19.6018 0.5 14.225 0.5H9.75255C4.37501 0.5 0 4.87501 0 10.2518C0 13.8438 2.01854 17.1609 5.18872 18.8527L4.50389 23.6443C4.45968 23.9523 4.60953 24.2542 4.88002 24.4048ZM1.49855 10.2518C1.49855 5.70071 5.20071 1.99855 9.75255 1.99855H14.2242C18.7761 1.99855 22.4782 5.69996 22.4782 10.2518C22.4782 14.8036 18.7761 18.5058 14.2242 18.5058H10.6397C10.4644 18.5058 10.295 18.5672 10.1602 18.6789L6.26243 21.9277L6.74721 18.5298C6.79442 18.2016 6.62059 17.8824 6.32013 17.7438C3.39122 16.3891 1.49855 13.449 1.49855 10.2518ZM6.74347 8.01597H17.2333C17.6477 8.01597 17.9826 7.6803 17.9826 7.2667C17.9826 6.8531 17.6477 6.51743 17.2333 6.51743H6.74347C6.32987 6.51743 5.99419 6.8531 5.99419 7.2667C5.99419 7.6803 6.32987 8.01597 6.74347 8.01597ZM6.74347 14.0102H12.7377C13.152 14.0102 13.4869 13.6752 13.4869 13.2609C13.4869 12.8473 13.152 12.5116 12.7377 12.5116H6.74347C6.32987 12.5116 5.99419 12.8473 5.99419 13.2609C5.99419 13.6752 6.32987 14.0102 6.74347 14.0102ZM17.2333 11.0131H6.74347C6.32987 11.0131 5.99419 10.6774 5.99419 10.2638C5.99419 9.8502 6.32987 9.51452 6.74347 9.51452H17.2333C17.6477 9.51452 17.9826 9.8502 17.9826 10.2638C17.9826 10.6774 17.6477 11.0131 17.2333 11.0131Z" fill="black"></path>
-                        </svg>
-                        Send
-                    </button>
-                </div>
-            </form>
-            <div id="feedback_success" style="display: none;"><h1>Email sent successfully.</h1></div>
-            <div id="feedback_error" style="display: none;"><h1>Ooops, something went wrong.</h1></div>
-            <p>
-                <a href="/notices#privacy_notice">Privacy Notice</a> •
-                <a href="/notices#disclaimer_and_copyright">Disclaimer & Copyright</a>
-            </p>
-         </div>
-    </div>
-`;
-
-jct.share_modal_html = `
-    <div class="modal" id="jct_modal_share" style="display: none">
-        <div class="modal-content" id="jct_modal_share_content">
-            <header class="modal-header">
-                <h2>Share this result
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_share">&times;</span>
-                </h2>
-            </header>
-            <div>
-                <p>To share this result, copy the following link
-                    <button class="button button--primary" style="float: right;" onClick="jct.copy_results_url()">Copy</button>
-                </p>
-                <p id="jct_results_url"></p>
-            </div>
-        </div>
-    </div>
-`;
-
-// ----------------------------------------
-// Function add modal containers
-// ----------------------------------------
-jct.add_modal_containers = (modal_div, only_feedback=false) => {
-    let modal_container_html = jct.feedback_modal_html;
-    if (only_feedback === false) {
-        modal_container_html += jct.ta_modal_html +
-            jct.tj_modal_html +
-            jct.sa_modal_html +
-            jct.sa_rr_modal_html +
-            jct.preferred_modal_html +
-            jct.help_modal_html +
-            jct.share_modal_html;
-    }
-    modal_div.innerHTML = modal_container_html;
-}
-
-// ----------------------------------------
-// Function to setup modal on the page
-// ----------------------------------------
-jct.setup_modals = (only_feedback=false) => {
-    let modal_div = jct.d.gebi("jct_modal_container");
-    if (modal_div.children.length === 0) {
-        // Add the modal html and event handlers
-        jct.add_modal_containers(modal_div, only_feedback);
-
-        if (jct.d.gebi('feedback')) {
-            jct.setup_feedback_modal();
+    function _matches_routes(routes, results) {
+        if (!routes) {
+            return true;
         }
 
-        if (jct.d.gebi('jct_open_help_modal')) {
-            jct.d.gebi('jct_open_help_modal').addEventListener("click", (e) => {
-                e.preventDefault();
-                let modal = jct.d.gebi('jct_modal_help');
-                modal.style.display = 'block';
-            })
-        }
-
-        window.onclick = (e) => {
-            let modals = [].slice.call(jct.d.gebc("modal"));
-            if (modals.includes(e.target)){
-                e.target.style.display = "none";
+        let compliantRoutes = [];
+        for (let i = 0; i < results.length; i++) {
+            let r = results[i];
+            if (r.compliant === "yes") {
+                compliantRoutes.push(r.route);
             }
         }
 
-        jct.d.each("jct_modal_close", (el) => {
-            el.addEventListener("click", (e) => {
-                let id = e.target.getAttribute("data-id");
-                let modal = document.getElementById(id);
-                modal.style.display = "none";
-            })
-        })
+        if (routes.must) {
+            for (let i = 0; i < routes.must.length; i++) {
+                let mr = routes.must[i];
+                if (!compliantRoutes.includes(mr)) {
+                    return false;
+                }
+            }
+        }
+
+        if (routes.not) {
+            for (let i = 0; i < routes.not.length; i++) {
+                let nr = routes.not[i];
+                if (compliantRoutes.includes(nr)) {
+                    return false;
+                }
+            }
+        }
+
+        if (routes.or) {
+            for (let i = 0; i < routes.or.length; i++) {
+                let or = routes.or[i];
+                if (compliantRoutes.includes(or)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    function _matches_qualifications(qualifications, results) {
+        if (!qualifications) {
+            return true;
+        }
+
+        if (qualifications.must) {
+            for (let i = 0; i < qualifications.must.length; i++) {
+                let mq = qualifications.must[i];
+                if (!_hasQualification(mq, results)) {
+                    return false;
+                }
+            }
+        }
+
+        if (qualifications.not) {
+            for (let i = 0; i < qualifications.not.length; i++) {
+                let nq = qualifications.not[i];
+                if (_hasQualification(nq, results)) {
+                    return false;
+                }
+            }
+        }
+
+        if (qualifications.or) {
+            for (let i = 0; i < qualifications.or.length; i++) {
+                let oq = qualifications.or[i];
+                if (_hasQualification(oq, results)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    function _hasQualification(path, results) {
+        let bits = path.split(".");
+        for (let i = 0; i < results.length; i++) {
+            let r = results[i];
+            if (bits[0] === r.route) {
+                if ("qualifications" in r) {
+                    for (let j = 0; j < r.qualifications.length; j++) {
+                        let qual = r.qualifications[j];
+                        if (Object.keys(qual).includes(bits[1])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // list the cards to display
+    let cards = [];
+    for (let i = 0; i < config.cards.length; i++) {
+        let cardConfig = config.cards[i];
+        if (_matches(cardConfig, results)) {
+            cards.push(cardConfig);
+        }
+    }
+
+    // sort them according to the correct order
+    let sorted_cards = []
+    for (let i = 0; i < config.card_order.length; i++) {
+        let next = config.card_order[i];
+        for (let j = 0; j < cards.length; j++) {
+            let card = cards[j];
+            if (card.id === next) {
+                sorted_cards.push(card);
+            }
+        }
+    }
+
+    return sorted_cards;
+}
+
+// ----------------------------------------
+// Function to display the selected list of tiles
+// ----------------------------------------
+jct.displayCards = (cardsToDisplay, result) => {
+    // let chosen_data = jct.chosen;
+    for (let i = 0; i < cardsToDisplay.length; i++) {
+        let cardConfig = cardsToDisplay[i];
+        let card = jct.buildCard(cardConfig, jct.lang, result, jct.chosen);
+        jct.d.gebi("jct_paths_results").append(jct.htmlToElement(card));
     }
 }
+
+// ----------------------------------------
+// Function to display specific card
+// ----------------------------------------
+jct.buildCard = function(cardConfig, uiText, results, choices) {
+    // img: cards.[card_id].icon
+    // site.preferred
+    // cards.[card_id].title
+    //
+    // cards.[card_id].body.default
+    // cards.[card_id].body.[compliant route id]
+
+    let cardText = uiText.cards[cardConfig.id];
+
+    // get the icon if it exists, and the icon identifier is not "false" (the string).
+    let icon = "";
+    if (cardText.icon && cardText.icon !== "false") {
+        icon = uiText.icons[cardText.icon];
+        if (icon === undefined) {
+            icon = "";
+        }
+    }
+
+    let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
+    let modal = cardConfig.hasOwnProperty("modal") ? `<a href="#" class="modal-trigger" data-modal="${cardConfig.modal}">${uiText.site.card_modal}</a>` : "";
+
+    let body = "";
+    if (cardText.body.hasOwnProperty("default")) {
+        body += cardText.body.default;
+    }
+
+    let compliantRoutes = [];
+    for (let i = 0; i < results.length; i++) {
+        let r = results[i];
+        if (r.compliant === "yes") {
+            compliantRoutes.push(r.route);
+        }
+    }
+
+    if (cardConfig.hasOwnProperty("display_if_compliant")) {
+        for (let i = 0; i < cardConfig.display_if_compliant.length; i++) {
+            let route = cardConfig.display_if_compliant[i];
+            if (compliantRoutes.includes(route)) {
+                if (cardText.body.hasOwnProperty(route)) {
+                    body += cardText.body[route];
+                }
+            }
+        }
+    }
+
+    body = body.replace("{title}", choices.journal.title);
+    body = body.replace("{funder}", choices.funder.title);
+    body = body.replace("{publisher}", choices.journal.publisher);
+
+    if (choices.institution) {
+        body = body.replace("{institution}", choices.institution.title);
+    } else {
+        body = body.replace("{institution}", uiText.site.card_institution_missing);
+    }
+
+    return `<div class="col col--1of4">
+        <article class="card">
+            ${icon}
+            <h4 class="label card__heading">
+                ${preferred}
+                <span>${cardText.title}</span>
+            </h4>
+            ${body}
+            <p>${modal}</p>
+        </article>
+    </div>`;
+}
+
+////////////////////////////////////////////////
+// Modal handling
+
+jct.bindModals = function() {
+    let triggers = document.getElementsByClassName("modal-trigger");
+    for (let i = 0; i < triggers.length; i++) {
+        let trigger = triggers[i];
+        trigger.removeEventListener("click", jct.modalTrigger);
+        trigger.addEventListener("click", jct.modalTrigger)
+    }
+}
+
+jct.modalTrigger = function(event) {
+    event.preventDefault();
+    let element = event.target;
+    let modalId = element.getAttribute("data-modal");
+    let modal = jct.build_modal(modalId);
+    jct.modalShow(modal);
+    if (jct.modal_setup.hasOwnProperty(modalId)) {
+        jct.modal_setup[modalId]();
+    }
+}
+
+jct.modalShow = function(content) {
+    let modal_div = jct.d.gebi("jct_modal_container");
+    modal_div.innerHTML = content;
+
+    let closers = document.getElementsByClassName("jct_modal_close");
+    for (let i = 0; i < closers.length; i++) {
+        closers[i].addEventListener("click", (e) => {
+            jct.closeModal();
+        });
+    }
+
+    window.addEventListener("click", jct._windowCloseModal)
+}
+
+jct.closeModal = function() {
+    let modal_div = jct.d.gebi("jct_modal_container");
+    modal_div.innerText = "";
+    window.removeEventListener("click", jct._windowCloseModal)
+}
+
+jct._windowCloseModal = function(e) {
+    let modals = [].slice.call(jct.d.gebc("modal"));
+    if (modals.includes(e.target)){
+        jct.closeModal();
+    }
+}
+
+jct.build_modal = (modal_id) => {
+    let modalText = jct.lang.modals[modal_id];
+    if (!modalText) {
+        return "";
+    }
+    let modal_html = `<div class="modal" id="jct_modal_${modal_id}" style="display: block">
+        <div class="modal-content" id="jct_modal_${modal_id}_content">
+            <header class="modal-header">
+                <h2>${modalText.title}
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>
+                </h2>
+            </header>
+            <div>${modalText.body}</div>
+        </div>
+    </div>`
+    return modal_html;
+}
+
+//////////////////////////////////////////////
+// Funder autocomplete
+
+jct.indexFunders = function() {
+    for (let i = 0; i < jct.funderlist.length; i++) {
+        let funder = jct.funderlist[i];
+        let tokens = []
+        tokens = tokens.concat(jct.tokenise(funder.country));
+        tokens = tokens.concat(jct.tokenise(funder.name));
+        tokens = tokens.concat(jct.tokenise(funder.abbr));
+        funder.tokens = tokens
+    }
+}
+
+jct.tokenise = function(str) {
+    if (!str) { return [] }
+    return str.trim().split(" ").map(x => x.trim().toLowerCase())
+}
+
+jct.searchFunders = function(str) {
+    let searchTokens = jct.tokenise(str);
+
+    // find all matching records
+    let matches = {};
+    for (let j = 0; j < jct.funderlist.length; j++) {
+        let funder = jct.funderlist[j];
+        for (let i = 0; i < searchTokens.length; i++) {
+            let st = searchTokens[i];
+            for (let k = 0; k < funder.tokens.length; k++) {
+                let ft = funder.tokens[k]
+                let idx = ft.indexOf(st);
+                if (idx > -1) {
+                    let add = 1;
+                    if (idx === 0) {
+                        add = 2;
+                    }
+                    if (matches.hasOwnProperty(funder.id)) {
+                        matches[funder.id].score += add;
+                    } else {
+                        matches[funder.id] = {"record" : funder, "score" : add}
+                    }
+                }
+            }
+        }
+    }
+
+    // sort the records by score
+    let matchIds = Object.keys(matches);
+    let matchRecords = []
+    for (let i = 0; i < matchIds.length; i++) {
+        let id = matchIds[i];
+        matchRecords.push(matches[id]);
+    }
+    matchRecords.sort((a, b) => a.score < b.score ? 1 : -1);
+
+    return matchRecords
+}
+
+
+////////////////////////////////////////////////
+// Utilities
 
 // ----------------------------------------
 // Function _emptyElement
@@ -578,6 +468,42 @@ jct.d.each = (cls, key, val) => {
 };
 
 // ----------------------------------------
+// function to do api calls
+// ----------------------------------------
+jct.jx = (route,q,after,api) => {
+    let base_url = api ? api : jct.api;
+    let url;
+    if (route) {
+        url = new URL(route, base_url);
+    } else {
+        url = new URL(base_url);
+    }
+    if (!q === false) {
+        let searchParams = new URLSearchParams(q);
+        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)}
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url.href);
+    xhr.send();
+    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
+    xhr.onprogress = (e) => { jct.progress(e); };
+    xhr.onerror = () => { jct.error(); };
+}
+
+// ----------------------------------------
+// handy function to add html to elements
+// ----------------------------------------
+jct.htmlToElement = (html) => {
+    let template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+///////////////////////////////////////////////////////
+// Query lifecycle functions
+
+// ----------------------------------------
 // function to calculate if all data provided by the input boxes
 // ----------------------------------------
 jct._calculate_if_all_data_provided = () => {
@@ -591,25 +517,6 @@ jct._calculate_if_all_data_provided = () => {
         jct.jx('/calculate', qr);
         jct.d.gebi("jct_loading").style.display = "block";
     }
-}
-
-// ----------------------------------------
-// function to set focus on next element after choosing from auto suggestion and
-// calculate if all data provided
-// ----------------------------------------
-jct.choose = (e, el, which) => {
-    let id = el["id"];
-    let title = el["title"];
-    jct.chosen[which] = el;
-    if (which === 'journal') {
-        jct.d.gebi('jct_funder').focus();
-    } else if (which === 'funder') {
-        jct.d.gebi('jct_institution').focus();
-    } else {
-        jct.d.gebi('jct_institution').blur();
-        jct.d.gebi('jct_notHE').checked = false;
-    }
-    jct._calculate_if_all_data_provided();
 }
 
 // ----------------------------------------
@@ -648,6 +555,7 @@ jct.success = (xhr) => {
     if (jct.d.gebi("jct_find_out_more")) {
         jct.setup_fom_url();
     }
+    jct.bindModals();
 }
 
 //-----------------------------------------
@@ -658,13 +566,13 @@ jct.display_result = (js) => {
     jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
         jct._setComplianceTheme(true);
-        let tiles_to_display = jct.get_tiles_to_display(js.results)
-        jct.display_tiles(tiles_to_display);
     }
     else {
         jct._setComplianceTheme(false);
-        jct._addNonCompliantOptions();
+        // jct._addNonCompliantOptions();
     }
+    let cardsToDisplay = jct.getCardsToDisplay(jct.config, js.results);
+    jct.displayCards(cardsToDisplay, js.results);
 
     x = window.matchMedia("(max-width: 767px)")
     let results_section_top = jct.d.gebi("jct_results_plugin").offsetTop
@@ -675,13 +583,6 @@ jct.display_result = (js) => {
     if (typeof window.JCT_WIDGET == 'undefined'){
         window.scrollTo(0, results_section_top - inputs_height)
     }
-}
-
-// ----------------------------------------
-// function to add non compliant html response
-// ----------------------------------------
-jct._addNonCompliantOptions = () => {
-    jct.d.gebi("jct_paths_results").innerHTML = jct.non_compliant_options_html;
 }
 
 // ----------------------------------------
@@ -727,160 +628,6 @@ jct._setComplianceTheme = (compliant) => {
 }
 
 // ----------------------------------------
-// function to check for self archiving rights retention route in result
-// ----------------------------------------
-jct.sa_rights_retention_check = (result) => {
-    // check if qualification with id rights_retention_author_advice exists
-    // in the result
-    let has_rights_retention = false;
-    if ("qualifications" in result) {
-        result.qualifications.forEach((q) => {
-            if ("rights_retention_author_advice" in q) {
-                has_rights_retention = true;
-            }
-        })
-    }
-    return has_rights_retention;
-}
-
-// ----------------------------------------
-// function to check if fully oa route is compliant
-// ----------------------------------------
-jct.fully_oa_check = (results) => {
-    let has_fully_oa = false;
-    results.forEach((r) => {
-        if (r.compliant === "yes" && r.route === jct.COMPLIANCE_ROUTES_SHORT.fully_oa) {
-            has_fully_oa = true;
-        }
-    })
-    return has_fully_oa;
-}
-
-// ----------------------------------------
-// function to get the author qualification description
-// ----------------------------------------
-jct.author_qualification = (qualifications) => {
-    let author_qualification = '';
-    if ((typeof qualifications !== "undefined") && qualifications.length > 0) {
-        for (let [key,values] of Object.entries(qualifications[0])) {
-            if (key === 'corresponding_authors' && key in jct.api_codes.qualification_ids &&
-                'description' in jct.api_codes.qualification_ids[key]) {
-                author_qualification = jct.api_codes.qualification_ids[key]['description'];
-            }
-        }
-    }
-    return author_qualification;
-}
-
-// ----------------------------------------
-// function to get tiles to display
-// ----------------------------------------
-jct.get_tiles_to_display = (results) => {
-    let tiles_to_display = {}
-    let has_fully_oa = jct.fully_oa_check(results);
-    results.forEach((r) => {
-        if (r.compliant === "yes") {
-            switch (r.route) {
-                case jct.COMPLIANCE_ROUTES_SHORT.fully_oa:
-                    tiles_to_display['fully_oa'] = r
-                    break;
-                case jct.COMPLIANCE_ROUTES_SHORT.ta:
-                    tiles_to_display['ta'] = r
-                    break;
-                case jct.COMPLIANCE_ROUTES_SHORT.tj:
-                    tiles_to_display['tj'] = r
-                    break;
-                case jct.COMPLIANCE_ROUTES_SHORT.sa:
-                    if (!has_fully_oa) {
-                        let has_sa_rights_retention = jct.sa_rights_retention_check(r);
-                        if (has_sa_rights_retention) {
-                            tiles_to_display['sa_rr'] = r
-                        } else {
-                            tiles_to_display['sa'] = r
-                        }
-                    }
-                    break;
-            }
-        }
-    })
-    if ('fully_oa' in tiles_to_display && 'sa' in tiles_to_display) {
-        delete tiles_to_display.sa;
-    }
-    return tiles_to_display;
-}
-
-// ----------------------------------------
-// Function to display the selected list of tiles
-// ----------------------------------------
-jct.display_tiles = (tiles_to_display) => {
-    let chosen_data = jct.chosen;
-    jct.ORDER_OF_TILES.forEach((tile_name) => {
-        if (tile_name in tiles_to_display) {
-            let result = tiles_to_display[tile_name];
-            let tile = jct.display_tile(tile_name, chosen_data, result);
-            jct.d.gebi("jct_paths_results").append(tile);
-            jct.activate_tile_modal(tile_name);
-        }
-    })
-    jct.activate_preferred_modal();
-}
-
-// ----------------------------------------
-// Function to display specific tile
-// ----------------------------------------
-jct.display_tile = (tile_name, chosen_data, result) => {
-    let tile;
-    switch (tile_name) {
-        case 'fully_oa':
-            tile = jct.fullyOA_tile(chosen_data, result.qualifications);
-            break;
-        case 'ta':
-            tile = jct.transformative_agreement_tile(chosen_data, result.qualifications);
-            break;
-        case 'tj':
-            tile = jct.transformative_journal_tile(chosen_data, result.qualifications);
-            break;
-        case 'sa':
-            tile = jct.self_archiving_tile(chosen_data, result.qualifications);
-            break;
-        case 'sa_rr':
-            tile  = jct.sa_rights_retention_tile(chosen_data, result.qualifications);
-            break;
-    }
-    return tile;
-}
-
-// ----------------------------------------
-// function to add event handler for a modal associated with a tile
-// ----------------------------------------
-jct.activate_tile_modal = (tile_name) => {
-    let modal_id = 'jct_open_' + tile_name + '_modal';
-    if (jct.d.gebi(modal_id)) {
-        jct.d.gebi(modal_id).addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal_name = 'jct_modal_' + tile_name;
-            let modal = jct.d.gebi(modal_name);
-            modal.style.display = 'block';
-        })
-    }
-}
-
-// ----------------------------------------
-// function to add event handler for modal associated with preferred tiles
-// ----------------------------------------
-jct.activate_preferred_modal = () => {
-    let preferred_tiles = jct.d.gebc("jct_open_preferred_modal");
-    for (let i = 0; i < preferred_tiles.length; i++) {
-        let preferred_tile = preferred_tiles[i];
-        preferred_tile.addEventListener("click", (e) => {
-            e.preventDefault();
-            let modal = jct.d.gebi("jct_modal_preferred");
-            modal.style.display = "block";
-        });
-    }
-}
-
-// ----------------------------------------
 // Function to scroll to the result tiles
 // ----------------------------------------
 jct.scroll_to_result_tiles = () => {
@@ -892,81 +639,6 @@ jct.scroll_to_result_tiles = () => {
     }
     window.scrollTo(0, results_section_top - inputs_height)
     //results_section.scrollIntoView({scrollIntoViewOptions: true, behaviour: "smooth"})
-}
-
-// ----------------------------------------
-// function to do api calls
-// ----------------------------------------
-jct.jx = (route,q,after,api) => {
-    let base_url = api ? api : jct.api;
-    let url;
-    if (route) {
-        url = new URL(route, base_url);
-    } else {
-        url = new URL(base_url);
-    }
-    if (!q === false) {
-        let searchParams = new URLSearchParams(q);
-        for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)};
-    }
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', url.href);
-    xhr.send();
-    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
-    xhr.onprogress = (e) => { jct.progress(e); };
-    xhr.onerror = () => { jct.error(); };
-}
-
-// ----------------------------------------
-// handy function to add html to elements
-// ----------------------------------------
-jct.htmlToElement = (html) => {
-    let template = document.createElement('template');
-    html = html.trim(); // Never return a text node of whitespace as the result
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-// ----------------------------------------
-// function to show detailed results
-// ----------------------------------------
-jct.d.show_detailed_results = () => {
-    let explainResults = jct.d.gebi("jct_explain_results");
-    if (explainResults) {
-        explainResults.innerHTML = 'Hide explanation';
-    }
-    jct.d.gebi('jct_detailed_results').style.display = "flex";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'initial';
-    }
-}
-
-// ----------------------------------------
-// function to hide detailed results
-// ----------------------------------------
-jct.d.hide_detailed_results = () => {
-    let explainResults = jct.d.gebi("jct_explain_results");
-    if (explainResults) {
-        explainResults.innerHTML = 'Explain this result';
-    }
-    jct.d.gebi('jct_detailed_results').style.display = "none";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'none';
-    }
-}
-
-// ----------------------------------------
-// function to toggle detailed results
-// ----------------------------------------
-jct.d.toggle_detailed_results = () => {
-    let section = jct.d.gebi('jct_detailed_results');
-    if (section.style.display === "none") {
-        jct.d.show_detailed_results();
-    } else {
-        jct.d.hide_detailed_results();
-    }
 }
 
 // ----------------------------------------
@@ -1014,6 +686,28 @@ jct.result_equals_chosen = (js) => {
     return result;
 }
 
+///////////////////////////////////////////////////////
+// Autosuggest input box management
+
+// ----------------------------------------
+// function to set focus on next element after choosing from auto suggestion and
+// calculate if all data provided
+// ----------------------------------------
+jct.choose = (e, el, which) => {
+    let id = el["id"];
+    let title = el["title"];
+    jct.chosen[which] = el;
+    if (which === 'journal') {
+        jct.d.gebi('jct_funder').focus();
+    } else if (which === 'funder') {
+        jct.d.gebi('jct_institution').focus();
+    } else {
+        jct.d.gebi('jct_institution').blur();
+        jct.d.gebi('jct_notHE').checked = false;
+    }
+    jct._calculate_if_all_data_provided();
+}
+
 // ----------------------------------------
 // function to apply default values to the select boxes
 // and which runs the compliance check if all boxes are set
@@ -1026,13 +720,58 @@ jct.set_each_default = (type, value) => {
     jct.clinputs[type].setChoice(value, doChoose);
 }
 
+//////////////////////////////////////////////////////////////
+// Toggling detailed results
+
 // ----------------------------------------
-// Setup JCT
-// This maninly initializes clinput, CL's implementation of select 2
+// function to show detailed results
 // ----------------------------------------
-jct.clinputs = {};
+jct.d.show_detailed_results = () => {
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Hide explanation';
+    }
+    jct.d.gebi('jct_detailed_results').style.display = "flex";
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'initial';
+    }
+}
+
+// ----------------------------------------
+// function to hide detailed results
+// ----------------------------------------
+jct.d.hide_detailed_results = () => {
+    let explainResults = jct.d.gebi("jct_explain_results");
+    if (explainResults) {
+        explainResults.innerHTML = 'Explain this result';
+    }
+    jct.d.gebi('jct_detailed_results').style.display = "none";
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'none';
+    }
+}
+
+// ----------------------------------------
+// function to toggle detailed results
+// ----------------------------------------
+jct.d.toggle_detailed_results = () => {
+    let section = jct.d.gebi('jct_detailed_results');
+    if (section.style.display === "none") {
+        jct.d.show_detailed_results();
+    } else {
+        jct.d.hide_detailed_results();
+    }
+}
+
+//////////////////////////////////////////////////////////
+// Initialisation
+
+// ----------------------------------------
+// Setup JCT on a fresh page
+// ----------------------------------------
 jct.setup = (manageUrl=true) => {
-    jct.setup_modals();
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
     jct.inputs_offset = jct.d.gebi("jct_inputs_plugin").getBoundingClientRect().top
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
@@ -1109,8 +848,6 @@ jct.setup = (manageUrl=true) => {
                 issnPrefix = "ISSN: ";
             }
             frag += ' <span class="jct__option_journal_issn">' + issnPrefix + issns + '</span></a> ';
-
-            // sgst += '<p class="select_option"><a class="button choose'+ '" which="' + jct.suggesting + '" title="' + t + '" id="' + suggs.data[s].id + '" href="#">' + t + '</a></p>';
             return frag;
         },
         selectedTemplate : function(obj) {
@@ -1163,26 +900,36 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
             if (text.length > 1) {
-                let ourcb = (xhr) => {
-                    let js = JSON.parse(xhr.response);
-                    callback(js.data);
-                }
-                jct.jx('/suggest/funder/'+text, false, ourcb);
+                let results = jct.searchFunders(text);
+                let options = results.map((x) => x.record);
+                callback(options);
             }
         },
         optionsTemplate : function(obj) {
-            let title = obj.title;
-            return '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + title + '</span>';
+            let entry = obj.name;
+            if (obj.country) {
+                entry += ", " + obj.country;
+            }
+            if (obj.abbr) {
+                entry += " (" + obj.abbr + ")";
+            }
+            return '<a class="optionsTemplate"><span class="jct__option_publisher_title">' + entry + '</span>';
         },
         selectedTemplate : function(obj) {
-            return obj.title;
+            let entry = obj.name;
+            if (obj.country) {
+                entry += ", " + obj.country;
+            }
+            if (obj.abbr) {
+                entry += " (" + obj.abbr;
+            }
+            return entry;
         },
         onChoice: function(e,el) {
             jct.choose(e,el, "funder");
         },
-        rateLimit: 400,
+        rateLimit: 0,
         optionsLimit: 10,
         allowClear: true,
     });
@@ -1294,4 +1041,10 @@ jct.setup = (manageUrl=true) => {
             window.history.replaceState("", "", "/");
         }
     }
+
+    // index the funders for autocomplete
+    jct.indexFunders();
+
+    // finally, bind all the modals on the page
+    jct.bindModals();
 }
