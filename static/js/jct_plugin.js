@@ -66,6 +66,7 @@ clinput.CLInput = class {
     }
 
     setChoice(value, callback) {
+        this.value = value;
         this.options_method(value, (data) => {
             this.optionsReceived(data, true)
             if (this.options.length > 0) {
@@ -706,7 +707,7 @@ jct.indexFunders = function() {
         tokens = tokens.concat(jct.tokenise(funder.country));
         tokens = tokens.concat(jct.tokenise(funder.name));
         tokens = tokens.concat(jct.tokenise(funder.abbr));
-        funder.tokens = tokens
+        jct.funderlist[i].tokens = tokens
     }
 }
 
@@ -1092,6 +1093,9 @@ jct.setup = (manageUrl=true) => {
     let f = jct.d.gebi("jct_funder");
     jct.suggesting = true;
 
+    // index the funders for autocomplete (this must be done before we initialise or trigger the CLInputs)
+    jct.indexFunders();
+
     window.onscroll = (e) => {
         let inputs = jct.d.gebi("jct_inputs_plugin")
         let label_height = jct.d.gebi("jct_journal-container").getElementsByTagName("label")[0].offsetHeight
@@ -1354,9 +1358,6 @@ jct.setup = (manageUrl=true) => {
             window.history.replaceState("", "", "/");
         }
     }
-
-    // index the funders for autocomplete
-    jct.indexFunders();
 
     // finally, bind all the modals on the page
     jct.bindModals();
