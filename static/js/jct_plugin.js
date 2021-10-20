@@ -1086,18 +1086,15 @@ jct.d.toggle_detailed_results = () => {
 // ----------------------------------------
 jct.setup = (manageUrl=true) => {
     jct.d.gebi("jct_inputs_plugin").innerHTML = jct.inputs_plugin_html;
-    jct.inputs_offset = jct.d.gebi("jct_inputs_plugin").getBoundingClientRect().top
     jct.d.gebi("jct_results_plugin").innerHTML = jct.results_plugin_html;
     jct.d.gebi("jct_tiles_plugin").innerHTML = jct.tiles_plugin_html;
     let f = jct.d.gebi("jct_funder");
     jct.suggesting = true;
 
     window.onscroll = (e) => {
-        let inputs = jct.d.gebi("jct_inputs_plugin")
-        let label_height = jct.d.gebi("jct_journal-container").getElementsByTagName("label")[0].offsetHeight
-        let currentScrollPos = window.pageYOffset
         x = window.matchMedia("(max-width: 767px)")
-        if (currentScrollPos > jct.inputs_offset && !x.matches) {
+        let inputs = jct.d.gebi("jct_inputs_plugin")
+        if (window.pageYOffset > jct.input_top && !x.matches) {
             inputs.classList.add("sticky")
         }
         else {
@@ -1303,6 +1300,8 @@ jct.setup = (manageUrl=true) => {
         optionsLimit: 10,
         allowClear: true,
     });
+
+    jct.input_top = jct.d.gebi("jct_journal-container").getElementsByTagName("input")[0].getBoundingClientRect().top
 
     jct.d.gebi("jct_journal").addEventListener("click", scroll_to_top_if_sticky)
     jct.d.gebi("jct_funder").addEventListener("click", scroll_to_top_if_sticky)
