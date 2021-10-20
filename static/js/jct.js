@@ -393,7 +393,7 @@ jct.indexFunders = function() {
         tokens = tokens.concat(jct.tokenise(funder.country));
         tokens = tokens.concat(jct.tokenise(funder.name));
         tokens = tokens.concat(jct.tokenise(funder.abbr));
-        funder.tokens = tokens
+        jct.funderlist[i].tokens = tokens
     }
 }
 
