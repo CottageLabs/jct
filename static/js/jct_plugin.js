@@ -725,6 +725,7 @@ jct.searchFunders = function(str) {
         let funder = jct.funderlist[j];
         for (let i = 0; i < searchTokens.length; i++) {
             let st = searchTokens[i];
+            // first check the search tokens
             for (let k = 0; k < funder.tokens.length; k++) {
                 let ft = funder.tokens[k]
                 let idx = ft.indexOf(st);
@@ -738,6 +739,15 @@ jct.searchFunders = function(str) {
                     } else {
                         matches[funder.id] = {"record" : funder, "score" : add}
                     }
+                }
+            }
+
+            // then also check the funder id, which is a high scoring match
+            if (st === funder.id) {
+                if (matches.hasOwnProperty(funder.id)) {
+                    matches[funder.id].score += 100;
+                } else {
+                    matches[funder.id] = {"record" : funder, "score" : 100}
                 }
             }
         }
