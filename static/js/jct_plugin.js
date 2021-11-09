@@ -66,6 +66,7 @@ clinput.CLInput = class {
     }
 
     setChoice(value, callback) {
+        this.value = value;
         this.options_method(value, (data) => {
             this.optionsReceived(data, true)
             if (this.options.length > 0) {
@@ -706,7 +707,7 @@ jct.indexFunders = function() {
         tokens = tokens.concat(jct.tokenise(funder.country));
         tokens = tokens.concat(jct.tokenise(funder.name));
         tokens = tokens.concat(jct.tokenise(funder.abbr));
-        funder.tokens = tokens
+        jct.funderlist[i].tokens = tokens
     }
 }
 
@@ -724,6 +725,7 @@ jct.searchFunders = function(str) {
         let funder = jct.funderlist[j];
         for (let i = 0; i < searchTokens.length; i++) {
             let st = searchTokens[i];
+            // first check the search tokens
             for (let k = 0; k < funder.tokens.length; k++) {
                 let ft = funder.tokens[k]
                 let idx = ft.indexOf(st);
@@ -737,6 +739,15 @@ jct.searchFunders = function(str) {
                     } else {
                         matches[funder.id] = {"record" : funder, "score" : add}
                     }
+                }
+            }
+
+            // then also check the funder id, which is a high scoring match
+            if (st === funder.id) {
+                if (matches.hasOwnProperty(funder.id)) {
+                    matches[funder.id].score += 100;
+                } else {
+                    matches[funder.id] = {"record" : funder, "score" : 100}
                 }
             }
         }
@@ -1091,6 +1102,9 @@ jct.setup = (manageUrl=true) => {
     let f = jct.d.gebi("jct_funder");
     jct.suggesting = true;
 
+    // index the funders for autocomplete (this must be done before we initialise or trigger the CLInputs)
+    jct.indexFunders();
+
     window.onscroll = (e) => {
         x = window.matchMedia("(max-width: 767px)")
         let inputs = jct.d.gebi("jct_inputs_plugin")
@@ -1353,9 +1367,6 @@ jct.setup = (manageUrl=true) => {
             window.history.replaceState("", "", "/");
         }
     }
-
-    // index the funders for autocomplete
-    jct.indexFunders();
 
     // finally, bind all the modals on the page
     jct.bindModals();
