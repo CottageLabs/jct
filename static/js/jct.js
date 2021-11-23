@@ -10,7 +10,11 @@ let jct = {
     latest_response: null,
     lang: JCT_LANG,
     modal_setup : {},
-    clinputs: {}
+    clinputs: {},
+    inputsCycle: {
+        "journal" : "funder",
+        "funder" : "institution"
+    }
 };
 
 jct.d = document;
@@ -704,17 +708,25 @@ jct.result_equals_chosen = (js) => {
 // calculate if all data provided
 // ----------------------------------------
 jct.choose = (e, el, which) => {
-    let id = el["id"];
-    let title = el["title"];
     jct.chosen[which] = el;
-    if (which === 'journal') {
-        jct.d.gebi('jct_funder').focus();
-    } else if (which === 'funder') {
-        jct.d.gebi('jct_institution').focus();
-    } else {
-        jct.d.gebi('jct_institution').blur();
+    let next = jct.inputsCycle[which];
+    if (next) {
+        let inp = jct.clinputs[next];
+        if (!inp.hasChoice()) {
+            inp.activate();
+        }
+    }
+    if (which === "institution") {
         jct.d.gebi('jct_notHE').checked = false;
     }
+    // if (which === 'journal') {
+    //     jct.d.gebi('jct_funder').focus();
+    // } else if (which === 'funder') {
+    //     jct.d.gebi('jct_institution').focus();
+    // } else {
+    //     jct.d.gebi('jct_institution').blur();
+    //     jct.d.gebi('jct_notHE').checked = false;
+    // }
     jct._calculate_if_all_data_provided();
 }
 

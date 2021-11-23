@@ -49,6 +49,11 @@ clinput.CLInput = class {
         });
     }
 
+    activate() {
+        let input = document.getElementById(this.id);
+        input.focus();
+    }
+
     setChoice(value, callback) {
         this.value = value;
         this.options_method(value, (data) => {
@@ -59,6 +64,10 @@ clinput.CLInput = class {
             }
             callback(this.selectedObject);
         });
+    }
+
+    hasChoice() {
+        return !!this.selectedObject;
     }
 
     unsetTimer() {
@@ -267,6 +276,7 @@ clinput.CLInput = class {
         this.lastSearchValue = input.value;
         this.selectedObject = this.options[idx];
         this.showSelectedObject();
+        // input.blur();
         this.onChoice(e,this.options[idx]);
     }
 
