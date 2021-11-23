@@ -21,7 +21,7 @@ td, th {
 
 # JCT Public API
 
-The api is available at [{{< param apiURL >}}]({{< param apiURL >}}).
+The api is available at [{{< param apidocs.ApiURL >}}]({{< param apidocs.ApiURL >}}).
 
 <hr>
 

@@ -50,6 +50,7 @@ clinput.CLInput = class {
     }
 
     setChoice(value, callback) {
+        this.value = value;
         this.options_method(value, (data) => {
             this.optionsReceived(data, true)
             if (this.options.length > 0) {

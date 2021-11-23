@@ -1,1 +1,4 @@
-apiURL = "https://api.journalcheckertool.org"
+[apidocs]
+    apiURL = "https://api.journalcheckertool.org"
+[results]
+    populate = false
