@@ -951,6 +951,9 @@ jct.setup = (manageUrl=true) => {
         onChoice: function(e,el) {
             jct.choose(e,el, "funder");
         },
+        selectedObjectToSearchString: function(selected) {
+            return selected.name
+        },
         rateLimit: 0,
         optionsLimit: 10,
         allowClear: true,

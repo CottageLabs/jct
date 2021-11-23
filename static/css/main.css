@@ -764,7 +764,17 @@ button {
   padding: 0;
   background-color: #000;
   border-radius: 0.75rem;
-  list-style: none; }
+  list-style: none;
+  max-height: 200px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #F47115 #FFF; }
+  .clinput__options::-webkit-scrollbar {
+    width: 5px; }
+  .clinput__options::-webkit-scrollbar-track {
+    background: #FFF; }
+  .clinput__options::-webkit-scrollbar-thumb {
+    background-color: #F47115; }
 
 .clinput__option {
   padding: 0;
