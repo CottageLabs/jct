@@ -30,7 +30,9 @@ clinput.CLInput = class {
         this.element = params.element;
         this.onChoice = params.onChoice;
         this.newValueMethod = params.newValue || false;
-        this.lastSearchValue = "";
+        this.selectedObjectToSearchString = params.selectedObjectToSearchString || false
+        // this.lastSearchValue = "";
+        this.setLastSearchValue("");
         this.selectedObject = false;
 
         let label = params.label;
@@ -51,18 +53,24 @@ clinput.CLInput = class {
 
         let input = document.getElementById(this.id);
         input.addEventListener("focus", () => {this.activateInput()});
-        input.addEventListener("blur", () => {this.recordSearchValue()});
+        input.addEventListener("blur", () => {this.recordSearchValue(true)});
         input.addEventListener("keydown", (e) => {
             let entries = document.getElementsByClassName("clinput__option_"+this.id);
             let arrowPress = (code, entries) => {
                 if(code === "ArrowDown"){
                     entries[0].focus();
+                    e.preventDefault();
                 }
             }
             if (entries.length > 0) {
                 this._dispatchForCode(event, arrowPress, entries);
             }
         });
+    }
+
+    activate() {
+        let input = document.getElementById(this.id);
+        input.focus();
     }
 
     setChoice(value, callback) {
@@ -77,6 +85,10 @@ clinput.CLInput = class {
         });
     }
 
+    hasChoice() {
+        return !!this.selectedObject;
+    }
+
     unsetTimer() {
         if (this.timer) {
             clearInterval(this.timer);
@@ -84,11 +96,16 @@ clinput.CLInput = class {
         }
     }
 
-    recordSearchValue() {
+    setLastSearchValue(val) {
+        this.lastSearchValue = val;
+    }
+
+    recordSearchValue(root) {
         let input = document.getElementById(this.id);
         let newVal = input.value;
         if (newVal !== this.lastSearchValue) {
-            this.lastSearchValue = input.value;
+            // this.lastSearchValue = input.value;
+            this.setLastSearchValue(input.value);
             this.selectedObject = false;
         }
 
@@ -108,7 +125,8 @@ clinput.CLInput = class {
     clear() {
         this._setInputValue("");
         this.selectedObject = false;
-        this.lastSearchValue = "";
+        // this.lastSearchValue = "";
+        this.setLastSearchValue("");
     }
 
     activateInput() {
@@ -120,23 +138,32 @@ clinput.CLInput = class {
             let lsv = this.lastSearchValue.toLowerCase();
             let keys = Object.keys(this.selectedObject);
 
-            keycheck:
-            for (let i = 0; i < keys.length; i++) {
-                let key = keys[i];
-                let v = this.selectedObject[key];
-                if (Array.isArray(v)) {
-                    for (var j = 0; j < v.length; j++) {
-                        let ve = v[j];
-                        if (ve.toLowerCase().includes(lsv)) {
-                            this._setInputValue(ve);
-                            break keycheck;
+            if (lsv) {
+                keycheck:
+                    for (let i = 0; i < keys.length; i++) {
+                        let key = keys[i];
+                        let v = this.selectedObject[key];
+                        if (Array.isArray(v)) {
+                            for (var j = 0; j < v.length; j++) {
+                                let ve = v[j];
+                                if (ve.toLowerCase().includes(lsv)) {
+                                    this._setInputValue(ve);
+                                    break keycheck;
+                                }
+                            }
+                        } else {
+                            if (v && v.toLowerCase().includes(lsv)) {
+                                this._setInputValue(v);
+                                break keycheck;
+                            }
                         }
                     }
+            } else {
+                if (this.selectedObjectToSearchString) {
+                    let ss = this.selectedObjectToSearchString(this.selectedObject);
+                    this._setInputValue(ss);
                 } else {
-                    if (v && v.toLowerCase().includes(lsv)) {
-                        this._setInputValue(v);
-                        break keycheck;
-                    }
+                    this._setInputValue(this.selectedObject[keys[0]])
                 }
             }
         }
@@ -280,9 +307,11 @@ clinput.CLInput = class {
         let input = document.getElementById(this.id);
         let options = document.getElementsByClassName("clinput__options_" + this.id);
         options[0].innerHTML = "";
-        this.lastSearchValue = input.value;
+        // this.lastSearchValue = input.value;
+        this.setLastSearchValue(input.value);
         this.selectedObject = this.options[idx];
         this.showSelectedObject();
+        // input.blur();
         this.onChoice(e,this.options[idx]);
     }
 
@@ -324,7 +353,11 @@ let jct = {
     latest_response: null,
     lang: JCT_LANG,
     modal_setup : {},
-    clinputs: {}
+    clinputs: {},
+    inputsCycle: {
+        "journal" : "funder",
+        "funder" : "institution"
+    }
 };
 
 jct.d = document;
@@ -1018,17 +1051,25 @@ jct.result_equals_chosen = (js) => {
 // calculate if all data provided
 // ----------------------------------------
 jct.choose = (e, el, which) => {
-    let id = el["id"];
-    let title = el["title"];
     jct.chosen[which] = el;
-    if (which === 'journal') {
-        jct.d.gebi('jct_funder').focus();
-    } else if (which === 'funder') {
-        jct.d.gebi('jct_institution').focus();
-    } else {
-        jct.d.gebi('jct_institution').blur();
+    let next = jct.inputsCycle[which];
+    if (next) {
+        let inp = jct.clinputs[next];
+        if (!inp.hasChoice()) {
+            inp.activate();
+        }
+    }
+    if (which === "institution") {
         jct.d.gebi('jct_notHE').checked = false;
     }
+    // if (which === 'journal') {
+    //     jct.d.gebi('jct_funder').focus();
+    // } else if (which === 'funder') {
+    //     jct.d.gebi('jct_institution').focus();
+    // } else {
+    //     jct.d.gebi('jct_institution').blur();
+    //     jct.d.gebi('jct_notHE').checked = false;
+    // }
     jct._calculate_if_all_data_provided();
 }
 
@@ -1252,6 +1293,9 @@ jct.setup = (manageUrl=true) => {
         },
         onChoice: function(e,el) {
             jct.choose(e,el, "funder");
+        },
+        selectedObjectToSearchString: function(selected) {
+            return selected.name
         },
         rateLimit: 0,
         optionsLimit: 10,
