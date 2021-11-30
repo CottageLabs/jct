@@ -28,7 +28,7 @@ The api is available at [{{< param apidocs.ApiURL >}}]({{< param apidocs.ApiURL 
 **NOTE**
 
 We are offering access to the early version of the api to enable programmatic access to the data.
-This early version will be unsupported. Therefore we recommend that you do not integrate this API
+This early version will be unsupported. Therefore, we recommend that you do not integrate this API
 into your production systems until we transition out of beta. <br><br>
 The API is rate limited to 10 requests per second, with burst up to 6000, with delay. Exceeding the limit will result in 429.
 <hr>
@@ -43,6 +43,18 @@ GET /calculate?issn=[issn]&ror=[ror]&funder=[funder]
 
 The server will execute the algorithm, and gather responses for all routes 
 before responding to the request.
+
+The parameters you can pass to the `/calculate` endpoint are as follows:
+
+* **issn** - either the print or online ISSN of the journal you wish to check.
+* **ror** - the ROR ID of the organisation that you wish to check.  See [https://ror.org](https://ror.org/) for more information
+* **funder** - the JCT ID for the funder that you wish to check.  Allowable Funder IDs are listed [here](/funder-ids)
+
+The `issn` field is the only *required* field, though without the `ror` and `funder` fields your results will
+be partial, and may not give you complete and accurate information.  If you omit the `funder` or enter an invalid
+funder ID, the API will ignore the invalid ID and give you results as if you had not provided the `funder` field.
+
+The `ror` field is optional, and is equivalent to selecting "Not affiliated" via the User Interface.
 
 ### Overall response format
 

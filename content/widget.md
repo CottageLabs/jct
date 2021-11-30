@@ -65,44 +65,18 @@ window.jct_query_options.journal = "1476-4687"
 ```
 
 ***funder***    
-This parameter expects the identifier for the funder from JCT.
+This parameter expects the JCT Funder ID.
 Setting it will pre-fill the "My Funder" input box on the widget.
 A user will also be able to select other funders from the "My Funder" box.
 
-The following funders are allowed in this field.  Below lists the funder's full name, followed by
-their ID.  For example, if you wish to pre-fill the "My Funder" input box with the "Academy of Finland (AKA)"
+See the [list of Funder IDs](/funder-ids) for a full list of your available options.
+
+For example, if you wish to pre-fill the "My Funder" input box with the "Academy of Finland (AKA)"
 then you should provide: 
 
 ```code
 window.jct_query_options.funder = "academyoffinlandaka"
 ```
-
-* Academy of Finland (AKA): `academyoffinlandaka`
-* Aligning Science Across Parkinson’s (ASAP): `aligningscienceacrossparkinsonsasap`
-* Austrian Science Fund (FWF): `austriansciencefundfwf`
-* Bill & Melinda Gates Foundation: `billmelindagatesfoundation`
-* European Commission (Horizon Europe Framework Programme): `europeancommissionhorizoneuropeframeworkprogramme`
-* Formas (Sweden): `formassweden`
-* FORTE (Sweden): `fortesweden`
-* French National Research Agency (ANR): `frenchnationalresearchagencyanr`
-* Higher Council for Science and Technology (HCST, Jordan): `highercouncilforscienceandtechnologyhcstjordan`
-* Howard Hughes Medical Institute: `howardhughesmedicalinstitute`
-* Luxembourg National Research Fund (FNR): `luxembourgnationalresearchfundfnr`
-* National Institute for Nuclear Physics (INFN, Italy): `nationalinstitutefornuclearphysicsinfnitaly`
-* National Science and Technology Council (NSTC, Zambia): `nationalscienceandtechnologycouncilnstczambia`
-* National Science Centre, Poland (NCN): `nationalsciencecentrepolandncn`
-* Netherlands Organisation for Scientific Research (NWO): `netherlandsorganisationforscientificresearchnwo`
-* Research Council of Norway (RCN): `researchcouncilofnorwayrcn`
-* Science Foundation Ireland (SFI): `sciencefoundationirelandsfi`
-* Slovenian Research Agency (ARRS): `slovenianresearchagencyarrs`
-* South African Medical Research Council (SAMRC): `southafricanmedicalresearchcouncilsamrc`
-* Templeton World Charity Foundation (TWCF): `templetonworldcharityfoundationtwcf`
-* United Kingdom Research & Innovation (UKRI): `unitedkingdomresearchinnovationukri`
-* Vinnova (Sweden): `vinnovasweden`
-* Wellcome: `wellcome`
-* World Health Organization (WHO): `worldhealthorganizationwho`
-* Special Programme for Research and Training in Tropical Diseases (TDR): `specialprogrammeforresearchandtrainingintropicaldiseasestdr`
-
 
 ***institution***    
 This parameter expects the [ROR](https://ror.org) of the institution.
