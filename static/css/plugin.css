@@ -412,7 +412,7 @@
         vertical-align: top; }
       #jct_plugin .expression__checkbox input {
         margin: 0 0.75rem 0 0;
-        height: 15px;
+        height: 15px !important;
         width: 15px; }
     #jct_plugin .expression:last-child {
       cursor: pointer;
