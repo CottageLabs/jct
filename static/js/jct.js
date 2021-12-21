@@ -270,7 +270,11 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
     }
 
     let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
-    let modal = cardConfig.hasOwnProperty("modal") ? `<a href="#" class="modal-trigger" data-modal="${cardConfig.modal}">${uiText.site.card_modal}</a>` : "";
+    let modalText = uiText.site.card_modal;
+    if (cardText.modal) {
+        modalText = cardText.modal;
+    }
+    let modal = cardConfig.hasOwnProperty("modal") ? `<strong><a href="#" class="modal-trigger" data-modal="${cardConfig.modal}">${modalText}</a></strong>` : "";
 
     let body = "";
     if (cardText.body.hasOwnProperty("default")) {
