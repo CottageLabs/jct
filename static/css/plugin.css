@@ -547,6 +547,8 @@
       padding-left: 15px;
       color: #585756;
       font-size: 0.833em; }
+    #jct_plugin .card a.modal-trigger {
+      color: #000; }
   #jct_plugin .patterned-section {
     background-image: url("../img/bg.png");
     background-size: cover;
