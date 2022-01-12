@@ -71,9 +71,13 @@ The `ror` field is optional, and is equivalent to selecting "Not affiliated" via
     ],
     "checks": ["<list of routes calculated, (see Route IDs below)>"]
   },
+  "compliant" : "<(bool) true|false if there is at least one compliant card in the list of cards to show the user>",
   "results" : [
     {"<route response objects as per the below>": ""}
-  ]  
+  ],
+  "cards" : [
+    {"<cards to be displayed as per the below>" :  ""}
+  ]
 }
 ```
 
@@ -214,28 +218,77 @@ For example, items such as this may be present:
 | Hybrid.Compliant | The properties of the hybrid journal are compliant with the funder's requirements | licence | List of allowed publishing licences |
 
 
+### Cards to show the user
+
+The list of cards in the `cards` section of the response defines what single routes to compliance
+the funder wants the user to be made aware of.  Cards are shown based on the compliance routes
+in the `results` section of the API response, and only cards which should be show to the user will
+be listed.  The content of the `cards` section of the response
+contains the full definitions of each card, which you can display to the user using the langage
+files provided for that funder (see below).
+
+```json
+{
+  "id": "[card_id]",
+  "match_routes": {
+    "must": [
+      "[route_id]"
+    ],
+    "or": [
+      "[route_id]",
+      "[route_id]"
+    ],
+    "not": [
+      "[route_id]"
+    ]
+  },
+  "match_qualifications": {
+    "must": [
+      "[route_id].[qualification_id]"
+    ],
+    "or": [
+      "[route_id].[qualification_id]",
+      "[route_id].[qualification_id]"
+    ],
+    "not": [
+      "[route_id].[qualification_id]"
+    ]
+  },
+  "preferred": "true|false",
+  "compliant": "true|false",
+  "display_if_compliant": [
+    "[route_id]",
+    "[route_id]"
+  ],
+  "modal": "[modal_id]"
+}
+```
+
+* `cards[].id` - a unique id for the card, an arbitrary string, but which will be used to identify the
+  card throughout the language files
+* `cards[].match_routes` - match rules for compliant routes to determine if to show this card
+  * `must` - all routes listed must be compliant
+  * `or` - at least one of the routes listed must be compliant
+  * `not` - none of the routes listed may be compliant
+* `cards[].match_qualifications` - match rules for qualifications present in calculated routes
+  * `must` - all qualifications listed must be present
+  * `or` - at least one of the qualifications listed must be present
+  * `not` - none of the qualifications listed may be present
+* `cards[].preferred` - the card represents a preferred route to compliance by the funder
+* `cards[].compliant` - the card represents a route to compliance, and the presence of at least one in the results will trigger
+  the compliant style in the front end.
+* `cards[].display_if_compliant` - the list of routes, in order, to display information about if they are compliant.  If you leave
+  this blank then no route-specific guidance will be displayed, but the `default` text for the card will be displayed anyway, so
+  you only need to use this option if the card could display information about multiple routes, and you wish to control which
+  information is displayed depending on which routes are compliant
+* `cards[].modal` - the modal to bind to the card's overall modal (other modals can be specified inline in the card text as normal)
+
+
 ## Funder Specific Configurations and Language
 
-Each funder in JCT may specify custom configuration and language for how the compliance information should be
+Each funder in JCT may specify custom language for how the compliance information should be
 interpreted and displayed to end users.  This information is heavily geared towards use in the JCT user interface.
 Nonetheless it is available also via the API for use by any downstream systems, should they wish.  
-
-Note that in some cases while an API response may contain compliant routes, that does not strictly mean the funder regards
-the combination as compliant, and at the very least the funder's configuration is required to accurately determine
-their position.
-
-### Configuration
-
-```
-GET /config/<funder id>
-```
-
-The response is a JSON document which lists:
-* Identifying information about the funder
-* The compliance routes configuration for the funder
-* The result cards the funder wishes to display, based on the route information
-
-### Language
 
 ```
 GET /lang/<funder id>
