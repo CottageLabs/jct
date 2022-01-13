@@ -25,9 +25,9 @@ The api is available at [{{< param apidocs.ApiURL >}}]({{< param apidocs.ApiURL 
 
 ## Request a compliance calculation
 
-To carry out a compliance calculation, you can make a get request, as detailed below.
+To carry out a compliance calculation, you can make an HTTP GET request, as detailed below.
 
-```
+```bash
 GET /calculate?issn=[issn]&funder=[funder]&ror=[ror]
 ```
 
@@ -59,7 +59,7 @@ The `ror` field is optional, and is equivalent to selecting "Not affiliated" via
       {
         "id": "<journal issn>", 
         "title": "<journal title>", 
-        "issn" : ["<all of the matching issn's for this journal>"],
+        "issn" : ["<all of the matching ISSNs for this journal>"],
         "publisher" : "<journal publisher>"
       }
     ],
@@ -67,7 +67,7 @@ The `ror` field is optional, and is equivalent to selecting "Not affiliated" via
       {"id": "<funder ID>", "title": "<funder title>"}
     ],
     "institution" : [
-      {"id": "<institution ROR>", "title": "<institution title>"}
+      {"id": "<institution ROR>", "title": "<institution name>"}
     ],
     "checks": ["<list of routes calculated, (see Route IDs below)>"]
   },
@@ -87,14 +87,14 @@ For each route, there is a general response format:
 
 ```json
 {
-  "route" : "<the id of the route (see Route IDs below)>",
+  "route" : "<the ID of the route (see Route IDs below)>",
   "compliant" : "<the Compliance ID for this route result (see below)",
   "qualifications" : [
     {"<qualification id> (see below)" : { "<qualification specific data (if needed)>" : "" }}
   ],
-  "issn" : ["<the issn checked for this result, if there is one>"],
+  "issn" : ["<the ISSN checked for this result, if there is one>"],
   "funder" : "<the funder checked on this result, if there is one>",
-  "ror" : "the ror relevant to this result, if there is one>",
+  "ror" : "the ROR relevant to this result, if there is one>",
   "log" : [
     {
       "code" : "<algorithm transition code (see below)>",
@@ -122,19 +122,19 @@ For each route, there is a general response format:
 
 #### Qualification IDs
 
-* `doaj_under_review` - the journal is in the DOAJ "in progress" or "under review" list, not the public DOAJ
+* `doaj_under_review` - the journal is in the DOAJ's "in progress" or "under review" list, not the public DOAJ
     * no qualification specific data required
-* `rights_retention_author_advice` - the journal does not have an SA policy and does not appear in the rights retention data source
+* `rights_retention_author_advice` - the journal does not have a self-archiving (SA) policy and does not appear in the rights retention data source
     * no qualification specific data required
-* `corresponding_authors` - the TA is only open to corresponding authors
+* `corresponding_authors` - the transformative agreement (TA) is only open to corresponding authors
     * no qualification specific data required
   
 #### Log
 
-The log provides a list of decision transitions through the algorithm, in order of traversal.  This allows you to 
-see the path through the algorithm that was taken to reach the decision, along with any relevant parameters.
+The log provides a list of decisions made by the algorithm, in order of traversal.  This allows you to 
+see the path through the algorithm that was taken to reach each decision, along with any relevant parameters.
 
-See the table below for a full list of transitions, their meanings, and the parameters that may be associated.
+See the table below for a full list of decisions, their meanings, and the parameters that may be associated.
 
 For example, items such as this may be present:
 
@@ -168,9 +168,9 @@ For example, items such as this may be present:
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
-| SA.RRException | Journal was found in JCT's list of journals that explicitly do not permit the Rights Retention strategy | | |
-| SA.RRNoException | The Journal was *not* found in JCT's list of journals that explicitly do not permit the Rights Retention strategy | | |
-| SA.InOAB | Journal was found in OAB | | |
+| SA.RRException | Journal was found in JCT's list of journals which explicitly do not permit the Rights Retention strategy | | |
+| SA.RRNoException | The Journal was *not* found in JCT's list of journals which explicitly do not permit the Rights Retention strategy | | |
+| SA.InOAB | Journal was found in Open Access Button (OAB) | | |
 | SA.NotInOAB | Journal was not found in OAB | | |
 | SA.OABNonCompliant | The record in OAB did not comply with the funder's requirements | licence | List of allowed SA licenses |
 | | | embargo | Embargo length (list of length 1) |
@@ -191,8 +191,8 @@ For example, items such as this may be present:
 | ---- | ------- | -------- | -------------- |
 | TA.NoTA | No TA was found that matched the query parameters | | |
 | TA.Exists | A TA was found that matched the query parameters | | |
-| TA.NotAcive | The TA that was found is not current in force | | |
-| TA.Active | The TA that was found is currently in force | | |
+| TA.NotActive | The TA that was found is not currently applicable | | |
+| TA.Active | The TA that was found is currently applicable | | |
 | TA.Unknown | It was not clear if the parameters of the TA meet the funder's criteria | | |
 | TA.NonCompliant | The parameters of the TA do not meet the funder's criteria | | |
 | TA.Compliant | The TA is compliant with the funder's requirements | | |
@@ -214,17 +214,17 @@ For example, items such as this may be present:
 | Hybrid.NotInOAW | The Journal was not registered in OA.Works | | |
 | Hybrid.InOAW | The Journal was registered in OA.Works | | |
 | Hybrid.NonCompliant | The properites of the hybrid journal do not meet the funder's requirements | licence | List of allowed hybrid licences |
-| Hybrid.Unknown | There was not sufficient informaiton to determine if the hybrid journal meets the funder's requirements | missing | List of properties missing |
+| Hybrid.Unknown | There was not sufficient information to determine if the hybrid journal meets the funder's requirements | missing | List of properties missing |
 | Hybrid.Compliant | The properties of the hybrid journal are compliant with the funder's requirements | licence | List of allowed publishing licences |
 
 
 ### Cards to show the user
 
-The list of cards in the `cards` section of the response defines what single routes to compliance
-the funder wants the user to be made aware of.  Cards are shown based on the compliance routes
-in the `results` section of the API response, and only cards which should be show to the user will
+The list of cards in the `cards` section of the response defines those particular routes to compliance
+which the funder wants the user to be made aware of.  Cards are shown based on the compliance routes
+in the `results` section of the API response, and only cards which should be shown to the user will
 be listed.  The content of the `cards` section of the response
-contains the full definitions of each card, which you can display to the user using the langage
+contains the full definitions of each card, which you can display to the user using the language
 files provided for that funder (see below).
 
 ```json
@@ -266,7 +266,7 @@ files provided for that funder (see below).
 
 * `cards[].id` - a unique id for the card, an arbitrary string, but which will be used to identify the
   card throughout the language files
-* `cards[].match_routes` - match rules for compliant routes to determine if to show this card
+* `cards[].match_routes` - match rules for compliant routes to determine whether or not to show this card
   * `must` - all routes listed must be compliant
   * `or` - at least one of the routes listed must be compliant
   * `not` - none of the routes listed may be compliant
@@ -277,7 +277,7 @@ files provided for that funder (see below).
 * `cards[].preferred` - the card represents a preferred route to compliance by the funder
 * `cards[].compliant` - the card represents a route to compliance, and the presence of at least one in the results will trigger
   the compliant style in the front end.
-* `cards[].display_if_compliant` - the list of routes, in order, to display information about if they are compliant.  If you leave
+* `cards[].display_if_compliant` - the list of routes, in order, to display information about whether or not they are compliant.  If you leave
   this blank then no route-specific guidance will be displayed, but the `default` text for the card will be displayed anyway, so
   you only need to use this option if the card could display information about multiple routes, and you wish to control which
   information is displayed depending on which routes are compliant
@@ -287,14 +287,14 @@ files provided for that funder (see below).
 ## Funder Specific Configurations and Language
 
 Each funder in JCT may specify custom language for how the compliance information should be
-interpreted and displayed to end users.  This information is heavily geared towards use in the JCT user interface.
-Nonetheless it is available also via the API for use by any downstream systems, should they wish.  
+interpreted and displayed to end users.  This information is optimised for use in the JCT user interface.
+Nonetheless it is also available via the API for use by any downstream systems.  
 
-```
+```bash
 GET /lang/<funder id>
 ```
 
-The response is a JSON document which contains all of the language used by the JCT front end, which covers
+The response is a JSON document which contains all of the language used by the JCT front end, which covers:
 * General site text specific to the funder
 * Text for all API log codes
 * Content for all compliance cards
@@ -304,7 +304,7 @@ The response is a JSON document which contains all of the language used by the J
 
 Determine if a journal is a transformative journal, using the issn:
 
-```
+```bash
 GET /tj/{issn}
 ```
 
@@ -321,7 +321,7 @@ OR `404` if record not found
 
 ## Transformative Agreements
 
-```
+```bash
 GET /ta?issn={issn}&ror={ror}
 ```
 
