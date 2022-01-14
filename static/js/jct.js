@@ -8,7 +8,13 @@ let jct = {
     cache: {},
     chosen: {},
     latest_response: null,
+    latest_full_response: null,
     lang: JCT_LANG,
+    funder_langs: {},
+    load : {
+        funder: false,
+        response: false
+    },
     modal_setup : {},
     clinputs: {},
     inputsCycle: {
@@ -500,12 +506,30 @@ jct.jx = (route,q,after,api) => {
         let searchParams = new URLSearchParams(q);
         for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)}
     }
+
+    // request the calculation
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url.href);
     xhr.send();
-    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
+    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.result_loaded(xhr)); };
     xhr.onprogress = (e) => { jct.progress(e); };
     xhr.onerror = () => { jct.error(); };
+
+    // request the funder language for the calculation
+    if (route === "calculate") {
+        jct.load.funder = false;
+        jct.load.response = false;
+
+        if (jct.funder_langs.hasOwnProperty(q.funder)) {
+            jct.load_funder(q.funder, jct.funder_langs[q.funder]);
+            return;
+        }
+        let fxhr = new XMLHttpRequest();
+        fxhr.open("GET", new URL(base_url + "funder_language/" + q.funder));
+        fxhr.send();
+        fxhr.onload = () => { xhr.status !== 200 ? jct.funder_error(fxhr) : jct.funder_loaded(q.funder, fxhr); };
+        fxhr.onerror = () => { jct.funder_error(); };
+    }
 }
 
 // ----------------------------------------
@@ -554,14 +578,13 @@ jct.progress = (e) => {
 // ----------------------------------------
 // function to handle success from main api response
 // ----------------------------------------
-jct.success = (xhr) => {
+jct.success = () => {
+    let js = jct.latest_full_response;
+
     jct.d.gebi('jct_compliant').style.display = 'none';
     jct.d.gebi('jct_notcompliant').style.display = 'none';
     jct.d.gebi("jct_loading").style.display = "none";
-    let js = JSON.parse(xhr.response);
-    if (!jct.result_equals_chosen(js.request))
-        return;
-    jct.latest_response = js.results;
+
     let paths_results = jct.d.gebi("jct_paths_results");
     jct._emptyElement(paths_results)
     jct.display_result(js);
@@ -574,6 +597,39 @@ jct.success = (xhr) => {
         jct.setup_fom_url();
     }
     jct.bindModals();
+}
+
+jct.funder_error = (xhr) => {
+    alert("Unable to load funder language pack, please try again");
+}
+
+jct.funder_loaded = (funder_id, xhr) => {
+    let js = JSON.parse(xhr.response);
+    jct.load_funder(funder_id, js);
+}
+
+jct.load_funder = (funder_id, lang) => {
+    jct.funder_langs[funder_id] = lang;
+    jct.lang = jct.funder_langs[funder_id];
+    jct.load.funder = true;
+    jct.doSuccess();
+}
+
+jct.doSuccess = () => {
+    if (jct.load.funder && jct.load.response) {
+        jct.success();
+    }
+}
+
+jct.result_loaded = (xhr) => {
+    let js = JSON.parse(xhr.response);
+    if (!jct.result_equals_chosen(js.request)) {
+        return;
+    }
+    jct.latest_full_response = js;
+    jct.latest_response = js.results;
+    jct.load.response = true;
+    jct.doSuccess();
 }
 
 //-----------------------------------------
