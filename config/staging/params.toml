@@ -1,3 +1,5 @@
+[main]
+    endpoint="_staging"
 [apidocs]
     apiURL = "https://api.jct.cottagelabs.com/"
 [results]
