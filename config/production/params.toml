@@ -1,3 +1,5 @@
+[main]
+    endpoint=""
 [apidocs]
     apiURL = "https://api.journalcheckertool.org"
 [results]
