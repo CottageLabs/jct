@@ -1,4 +1,4 @@
-jct.lang.modals.share_results = {
+jct.site_modals.share_results = {
     title: "Share this result",
     body: `<p>To share this result, copy the following link
             <button class="button button--primary" style="float: right;" onClick="jct.copy_results_url()">Copy</button>

@@ -9,12 +9,13 @@ let jct = {
     chosen: {},
     latest_response: null,
     latest_full_response: null,
-    lang: JCT_LANG,
+    lang: null,
     funder_langs: {},
     load : {
         funder: false,
         response: false
     },
+    site_modals : {},
     modal_setup : {},
     clinputs: {},
     inputsCycle: {
@@ -95,8 +96,8 @@ jct.inputs_plugin_html =`
 // ----------------------------------------
 jct.results_plugin_html = `
     <header class="jct_compliance">
-        <h2 id="jct_compliant" style="display:none">${jct.lang.site.compliant}</h2>
-        <h2 id="jct_notcompliant" style="display:none">${jct.lang.site.non_compliant}</h2>
+        <h2 id="jct_compliant" style="display:none"></h2>
+        <h2 id="jct_notcompliant" style="display:none"></h2>
     </header>
 `;
 
@@ -248,7 +249,10 @@ jct._windowCloseModal = function(e) {
 }
 
 jct.build_modal = (modal_id) => {
-    let modalText = jct.lang.modals[modal_id];
+    let modalText = jct.lang ? jct.lang.modals[modal_id] : "";
+    if (!modalText) {
+        modalText = jct.site_modals[modal_id];
+    }
     if (!modalText) {
         return "";
     }
@@ -505,14 +509,28 @@ jct.result_loaded = (xhr) => {
 // function to display the results
 //-----------------------------------------
 jct.display_result = (js) => {
-    jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
-    jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
+        let compliantHeader = jct.d.gebi('jct_compliant');
+        compliantHeader.innerText = jct.lang.site.compliant;
+        compliantHeader.style.display = 'block';
+
         jct._setComplianceTheme(true);
-    }
-    else {
+    } else {
+        let compliantHeader = jct.d.gebi('jct_notcompliant');
+        compliantHeader.innerText = jct.lang.site.non_compliant;
+        compliantHeader.style.display = 'block';
+
         jct._setComplianceTheme(false);
     }
+
+    // jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
+    jct.d.gebi("jct_results").style.display = 'block';
+    // if (js.compliant) {
+    //
+    // }
+    // else {
+    //
+    // }
     let cardsToDisplay = js.cards;
     jct.displayCards(cardsToDisplay, js.results);
 
