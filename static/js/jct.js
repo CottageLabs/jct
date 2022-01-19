@@ -109,138 +109,6 @@ jct.tiles_plugin_html = `
     </section>
 `;
 
-/////////////////////////////////////////////////////////
-// Cards and card management
-
-jct.getCardsToDisplay = function(config, results) {
-
-    function _matches(cardConfig, results) {
-        return _matches_routes(cardConfig.match_routes, results) &&
-            _matches_qualifications(cardConfig.match_qualifications, results);
-    }
-
-    function _matches_routes(routes, results) {
-        if (!routes) {
-            return true;
-        }
-
-        let compliantRoutes = [];
-        for (let i = 0; i < results.length; i++) {
-            let r = results[i];
-            if (r.compliant === "yes") {
-                compliantRoutes.push(r.route);
-            }
-        }
-
-        if (routes.must) {
-            for (let i = 0; i < routes.must.length; i++) {
-                let mr = routes.must[i];
-                if (!compliantRoutes.includes(mr)) {
-                    return false;
-                }
-            }
-        }
-
-        if (routes.not) {
-            for (let i = 0; i < routes.not.length; i++) {
-                let nr = routes.not[i];
-                if (compliantRoutes.includes(nr)) {
-                    return false;
-                }
-            }
-        }
-
-        if (routes.or) {
-            for (let i = 0; i < routes.or.length; i++) {
-                let or = routes.or[i];
-                if (compliantRoutes.includes(or)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    function _matches_qualifications(qualifications, results) {
-        if (!qualifications) {
-            return true;
-        }
-
-        if (qualifications.must) {
-            for (let i = 0; i < qualifications.must.length; i++) {
-                let mq = qualifications.must[i];
-                if (!_hasQualification(mq, results)) {
-                    return false;
-                }
-            }
-        }
-
-        if (qualifications.not) {
-            for (let i = 0; i < qualifications.not.length; i++) {
-                let nq = qualifications.not[i];
-                if (_hasQualification(nq, results)) {
-                    return false;
-                }
-            }
-        }
-
-        if (qualifications.or) {
-            for (let i = 0; i < qualifications.or.length; i++) {
-                let oq = qualifications.or[i];
-                if (_hasQualification(oq, results)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    function _hasQualification(path, results) {
-        let bits = path.split(".");
-        for (let i = 0; i < results.length; i++) {
-            let r = results[i];
-            if (bits[0] === r.route) {
-                if ("qualifications" in r) {
-                    for (let j = 0; j < r.qualifications.length; j++) {
-                        let qual = r.qualifications[j];
-                        if (Object.keys(qual).includes(bits[1])) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    // list the cards to display
-    let cards = [];
-    for (let i = 0; i < config.cards.length; i++) {
-        let cardConfig = config.cards[i];
-        if (_matches(cardConfig, results)) {
-            cards.push(cardConfig);
-        }
-    }
-
-    // sort them according to the correct order
-    let sorted_cards = []
-    for (let i = 0; i < config.card_order.length; i++) {
-        let next = config.card_order[i];
-        for (let j = 0; j < cards.length; j++) {
-            let card = cards[j];
-            if (card.id === next) {
-                sorted_cards.push(card);
-            }
-        }
-    }
-
-    return sorted_cards;
-}
-
 // ----------------------------------------
 // Function to display the selected list of tiles
 // ----------------------------------------
@@ -527,7 +395,7 @@ jct.jx = (route,q,after,api) => {
         let fxhr = new XMLHttpRequest();
         fxhr.open("GET", new URL(base_url + "funder_language/" + q.funder));
         fxhr.send();
-        fxhr.onload = () => { xhr.status !== 200 ? jct.funder_error(fxhr) : jct.funder_loaded(q.funder, fxhr); };
+        fxhr.onload = () => { fxhr.status !== 200 ? jct.funder_error(fxhr) : jct.funder_loaded(q.funder, fxhr); };
         fxhr.onerror = () => { jct.funder_error(); };
     }
 }
@@ -601,6 +469,7 @@ jct.success = () => {
 
 jct.funder_error = (xhr) => {
     alert("Unable to load funder language pack, please try again");
+    // this is going to need to cancel the request to reset the UI
 }
 
 jct.funder_loaded = (funder_id, xhr) => {
@@ -643,9 +512,8 @@ jct.display_result = (js) => {
     }
     else {
         jct._setComplianceTheme(false);
-        // jct._addNonCompliantOptions();
     }
-    let cardsToDisplay = jct.getCardsToDisplay(jct.config, js.results);
+    let cardsToDisplay = js.cards;
     jct.displayCards(cardsToDisplay, js.results);
 
     x = window.matchMedia("(max-width: 767px)")
