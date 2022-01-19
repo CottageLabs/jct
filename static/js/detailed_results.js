@@ -136,7 +136,7 @@ jct._renderWays = (q) => {
         return ways;
     }
 
-    let cardsToDisplay = jct.getCardsToDisplay(jct.config, q.results);
+    let cardsToDisplay = q.cards;
     for (let i = 0; i < cardsToDisplay.length; i++) {
         let card = cardsToDisplay[i];
         let wayTitle = jct.lang.cards[card.id].title;
