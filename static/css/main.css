@@ -694,6 +694,8 @@ button {
     padding-left: 15px;
     color: #585756;
     font-size: 0.833em; }
+  .card a.modal-trigger {
+    color: #000; }
 
 .patterned-section {
   background-image: url("../img/bg.png");
