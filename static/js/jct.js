@@ -989,8 +989,8 @@ jct.setup = (manageUrl=true) => {
                 // has alternate non-english title. Use it
                 frag += '<span class="jct__option_institution_alt_title"> (' +  obj.alternate + ')</span>';
             }
-            if (obj.country) {
-                frag += '<span class="jct__option_institution_country">, ' + obj.country + '</span>';
+            if ('country_name' in obj.country && obj.country.country_name) {
+                frag += '<span class="jct__option_institution_country">, ' + obj.country.country_name + '</span>';
             }
             if (obj.id) {
                 frag += ' <span class="jct__option_institution_id"> (ROR:' + obj.id + ')</span>';
@@ -1004,8 +1004,8 @@ jct.setup = (manageUrl=true) => {
                 // has alternate non-english title. Use it
                 frag += ' (' + obj.alternate + ')';
             }
-            if (obj.country) {
-                frag += ', ' + obj.country;
+            if ('country_name' in obj.country && obj.country.country_name) {
+                frag += ', ' + obj.country.country_name;
             }
             if (obj.id) {
                 frag += ' (ROR:' + obj.id + ')';
