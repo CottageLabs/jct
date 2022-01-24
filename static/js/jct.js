@@ -397,7 +397,7 @@ jct.jx = (route,q,after,api) => {
             return;
         }
         let fxhr = new XMLHttpRequest();
-        fxhr.open("GET", new URL(base_url + "funder_language/" + q.funder));
+        fxhr.open("GET", new URL(base_url + "/funder_language/" + q.funder));
         fxhr.send();
         fxhr.onload = () => { fxhr.status !== 200 ? jct.funder_error(fxhr) : jct.funder_loaded(q.funder, fxhr); };
         fxhr.onerror = () => { jct.funder_error(); };
