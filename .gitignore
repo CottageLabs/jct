@@ -4,3 +4,4 @@
 static/inputit.js
 data/
 resources/
+.hugo_build.lock
