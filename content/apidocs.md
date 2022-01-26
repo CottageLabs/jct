@@ -1,6 +1,6 @@
 ---
 title: "Public API docs"
-date: 2021-02-13T23:38:56Z
+date: 2021-01-03T15:39:00Z
 description: "Documentation of the public API for the Journal Checker Tool: Plan S Compliance Validator."
 ---
 
@@ -23,22 +23,12 @@ td, th {
 
 The api is available at [{{< param apidocs.ApiURL >}}]({{< param apidocs.ApiURL >}}).
 
-<hr>
-
-**NOTE**
-
-We are offering access to the early version of the api to enable programmatic access to the data.
-This early version will be unsupported. Therefore, we recommend that you do not integrate this API
-into your production systems until we transition out of beta. <br><br>
-The API is rate limited to 10 requests per second, with burst up to 6000, with delay. Exceeding the limit will result in 429.
-<hr>
-
 ## Request a compliance calculation
 
-To carry out a compliance calculation, you can make a get request, as detailed below.
+To carry out a compliance calculation, you can make an HTTP GET request, as detailed below.
 
-```
-GET /calculate?issn=[issn]&ror=[ror]&funder=[funder]
+```bash
+GET /calculate?issn=[issn]&funder=[funder]&ror=[ror]
 ```
 
 The server will execute the algorithm, and gather responses for all routes 
@@ -46,13 +36,14 @@ before responding to the request.
 
 The parameters you can pass to the `/calculate` endpoint are as follows:
 
-* **issn** - either the print or online ISSN of the journal you wish to check.
-* **ror** - the ROR ID of the organisation that you wish to check.  See [https://ror.org](https://ror.org/) for more information
-* **funder** - the JCT ID for the funder that you wish to check.  Allowable Funder IDs are listed [here](/funder-ids)
+* **issn** - either the print or online ISSN of the journal you wish to check. *required*
+* **funder** - the JCT ID for the funder that you wish to check.  Allowable Funder IDs are listed [here](/funder-ids). *optional*
+* **ror** - the ROR ID of the organisation that you wish to check.  See [https://ror.org](https://ror.org/) for more information. *optional*
 
 The `issn` field is the only *required* field, though without the `ror` and `funder` fields your results will
-be partial, and may not give you complete and accurate information.  If you omit the `funder` or enter an invalid
-funder ID, the API will ignore the invalid ID and give you results as if you had not provided the `funder` field.
+be partial, and may not give you complete and accurate information.  
+
+If you enter an invalid `funder`, the API will respond with a `400 (Bad Request)`
 
 The `ror` field is optional, and is equivalent to selecting "Not affiliated" via the User Interface.
 
@@ -61,26 +52,32 @@ The `ror` field is optional, and is equivalent to selecting "Not affiliated" via
 ```json
 {
   "request" : {
-    "started" : "<start timestamp of the request>",
-    "ended" : "<end timestamp of the request>",
-    "took" : "<the time in ms between request start and end (on the server, not including travel time)>",
+    "started" : "<(int) start timestamp of the request>",
+    "ended" : "<(int) end timestamp of the request>",
+    "took" : "<(int) the time in ms between request start and end (on the server, not including travel time)>",
     "journal" : [
       {
         "id": "<journal issn>", 
-        "title": "journal title", 
-        "issn" : ["<all of the matching issn's for this journal>"]
-      },
-      ...
+        "title": "<journal title>", 
+        "issn" : ["<all of the matching ISSNs for this journal>"],
+        "publisher" : "<journal publisher>"
+      }
     ],
-    "funder" : [{"id": "<funder ID>", "title": "funder title", ...}],
-    "institution" : [{"id": "<institution ROR>", "title": "institution title", ...}],
-    "checks": ["permission","doaj","ta","tj"]
+    "funder" : [
+      {"id": "<funder ID>", "title": "<funder title>"}
+    ],
+    "institution" : [
+      {"id": "<institution ROR>", "title": "<institution name>"}
+    ],
+    "checks": ["<list of routes calculated, (see Route IDs below)>"]
   },
-  "compliant" : "<true/false> # (if there is any compliant: 'yes' result, this is true. Otherwise false.)",
-  "retention" : "<true/false> # (If a check was made for retention.)",
+  "compliant" : "<(bool) true|false if there is at least one compliant card in the list of cards to show the user>",
   "results" : [
-    <route responses as per the above>
-  ]  
+    {"<route response objects as per the below>": ""}
+  ],
+  "cards" : [
+    {"<cards to be displayed as per the below>" :  ""}
+  ]
 }
 ```
 
@@ -90,55 +87,54 @@ For each route, there is a general response format:
 
 ```json
 {
-  "route" : "<the type id of the route (see below)>",
-  "compliant" : "<the compliance type id of the route (see below)",
+  "route" : "<the ID of the route (see Route IDs below)>",
+  "compliant" : "<the Compliance ID for this route result (see below)",
   "qualifications" : [
-    {"<qualification id> (see below)" : { <qualification specific data (if needed)> },
-    ...
+    {"<qualification id> (see below)" : { "<qualification specific data (if needed)>" : "" }}
   ],
-  "issn" : "<the issn checked for this result, if there is one>",
+  "issn" : ["<the ISSN checked for this result, if there is one>"],
   "funder" : "<the funder checked on this result, if there is one>",
-  "ror" : "the ror relevant to this result, if there is one>",
+  "ror" : "the ROR relevant to this result, if there is one>",
   "log" : [
     {
       "code" : "<algorithm transition code (see below)>",
       "parameters" : {
         "<parameter name>" : ["<parameter value>"]
       }
-    },
-    ...
+    }
   ]
 }
 ```
 
-Type IDs:
+#### Route IDs
 
 * `fully_oa` - Fully OA route
 * `self_archiving` - Self Archiving route
 * `ta` - Transformative Agreement route
 * `tj` - Transformative Journal route
+* `hybrid` - Hybrid Journal route
 
-Compliance IDs:
+#### Compliance IDs
 
 * `yes` - Route offers compliance
 * `no` - Route does not offer compliance
 * `unknown` - Not known if route offers compliance
 
-Qualification IDs:
+#### Qualification IDs
 
-* `doaj_under_review` - the journal is in the DOAJ "in progress" or "under review" list, not the public DOAJ
+* `doaj_under_review` - the journal is in the DOAJ's "in progress" or "under review" list, not the public DOAJ
     * no qualification specific data required
-* `rights_retention_author_advice` - the journal does not have an SA policy and does not appear in the rights retention data source
+* `rights_retention_author_advice` - the journal does not have a self-archiving (SA) policy and does not appear in the rights retention data source
     * no qualification specific data required
-* `corresponding_authors` - the TA is only open to corresponding authors
+* `corresponding_authors` - the transformative agreement (TA) is only open to corresponding authors
     * no qualification specific data required
   
-Log:
+#### Log
 
-The log provides a list of decision transitions through the algorithm, in order of traversal.  This allows you to 
-see the path through the algorithm that was taken to reach the decision, along with any relevant parameters.
+The log provides a list of decisions made by the algorithm, in order of traversal.  This allows you to 
+see the path through the algorithm that was taken to reach each decision, along with any relevant parameters.
 
-See the table below for a full list of transitions, their meanings, and the parameters that may be associated.
+See the table below for a full list of decisions, their meanings, and the parameters that may be associated.
 
 For example, items such as this may be present:
 
@@ -156,7 +152,7 @@ For example, items such as this may be present:
 }
 ```
 
-#### Full OA Route Codes:
+##### Full OA Route Codes
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
@@ -168,17 +164,19 @@ For example, items such as this may be present:
 | FullOA.Unknown | Journal properties are unclear | missing | List of missing properties |
 | FullOA.NonCompliant | Journal properties are non-compliant | license | List of Journal licences |
 
-#### Self-Archiving Route Codes:
+##### Self-Archiving Route Codes
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
-| SA.InOAB | Journal was found in OAB | | |
+| SA.RRException | Journal was found in JCT's list of journals which explicitly do not permit the Rights Retention strategy | | |
+| SA.RRNoException | The Journal was *not* found in JCT's list of journals which explicitly do not permit the Rights Retention strategy | | |
+| SA.InOAB | Journal was found in Open Access Button (OAB) | | |
 | SA.NotInOAB | Journal was not found in OAB | | |
-| SA.OABNonCompliant | The record in OAB did not comply with the Plan S requirements | licence | List of allowed SA licenses |
+| SA.OABNonCompliant | The record in OAB did not comply with the funder's requirements | licence | List of allowed SA licenses |
 | | | embargo | Embargo length (list of length 1) |
 | | | version | List of allowed SA versions |
 | SA.OABIncomplete | Some data was missing from the OAB record, no determination could be made | missing | List of missing properties |
-| SA.Compliant | The record in OAB complied with the Plan S requirements | licence | List of allowed SA licences |
+| SA.OABCompliant | The record in OAB complied with the funder's requirements | licence | List of allowed SA licences |
 | | | embargo | Embargo length (list of length 1) |
 | | | version | List of allowed SA versions |
 | SA.FunderRRNotActive | Funder has not adopted the Rights Retention strategy | | |
@@ -187,33 +185,126 @@ For example, items such as this may be present:
 | SA.NonCompliant | Self-Archiving is not possible under current circumstances | | |
 | SA.Compliant | Self-Archiving is permitted via Rights Retention | | |
 
-#### Transformative Agreement Route Codes:
+##### Transformative Agreement Route Codes
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
 | TA.NoTA | No TA was found that matched the query parameters | | |
 | TA.Exists | A TA was found that matched the query parameters | | |
-| TA.NotAcive | The TA that was found is not current in force | | |
-| TA.Active | The TA that was found is currently in force | | |
-| TA.Unknown | It was not clear if the parameters of the TA meet Plan S criteria | | |
-| TA.NonCompliant | The parameters of the TA do not meet Plan S criteria | | |
-| TA.Compliant | The TA is Plan S compliant | | |
+| TA.NotActive | The TA that was found is not currently applicable | | |
+| TA.Active | The TA that was found is currently applicable | | |
+| TA.Unknown | It was not clear if the parameters of the TA meet the funder's criteria | | |
+| TA.NonCompliant | The parameters of the TA do not meet the funder's criteria | | |
+| TA.Compliant | The TA is compliant with the funder's requirements | | |
 
-#### Transformative Journals Route Codes:
+##### Transformative Journals Route Codes
 
 | Code | Meaning | Property | Property Value |
 | ---- | ------- | -------- | -------------- |
 | TJ.NoTJ | The Journal was not registered as a TJ | | |
 | TJ.Exists | The Journal is registered as a TJ | | |
-| TJ.NonCompliant | The parameters of the TJ do not meet Plan S criteria | | |
-| TJ.Compliant | The TJ is Plan S compliant | | |
+| TJ.NonCompliant | The parameters of the TJ do not meet the funder's criteria | | |
+| TJ.Compliant | The TJ is compliant with the funder's requirements | | |
 
+
+##### Hybrid Journals Route Codes
+
+| Code | Meaning | Property | Property Value |
+| ---- | ------- | -------- | -------------- |
+| Hybrid.NotInOAW | The Journal was not registered in OA.Works | | |
+| Hybrid.InOAW | The Journal was registered in OA.Works | | |
+| Hybrid.NonCompliant | The properites of the hybrid journal do not meet the funder's requirements | licence | List of allowed hybrid licences |
+| Hybrid.Unknown | There was not sufficient information to determine if the hybrid journal meets the funder's requirements | missing | List of properties missing |
+| Hybrid.Compliant | The properties of the hybrid journal are compliant with the funder's requirements | licence | List of allowed publishing licences |
+
+
+### Cards to show the user
+
+The list of cards in the `cards` section of the response defines those particular routes to compliance
+which the funder wants the user to be made aware of.  Cards are shown based on the compliance routes
+in the `results` section of the API response, and only cards which should be shown to the user will
+be listed.  The content of the `cards` section of the response
+contains the full definitions of each card, which you can display to the user using the language
+files provided for that funder (see below).
+
+```json
+{
+  "id": "[card_id]",
+  "match_routes": {
+    "must": [
+      "[route_id]"
+    ],
+    "or": [
+      "[route_id]",
+      "[route_id]"
+    ],
+    "not": [
+      "[route_id]"
+    ]
+  },
+  "match_qualifications": {
+    "must": [
+      "[route_id].[qualification_id]"
+    ],
+    "or": [
+      "[route_id].[qualification_id]",
+      "[route_id].[qualification_id]"
+    ],
+    "not": [
+      "[route_id].[qualification_id]"
+    ]
+  },
+  "preferred": "true|false",
+  "compliant": "true|false",
+  "display_if_compliant": [
+    "[route_id]",
+    "[route_id]"
+  ],
+  "modal": "[modal_id]"
+}
+```
+
+* `cards[].id` - a unique id for the card, an arbitrary string, but which will be used to identify the
+  card throughout the language files
+* `cards[].match_routes` - match rules for compliant routes to determine whether or not to show this card
+  * `must` - all routes listed must be compliant
+  * `or` - at least one of the routes listed must be compliant
+  * `not` - none of the routes listed may be compliant
+* `cards[].match_qualifications` - match rules for qualifications present in calculated routes
+  * `must` - all qualifications listed must be present
+  * `or` - at least one of the qualifications listed must be present
+  * `not` - none of the qualifications listed may be present
+* `cards[].preferred` - the card represents a preferred route to compliance by the funder
+* `cards[].compliant` - the card represents a route to compliance, and the presence of at least one in the results will trigger
+  the compliant style in the front end.
+* `cards[].display_if_compliant` - the list of routes, in order, to display information about whether or not they are compliant.  If you leave
+  this blank then no route-specific guidance will be displayed, but the `default` text for the card will be displayed anyway, so
+  you only need to use this option if the card could display information about multiple routes, and you wish to control which
+  information is displayed depending on which routes are compliant
+* `cards[].modal` - the modal to bind to the card's overall modal (other modals can be specified inline in the card text as normal)
+
+
+## Funder Specific Configurations and Language
+
+Each funder in JCT may specify custom language for how the compliance information should be
+interpreted and displayed to end users.  This information is optimised for use in the JCT user interface.
+Nonetheless it is also available via the API for use by any downstream systems.  
+
+```bash
+GET /lang/<funder id>
+```
+
+The response is a JSON document which contains all of the language used by the JCT front end, which covers:
+* General site text specific to the funder
+* Text for all API log codes
+* Content for all compliance cards
+* Any modals attached to any part of the information
 
 ## Transformative Journals
 
 Determine if a journal is a transformative journal, using the issn:
 
-```
+```bash
 GET /tj/{issn}
 ```
 
@@ -230,7 +321,7 @@ OR `404` if record not found
 
 ## Transformative Agreements
 
-```
+```bash
 GET /ta?issn={issn}&ror={ror}
 ```
 
@@ -245,9 +336,8 @@ Response format:
   "compliant" : "<true/false> # (if there is an agreement, this is true. Otherwise false.)",
   "qualifications" : [
     {
-      "<qualification id> (see below)" : { <qualification specific data (if needed)> },
+      "<qualification id> (see below)" : { "<qualification specific data (if needed)>" : "" }
     }
-    ...
   ],
   "issn" : "<issn in the TA>",
   "ror" : "<ror in the TA>",
