@@ -34,5 +34,5 @@
 [[main]]
     name = "Release History"
     pre = " • "
-    url = "/release-notes"
+    url = "/release-history"
     weight = 8
