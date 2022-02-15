@@ -875,7 +875,7 @@ jct._calculate_if_all_data_provided = () => {
         if (jct.chosen.institution) {
             qr.ror = jct.chosen.institution.id;
         }
-        jct.jx('/calculate', qr);
+        jct.jx('calculate', qr);
         jct.d.gebi("jct_loading").style.display = "block";
     }
 }
@@ -1197,7 +1197,7 @@ jct.setup = (manageUrl=true) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
                 }
-                jct.jx('/suggest/journal/'+text, false, ourcb);
+                jct.jx('suggest/journal/'+text, false, ourcb);
             }
         },
         optionsTemplate : function(obj) {
@@ -1323,7 +1323,7 @@ jct.setup = (manageUrl=true) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
                 }
-                jct.jx('/suggest/institution/'+text, false, ourcb);
+                jct.jx('suggest/institution/'+text, false, ourcb);
             }
         },
         optionsTemplate : function(obj) {
