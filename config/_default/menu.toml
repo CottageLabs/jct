@@ -8,6 +8,11 @@
     url = "/transformative-agreements"
     weight = 2
 [[main]]
+    name = "Self Archiving Exceptions"
+    pre = " • "
+    url = "/self-archiving-exceptions"
+    weight = 2.1
+[[main]]
     name = "API Documentation"
     pre = " • "
     url = "/apidocs"
