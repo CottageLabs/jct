@@ -170,8 +170,8 @@ jct._yourQuery = (q) => {
         if (jct.chosen.institution.alternate && !(/^[a-zA-Z0-9 ]+$/.test(jct.chosen.institution.alternate))) {
             inner_text += ' (' + jct.chosen.institution.alternate + ')';
         }
-        if (jct.chosen.institution.country) {
-            inner_text += ', ' + jct.chosen.institution.country;
+        if (jct.chosen.institution.country && 'country_name' in jct.chosen.institution.country && jct.chosen.institution.country.country_name) {
+            inner_text += ', ' + jct.chosen.institution.country.country_name;
         }
         if (jct.chosen.institution.id) {
             inner_text += ' (ROR: ' + jct.chosen.institution.id + ')';
