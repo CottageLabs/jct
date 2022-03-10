@@ -18,20 +18,20 @@ jct.explain = (q) => {
 
     let compliant = "";
     if (routes.compliant.length > 0) {
-        compliant = `<h2>${jct.lang.explain.supporting_data.compliant_routes}</h2>` + routes.compliant.join("");
+        compliant = `<hr><h2>${jct.lang.explain.supporting_data.compliant_routes}</h2>` + routes.compliant.join("");
     }
 
     let non_compliant = "";
     if (routes.non_compliant.length > 0) {
-        non_compliant = `<h2>${jct.lang.explain.supporting_data.non_compliant_routes}</h2>` + routes.non_compliant.join("");
+        non_compliant = `<hr><h2>${jct.lang.explain.supporting_data.non_compliant_routes}</h2>` + routes.non_compliant.join("");
     }
 
     let unknown = "";
     if (routes.unknown.length > 0) {
-        unknown = `<h2>${jct.lang.explain.supporting_data.unknown_routes}</h2>` + routes.unknown.join("");
+        unknown = `<hr><h2>${jct.lang.explain.supporting_data.unknown_routes}</h2>` + routes.unknown.join("");
     }
 
-    let elem = jct.htmlToElement(`<div id='jct_detailed_result_text'>${yq} ${ways} ${compliant} ${non_compliant} ${unknown}</div>`);
+    let elem = jct.htmlToElement(`<div id='jct_detailed_result_text'>${yq} <hr> ${ways} ${compliant} ${non_compliant} ${unknown}</div>`);
     detailed_results.append(elem);
 
     jct._resultPrint();
@@ -65,16 +65,6 @@ jct._renderWays = (q) => {
     let ways = `<h2>${title}</h2>
                 <p>${intro}</p>`;
 
-    let conditions = jct.lang.explain.ways_to_comply.conditions.title;
-    let conditionsIntro = jct.lang.explain.ways_to_comply.conditions.text;
-
-    let routeMust = jct.lang.explain.route_match.must;
-    let routeOr = jct.lang.explain.route_match.or;
-    let routeNot = jct.lang.explain.route_match.not;
-    let qualMust = jct.lang.explain.qualification_match.must;
-    let qualOr = jct.lang.explain.qualification_match.or;
-    let qualNot = jct.lang.explain.qualification_match.not;
-
     function makeWay(card, matcher, bool, lang, title) {
         let ways = "";
         if (card[matcher][bool]) {
@@ -90,91 +80,22 @@ jct._renderWays = (q) => {
         return ways;
     }
 
-    function makeHowRoute(card, bool, how, q) {
-        let ways = "";
-        if (card.match_routes[bool]) {
-            for (let j = 0; j < card.match_routes[bool].length; j++) {
-                let key = card.match_routes[bool][j];
-                for (let k = 0; k < q.results.length; k++) {
-                    let result = q.results[k];
-                    if (result.route === key) {
-                        let isCompliant = result.compliant === "yes";
-                        if (isCompliant) {
-                            let text = jct.lang.explain.how[key][how];
-                            ways += `<li>${text}</li>`;
-                        }
-                    }
-                }
-            }
-        }
-        return ways;
-    }
-
-    function makeHowQual(card, bool, how, q) {
-        let ways = "";
-        if (card.match_qualifications[bool]) {
-            for (let j = 0; j < card.match_qualifications[bool].length; j++) {
-                let fullQual = card.match_qualifications[bool][j];
-                let bits = fullQual.split(".");
-                let route = bits[0];
-                let qual = bits[1];
-                for (let k = 0; k < q.results.length; k++) {
-                    let result = q.results[k];
-                    if (result.route === route) {
-                        let isCompliant = result.compliant === "yes";
-                        if (isCompliant) {
-                            let presentQualifications = Object.keys(result.qualifications);
-                            if (presentQualifications.includes(qual)) {
-                                let text = jct.lang.explain.how[fullQual][how];
-                                ways += `<li>${text}</li>`;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return ways;
-    }
-
+    let compliantCount = 0;
     let cardsToDisplay = q.cards;
     for (let i = 0; i < cardsToDisplay.length; i++) {
         let card = cardsToDisplay[i];
-        let wayTitle = jct.lang.cards[card.id].title;
+        if (!card.compliant) {
+            continue
+        }
+        compliantCount++;
+        let wayTitle = jct.lang.cards[card.id].explain.title;
+        let wayText = jct.lang.cards[card.id].explain.text;
         ways += `<h3>${wayTitle}</h3>
-                 <h4>${conditions}</h4>
-                 <p>${conditionsIntro}</p>`;
+                 <p>${wayText}</p>`;
+    }
 
-        if (card.match_routes) {
-            ways += makeWay(card, "match_routes", "must", jct.lang.explain.routes, routeMust);
-            ways += makeWay(card, "match_routes", "or", jct.lang.explain.routes, routeOr);
-            ways += makeWay(card, "match_routes", "not", jct.lang.explain.routes, routeNot);
-        }
-
-        if (card.match_qualifications) {
-            ways += makeWay(card, "match_qualifications", "must", jct.lang.explain.qualifications, qualMust);
-            ways += makeWay(card, "match_qualifications", "or", jct.lang.explain.qualifications, qualOr);
-            ways += makeWay(card, "match_qualifications", "not", jct.lang.explain.qualifications, qualNot);
-        }
-
-        let how = jct.lang.explain.ways_to_comply.how_it_complies.title;
-        let howIntro = jct.lang.explain.ways_to_comply.how_it_complies.text;
-        ways += `<h4>${how}</h4>
-                 <p>${howIntro}</p>
-                 <ul>`;
-
-        if (card.match_routes) {
-            ways += makeHowRoute(card, "must", "must_or", q);
-            ways += makeHowRoute(card, "or", "must_or", q);
-            ways += makeHowRoute(card, "not", "not", q);
-        }
-
-        if (card.match_qualifications) {
-            ways += makeHowQual(card, "must", "must_or", q);
-            ways += makeHowQual(card, "or", "must_or", q);
-            ways += makeHowQual(card, "not", "not", q);
-        }
-
-        ways += `</ul>`;
+    if (compliantCount === 0) {
+        ways += "<p><em>" + jct.lang.explain.ways_to_comply.none + "</em></p>";
     }
 
     return ways;
