@@ -504,6 +504,10 @@ jct.success = () => {
         jct.d.hide_detailed_results();
         jct.explain(js)
     }
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'initial';
+    }
     if (jct.d.gebi("jct_find_out_more")) {
         jct.setup_fom_url();
     }
@@ -739,10 +743,10 @@ jct.d.show_detailed_results = () => {
         explainResults.innerHTML = 'Hide explanation';
     }
     jct.d.gebi('jct_detailed_results').style.display = "flex";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'initial';
-    }
+    // let print = jct.d.gebi('jct_print');
+    // if (print) {
+    //     print.style.display = 'initial';
+    // }
 }
 
 // ----------------------------------------
@@ -754,10 +758,10 @@ jct.d.hide_detailed_results = () => {
         explainResults.innerHTML = 'Explain this result';
     }
     jct.d.gebi('jct_detailed_results').style.display = "none";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'none';
-    }
+    // let print = jct.d.gebi('jct_print');
+    // if (print) {
+    //     print.style.display = 'none';
+    // }
 }
 
 // ----------------------------------------
