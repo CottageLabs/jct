@@ -15,7 +15,46 @@ jct.explain = (q) => {
     let ways = jct._renderWays(q);
     let routes = jct._renderRoutes(q);
 
+    let routesText = jct._serialiseRoutes(routes);
 
+    let elem = jct.htmlToElement(`<div id='jct_detailed_result_text'>${yq} <hr> ${ways} ${routesText}</div>`);
+    detailed_results.append(elem);
+
+    jct._resultPrint();
+}
+
+jct.explain_card = (q, cardId) => {
+    let yq = jct._yourQuery(q);
+    let way = jct.lang.cards[cardId].explain.text;
+
+    let card = false;
+    for (let i = 0; i < q.cards.length; i++) {
+        if (q.cards[i].id === cardId) {
+            card = q.cards[i];
+            break;
+        }
+    }
+
+    let interestingRoutes = [];
+    if (card.match_routes) {
+        if (card.match_routes.must) {
+            interestingRoutes = interestingRoutes.concat(card.match_routes.must);
+        }
+        if (card.match_routes.or) {
+            interestingRoutes = interestingRoutes.concat(card.match_routes.or);
+        }
+        if (card.match_routes.not) {
+            interestingRoutes = interestingRoutes.concat(card.match_routes.not);
+        }
+    }
+
+    let routes = jct._renderRoutes(q, interestingRoutes);
+    let routesText = jct._serialiseRoutes(routes);
+
+    return `${way} ${yq} ${routesText}`;
+}
+
+jct._serialiseRoutes = (routes) => {
     let compliant = "";
     if (routes.compliant.length > 0) {
         compliant = `<hr><h2>${jct.lang.explain.supporting_data.compliant_routes}</h2>` + routes.compliant.join("");
@@ -31,10 +70,7 @@ jct.explain = (q) => {
         unknown = `<hr><h2>${jct.lang.explain.supporting_data.unknown_routes}</h2>` + routes.unknown.join("");
     }
 
-    let elem = jct.htmlToElement(`<div id='jct_detailed_result_text'>${yq} <hr> ${ways} ${compliant} ${non_compliant} ${unknown}</div>`);
-    detailed_results.append(elem);
-
-    jct._resultPrint();
+    return `${compliant} ${non_compliant} ${unknown}`
 }
 
 jct._resultPrint = () => {
@@ -58,27 +94,19 @@ jct._resultPrint = () => {
     }
 }
 
+jct._renderWay = (cardId) => {
+    let wayTitle = jct.lang.cards[cardId].explain.title;
+    let wayText = jct.lang.cards[cardId].explain.text;
+    return `<h3>${wayTitle}</h3>
+            <p>${wayText}</p>`;
+}
+
 jct._renderWays = (q) => {
     let title = jct.lang.explain.ways_to_comply.title;
     let intro = jct.lang.explain.ways_to_comply.text;
 
     let ways = `<h2>${title}</h2>
                 <p>${intro}</p>`;
-
-    function makeWay(card, matcher, bool, lang, title) {
-        let ways = "";
-        if (card[matcher][bool]) {
-            ways += `<p>${title}</p>
-                        <ul>`;
-            for (let j = 0; j < card[matcher][bool].length; j++) {
-                let key = card[matcher][bool][j];
-                let label = lang[key].label;
-                ways += `<li>${label}</li>`;
-            }
-            ways += `</ul>`;
-        }
-        return ways;
-    }
 
     let compliantCount = 0;
     let cardsToDisplay = q.cards;
@@ -88,10 +116,7 @@ jct._renderWays = (q) => {
             continue
         }
         compliantCount++;
-        let wayTitle = jct.lang.cards[card.id].explain.title;
-        let wayText = jct.lang.cards[card.id].explain.text;
-        ways += `<h3>${wayTitle}</h3>
-                 <p>${wayText}</p>`;
+        ways += jct._renderWay(card.id);
     }
 
     if (compliantCount === 0) {
@@ -101,13 +126,17 @@ jct._renderWays = (q) => {
     return ways;
 }
 
-jct._renderRoutes = (q) => {
+jct._renderRoutes = (q, include) => {
     let response = {
         compliant: [],
         non_compliant: [],
         unknown: []
     }
     q.results.forEach((r) => {
+        if (include && !include.includes(r.route)) {
+            return;
+        }
+
         let name = jct.lang.explain.routes[r.route].label;
         let statement = jct.lang.explain.routes[r.route][r.compliant].statement;
         let explanation = jct.lang.explain.routes[r.route][r.compliant].explanation;

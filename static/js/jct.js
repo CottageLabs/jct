@@ -185,6 +185,11 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
         body = body.replace("{institution}", uiText.site.card_institution_missing);
     }
 
+    let why = "";
+    if (cardConfig.compliant) {
+        why = `<a href="#" class="read_more" data-card="${cardConfig.id}">Why am I seeing this?</a>`;
+    }
+
     return `<div class="col col--1of4">
         <article class="card">
             ${icon}
@@ -194,6 +199,7 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
             </h4>
             ${body}
             <p>${modal}</p>
+            ${why}
         </article>
     </div>`;
 }
@@ -208,6 +214,37 @@ jct.bindModals = function() {
         trigger.removeEventListener("click", jct.modalTrigger);
         trigger.addEventListener("click", jct.modalTrigger)
     }
+
+    let readMores = document.getElementsByClassName("read_more");
+    for (let i = 0; i < readMores.length; i++) {
+        let trigger = readMores[i];
+        trigger.removeEventListener("click", jct.readMoreTrigger);
+        trigger.addEventListener("click", jct.readMoreTrigger)
+    }
+}
+
+jct.readMoreTrigger = function(event) {
+    event.preventDefault();
+    let element = event.target;
+    let cardId = element.getAttribute("data-card");
+    let modal = jct.readMoreModal(cardId);
+    jct.modalShow(modal);
+}
+
+jct.readMoreModal = function(cardId) {
+    let content = jct.explain_card(jct.latest_full_response, cardId);
+
+    let modal_html = `<div class="modal" id="jct_modal_${cardId}" style="display: block">
+        <div class="modal-content" id="jct_modal_${cardId}_content">
+            <header class="modal-header">
+                <h2>${jct.lang.cards[cardId].explain.title}
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${cardId}">&times;</span>
+                </h2>
+            </header>
+            <div>${content}</div>
+        </div>
+    </div>`;
+    return modal_html;
 }
 
 jct.modalTrigger = function(event) {

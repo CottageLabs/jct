@@ -59,6 +59,83 @@ devui.logs.tj.non_compliant = [
 devui.logs.tj.unknown = []
 
 devui.cards = {}
+
+devui.cards.fully_oa = {
+    "compliant": "true",
+    "match_routes": {"must": ["fully_oa"]},
+    "id": "fully_oa",
+    "preferred": "true"
+}
+
+devui.cards.sa_rr = {
+    "match_qualifications": {"must": ["self_archiving.rights_retention_author_advice"]},
+    "compliant": "true",
+        "match_routes": {"not": ["fully_oa"], "must": ["self_archiving"]},
+    "id": "sa_rr",
+        "modal": "sa_rr"
+}
+
+devui.cards.self_archiving = {
+    "preferred": "false",
+        "compliant": "true",
+        "match_routes": {"not": ["fully_oa"], "must": ["self_archiving"]},
+    "modal": "sa",
+        "match_qualifications": {"not": ["self_archiving.rights_retention_author_advice"]},
+    "id": "self_archiving"
+}
+
+devui.cards.ta = {
+    "match_qualifications": {"not": ["ta.corresponding_authors"]},
+    "compliant": "true",
+        "match_routes": {"must": ["ta"]},
+    "id": "ta",
+        "preferred": "true"
+}
+
+devui.cards.ta_qa = {
+    "match_qualifications": {"must": ["ta.corresponding_authors"]},
+    "compliant": "true",
+        "match_routes": {"must": ["ta"]},
+    "id": "ta_aq",
+        "preferred": "true"
+}
+
+devui.cards.tj = {
+    "modal": "tj",
+        "compliant": "true",
+        "match_routes": {"must": ["tj"]},
+    "id": "tj",
+        "preferred": "true"
+}
+
+devui.cards.journal_non_compliant = {
+    "compliant": "false",
+        "match_routes": {"not": ["self_archiving", "fully_oa", "ta", "tj"]},
+    "id": "journal_non_compliant",
+        "preferred": "false"
+}
+
+devui.cards.funder_non_compliant = {
+    "compliant": "false",
+        "match_routes": {"not": ["self_archiving", "fully_oa", "ta", "tj"]},
+    "id": "funder_non_compliant",
+        "preferred": "false"
+}
+
+devui.cards.institution_non_compliant = {
+    "compliant": "false",
+        "match_routes": {"not": ["self_archiving", "fully_oa", "ta", "tj"]},
+    "id": "institution_non_compliant",
+        "preferred": "false"
+}
+
+devui.cards.rights_retention_author_advice = {
+    "compliant": "false",
+        "match_routes": {"not": ["self_archiving", "fully_oa", "ta", "tj"]},
+    "id": "rights_retention_non_compliant",
+        "preferred": "false"
+}
+
 devui.cards.default = {
     compliant: true,
     preferred: false
@@ -105,7 +182,7 @@ devui.makeAPIResponse = function(compliant_routes, non_compliant_routes, unknown
         let cid = cards[i];
         let cfg = {...devui.cards.default};
         if (devui.cards[cid]) {
-            cfg = devui.cards[cid];
+            cfg = {...devui.cards[cid]};
         }
         cfg.id = cid;
         cards_settings.push(cfg)
