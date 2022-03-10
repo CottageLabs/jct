@@ -5,10 +5,10 @@ window.JCT_WIDGET = true;
 
 
 
-// -------- api_endpoint --------
+// -------- api_endpoint_staging --------
 
-window.JCT_API_endpoint = 'https://api.journalcheckertool.org';
-window.JCT_UI_BASE_URL = "https://journalcheckertool.org";
+window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
+window.JCT_UI_BASE_URL = "https://jct.cottagelabs.com";
 
 
 
@@ -523,6 +523,11 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
         body = body.replace("{institution}", uiText.site.card_institution_missing);
     }
 
+    let why = "";
+    if (cardConfig.compliant && !window.JCT_WIDGET) {
+        why = `<a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a>`;
+    }
+
     return `<div class="col col--1of4">
         <article class="card">
             ${icon}
@@ -532,6 +537,7 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
             </h4>
             ${body}
             <p>${modal}</p>
+            ${why}
         </article>
     </div>`;
 }
@@ -546,6 +552,37 @@ jct.bindModals = function() {
         trigger.removeEventListener("click", jct.modalTrigger);
         trigger.addEventListener("click", jct.modalTrigger)
     }
+
+    let readMores = document.getElementsByClassName("read_more");
+    for (let i = 0; i < readMores.length; i++) {
+        let trigger = readMores[i];
+        trigger.removeEventListener("click", jct.readMoreTrigger);
+        trigger.addEventListener("click", jct.readMoreTrigger)
+    }
+}
+
+jct.readMoreTrigger = function(event) {
+    event.preventDefault();
+    let element = event.target;
+    let cardId = element.getAttribute("data-card");
+    let modal = jct.readMoreModal(cardId);
+    jct.modalShow(modal);
+}
+
+jct.readMoreModal = function(cardId) {
+    let content = jct.explain_card(jct.latest_full_response, cardId);
+
+    let modal_html = `<div class="modal" id="jct_modal_${cardId}" style="display: block">
+        <div class="modal-content" id="jct_modal_${cardId}_content">
+            <header class="modal-header">
+                <h2>${jct.lang.cards[cardId].explain.title}
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${cardId}">&times;</span>
+                </h2>
+            </header>
+            <div>${content}</div>
+        </div>
+    </div>`;
+    return modal_html;
 }
 
 jct.modalTrigger = function(event) {
@@ -734,8 +771,10 @@ jct.jx = (route,q,after,api) => {
             jct.load_funder(q.funder, jct.funder_langs[q.funder]);
             return;
         }
+        let funderUrl = new URL("funder_language/" + q.funder, base_url)
         let fxhr = new XMLHttpRequest();
-        fxhr.open("GET", new URL(base_url + "funder_language/" + q.funder));
+        // fxhr.open("GET", new URL(base_url + "/funder_language/" + q.funder));
+        fxhr.open("GET", funderUrl.href);
         fxhr.send();
         fxhr.onload = () => { fxhr.status !== 200 ? jct.funder_error(fxhr) : jct.funder_loaded(q.funder, fxhr); };
         fxhr.onerror = () => { jct.funder_error(); };
@@ -802,6 +841,10 @@ jct.success = () => {
         jct.d.gebi('jct_explain_results').style.display = 'initial';
         jct.d.hide_detailed_results();
         jct.explain(js)
+    }
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'initial';
     }
     if (jct.d.gebi("jct_find_out_more")) {
         jct.setup_fom_url();
@@ -1038,10 +1081,10 @@ jct.d.show_detailed_results = () => {
         explainResults.innerHTML = 'Hide explanation';
     }
     jct.d.gebi('jct_detailed_results').style.display = "flex";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'initial';
-    }
+    // let print = jct.d.gebi('jct_print');
+    // if (print) {
+    //     print.style.display = 'initial';
+    // }
 }
 
 // ----------------------------------------
@@ -1053,10 +1096,10 @@ jct.d.hide_detailed_results = () => {
         explainResults.innerHTML = 'Explain this result';
     }
     jct.d.gebi('jct_detailed_results').style.display = "none";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'none';
-    }
+    // let print = jct.d.gebi('jct_print');
+    // if (print) {
+    //     print.style.display = 'none';
+    // }
 }
 
 // ----------------------------------------
