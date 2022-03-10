@@ -186,8 +186,8 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
     }
 
     let why = "";
-    if (cardConfig.compliant) {
-        why = `<a href="#" class="read_more" data-card="${cardConfig.id}">Why am I seeing this?</a>`;
+    if (cardConfig.compliant && !window.JCT_WIDGET) {
+        why = `<a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a>`;
     }
 
     return `<div class="col col--1of4">
