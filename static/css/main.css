@@ -697,6 +697,30 @@ button {
   .card a.modal-trigger {
     color: #000; }
 
+.explainable_card {
+  border: 2px solid transparent;
+  border-radius: 15px;
+  padding: 10px 10px 1.5rem 10px; }
+  .explainable_card .read_more_banner {
+    display: none;
+    text-align: center;
+    background: #FABE5E;
+    margin: 0 -10px 0 -10px;
+    border-radius: 0 0 11px 11px;
+    height: 1.5rem; }
+    .explainable_card .read_more_banner a {
+      color: #FFF;
+      font-size: 0.7rem;
+      text-decoration: none;
+      font-weight: bold;
+      line-height: 1.5rem; }
+
+.explainable_card:hover {
+  border: 2px solid #FABE5E;
+  padding: 10px 10px 0 10px; }
+  .explainable_card:hover .read_more_banner {
+    display: block; }
+
 .patterned-section {
   background-image: url("../img/bg.png");
   background-size: cover;

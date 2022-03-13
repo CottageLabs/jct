@@ -187,11 +187,16 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
 
     let why = "";
     if (cardConfig.compliant && !window.JCT_WIDGET) {
-        why = `<a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a>`;
+        why = `<div class="read_more_banner"><a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a></div>`;
     }
 
+    // I don't love this, but we need to separate the regular card display from the in-site card display
+    // just so that we can host our own widget on our own site as an example.  Otherwise our widget inherits
+    // the styles from the main application and it messes up the display.  Open to a better way of doing this!
+    let cardClass = window.JCT_WIDGET ? "card" : "card explainable_card"
+
     return `<div class="col col--1of4">
-        <article class="card">
+        <article class="${cardClass}">
             ${icon}
             <h4 class="label card__heading">
                 ${preferred}
@@ -237,8 +242,9 @@ jct.readMoreModal = function(cardId) {
     let modal_html = `<div class="modal" id="jct_modal_${cardId}" style="display: block">
         <div class="modal-content" id="jct_modal_${cardId}_content">
             <header class="modal-header">
-                <h2>${jct.lang.cards[cardId].explain.title}
+                <h2>
                     <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${cardId}">&times;</span>
+                    ${jct.lang.cards[cardId].explain.title}
                 </h2>
             </header>
             <div>${content}</div>
@@ -296,8 +302,9 @@ jct.build_modal = (modal_id) => {
     let modal_html = `<div class="modal" id="jct_modal_${modal_id}" style="display: block">
         <div class="modal-content" id="jct_modal_${modal_id}_content">
             <header class="modal-header">
-                <h2>${modalText.title}
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>
+                <h2>
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>                    
+                    ${modalText.title}
                 </h2>
             </header>
             <div>${modalText.body}</div>
