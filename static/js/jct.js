@@ -185,15 +185,12 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
         body = body.replace("{institution}", uiText.site.card_institution_missing);
     }
 
+    let cardClass = "card"
     let why = "";
     if (cardConfig.compliant && !window.JCT_WIDGET) {
         why = `<div class="read_more_banner"><a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a></div>`;
+        cardClass = "card explainable_card";
     }
-
-    // I don't love this, but we need to separate the regular card display from the in-site card display
-    // just so that we can host our own widget on our own site as an example.  Otherwise our widget inherits
-    // the styles from the main application and it messes up the display.  Open to a better way of doing this!
-    let cardClass = window.JCT_WIDGET ? "card" : "card explainable_card"
 
     return `<div class="col col--1of4">
         <article class="${cardClass}">
