@@ -698,28 +698,28 @@ button {
     color: #000; }
 
 .explainable_card {
-  border: 2px solid transparent;
   border-radius: 15px;
-  padding: 10px 10px 1.5rem 10px; }
+  padding: 1rem 1rem 1.5rem 1rem; }
   .explainable_card .read_more_banner {
-    display: none;
-    text-align: center;
-    background: #FABE5E;
-    margin: 0 -10px 0 -10px;
-    border-radius: 0 0 11px 11px;
-    height: 1.5rem; }
+    visibility: hidden;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    background: linear-gradient(0deg, #F47115 0%, rgba(255, 249, 240, 0) 100%);
+    margin: 0 -1rem -1.5rem;
+    padding: 1.5rem 1rem 1rem 1rem;
+    border-radius: 0 0 15px 15px;
+    text-align: center; }
     .explainable_card .read_more_banner a {
       color: #FFF;
-      font-size: 0.7rem;
-      text-decoration: none;
-      font-weight: bold;
-      line-height: 1.5rem; }
+      font-size: 1rem;
+      text-decoration: none; }
 
 .explainable_card:hover {
-  border: 2px solid #FABE5E;
-  padding: 10px 10px 0 10px; }
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25); }
   .explainable_card:hover .read_more_banner {
-    display: block; }
+    visibility: inherit; }
 
 .patterned-section {
   background-image: url("../img/bg.png");
