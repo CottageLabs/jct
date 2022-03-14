@@ -480,7 +480,7 @@
     /* Enable scroll if needed */
     background-color: #000;
     /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.6);
     /* Black w/ opacity */ }
   #jct_plugin .modal-content {
     margin: 5vh auto;
@@ -521,6 +521,16 @@
     height: 25px;
     float: right;
     cursor: pointer; }
+  #jct_plugin .modal-read_more .modal-header {
+    padding: 30px 50px;
+    margin: -30px -65px 3rem -50px; }
+  #jct_plugin .modal-read_more .modal-content {
+    width: calc(100vw - 15px);
+    max-height: 94.5vh;
+    margin: 5vh 0 0 0;
+    border-radius: 15px 15px 0 0;
+    overflow-y: auto;
+    overflow-x: hidden; }
   #jct_plugin .wave {
     overflow: hidden;
     margin-left: -10px;

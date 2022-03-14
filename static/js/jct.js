@@ -236,7 +236,7 @@ jct.readMoreTrigger = function(event) {
 jct.readMoreModal = function(cardId) {
     let content = jct.explain_card(jct.latest_full_response, cardId);
 
-    let modal_html = `<div class="modal" id="jct_modal_${cardId}" style="display: block">
+    let modal_html = `<div class="modal modal-read_more" id="jct_modal_${cardId}" style="display: block">
         <div class="modal-content" id="jct_modal_${cardId}_content">
             <header class="modal-header">
                 <h2>
