@@ -137,14 +137,14 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
 
     // get the icon if it exists, and the icon identifier is not "false" (the string).
     let icon = "";
-    if (cardText.icon && cardText.icon !== "false") {
+    if (cardText.icon) {
         icon = uiText.icons[cardText.icon];
         if (icon === undefined) {
             icon = "";
         }
     }
 
-    let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
+    let preferred = cardConfig.preferred ? `<em>${uiText.site.preferred}</em><br><br>` : "";
     let modalText = uiText.site.card_modal;
     if (cardText.modal) {
         modalText = cardText.modal;
