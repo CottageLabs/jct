@@ -187,10 +187,14 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
 
     let cardClass = "card"
     let why = "";
-    if (cardConfig.compliant && !window.JCT_WIDGET) {
-        why = `<div class="read_more_banner"><a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a></div>`;
-        cardClass = "card explainable_card";
-    }
+    // TODO: this enables a "why am I seeing this?" feature on the card which links to the
+    // results explanation on a per-card basis.  We have agreed not to enable this for the moment
+    // while we review the text
+    //
+    // if (cardConfig.compliant && !window.JCT_WIDGET) {
+    //     why = `<div class="read_more_banner"><a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a></div>`;
+    //     cardClass = "card explainable_card";
+    // }
 
     return `<div class="col col--1of4">
         <article class="${cardClass}">
