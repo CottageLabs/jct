@@ -47,6 +47,10 @@ If you enter an invalid `funder`, the API will respond with a `400 (Bad Request)
 
 The `ror` field is optional, and is equivalent to selecting "Not affiliated" via the User Interface.
 
+Examples:
+* PLoS One, Wellcome Trust, University of Oxford: [{{< param apidocs.ApiURL >}}calculate?issn=1932-6203&funder=wellcome&ror=052gg0110]({{< param apidocs.ApiURL >}}calculate?issn=1932-6203&funder=wellcome&ror=052gg0110).
+* Nature Medicine, Academy of Finland, no institution: [{{< param apidocs.ApiURL >}}calculate?issn=1078-8956&funder=academyoffinlandaka&not_he=true]({{< param apidocs.ApiURL >}}calculate?issn=1078-8956&funder=academyoffinlandaka&not_he=true)
+
 ### Overall response format
 
 ```json
@@ -291,7 +295,7 @@ interpreted and displayed to end users.  This information is optimised for use i
 Nonetheless it is also available via the API for use by any downstream systems.  
 
 ```bash
-GET /lang/<funder id>
+GET /funder_language/<funder id>
 ```
 
 The response is a JSON document which contains all of the language used by the JCT front end, which covers:
@@ -299,6 +303,10 @@ The response is a JSON document which contains all of the language used by the J
 * Text for all API log codes
 * Content for all compliance cards
 * Any modals attached to any part of the information
+
+Examples:
+* Wellcome Trust: [{{< param apidocs.ApiURL >}}funder_language/wellcome]({{< param apidocs.ApiURL >}}funder_language/wellcome)
+* UKRI: [{{< param apidocs.ApiURL >}}funder_language/unitedkingdomresearchinnovationukri]({{< param apidocs.ApiURL >}}funder_language/unitedkingdomresearchinnovationukri)
 
 ## Transformative Journals
 
@@ -319,6 +327,10 @@ Response format:
 
 OR `404` if record not found
 
+Examples:
+* PLoS One (not a Transformative Journal): [{{< param apidocs.ApiURL >}}tj/1932-6203]({{< param apidocs.ApiURL >}}tj/1932-6203)
+* Journal of Cell Science (a Transformative Journal): [{{< param apidocs.ApiURL >}}tj/0021-9533]({{< param apidocs.ApiURL >}}tj/0021-9533)
+
 ## Transformative Agreements
 
 ```bash
@@ -329,25 +341,29 @@ Response format:
 
 ```json
 {
-  "started" : "<start timestamp of the request>",
-  "ended" : "<end timestamp of the request>",
-  "took" : "<the time in ms between request start and end (on the server, not including travel time)>",
-  "route" : "<ta> # indicating a check for transformative agreement was done in the api",
-  "compliant" : "<true/false> # (if there is an agreement, this is true. Otherwise false.)",
-  "qualifications" : [
-    {
-      "<qualification id> (see below)" : { "<qualification specific data (if needed)>" : "" }
-    }
-  ],
-  "issn" : "<issn in the TA>",
+  "issn" : ["<issn in the TA>"],
   "ror" : "<ror in the TA>",
-  "log" : [
-    {
-      "action" : "<description of the action (see above for details.)>",
-      "result" : "<the outcome of the action (optional, depending on circumstance)>"
-    }
-   ]
+  "result" : {
+    "compliant": "<yes|no|unknown>",
+    "qualifications": [
+      {
+        "<qualification id>": {
+          "<qualification specific data (if needed)>": ""
+        }
+      }
+    ],
+    "log": [
+      {
+        "action": "<description of the action (see above for details.)>",
+        "result": "<the outcome of the action (optional, depending on circumstance)>"
+      }
+    ]
+  }
 }
 ```
 
 OR `404` if no TA exists for that combination.
+
+Examples:
+* PLoS One, Oxford (No such TA exists): [{{< param apidocs.ApiURL >}}ta?issn=1932-6203&ror=052gg0110]({{< param apidocs.ApiURL >}}ta?issn=1932-6203&ror=052gg0110)
+* Acta Zoologica, University of Maribor (TA exists): [{{< param apidocs.ApiURL >}}ta?issn=1463-6395&ror=01d5jce07]({{< param apidocs.ApiURL >}}ta?issn=1463-6395&ror=01d5jce07)
