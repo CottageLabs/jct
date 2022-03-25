@@ -1,6 +1,6 @@
 ---
 date: 2022-01-13T23:38:56Z
-title: Release Notes
+title: Release History
 description: "Journal Checker Tool: Release History."
 ---
 
