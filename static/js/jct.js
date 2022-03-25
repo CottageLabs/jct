@@ -352,19 +352,19 @@ jct.searchFunders = function(str) {
                         add = 2;
                     }
                     if (matches.hasOwnProperty(funder.id)) {
-                        matches[funder.id].score += add;
+                        matches[funder.id+funder.name].score += add;
                     } else {
-                        matches[funder.id] = {"record" : funder, "score" : add}
+                        matches[funder.id+funder.name] = {"record" : funder, "score" : add}
                     }
                 }
             }
 
             // then also check the funder id, which is a high scoring match
             if (st === funder.id) {
-                if (matches.hasOwnProperty(funder.id)) {
-                    matches[funder.id].score += 100;
+                if (matches.hasOwnProperty(funder.id+funder.name)) {
+                    matches[funder.id+funder.name].score += 100;
                 } else {
-                    matches[funder.id] = {"record" : funder, "score" : 100}
+                    matches[funder.id+funder.name] = {"record" : funder, "score" : 100}
                 }
             }
         }
