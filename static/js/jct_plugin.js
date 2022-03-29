@@ -5,10 +5,10 @@ window.JCT_WIDGET = true;
 
 
 
-// -------- api_endpoint_staging --------
+// -------- api_endpoint --------
 
-window.JCT_API_endpoint = 'https://api.jct.cottagelabs.com';
-window.JCT_UI_BASE_URL = "https://jct.cottagelabs.com";
+window.JCT_API_endpoint = 'https://api.journalcheckertool.org';
+window.JCT_UI_BASE_URL = "https://journalcheckertool.org";
 
 
 
@@ -475,14 +475,14 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
 
     // get the icon if it exists, and the icon identifier is not "false" (the string).
     let icon = "";
-    if (cardText.icon && cardText.icon !== "false") {
+    if (cardText.icon) {
         icon = uiText.icons[cardText.icon];
         if (icon === undefined) {
             icon = "";
         }
     }
 
-    let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
+    let preferred = cardConfig.preferred ? `<em>${uiText.site.preferred}</em><br><br>` : "";
     let modalText = uiText.site.card_modal;
     if (cardText.modal) {
         modalText = cardText.modal;
@@ -523,13 +523,19 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
         body = body.replace("{institution}", uiText.site.card_institution_missing);
     }
 
+    let cardClass = "card"
     let why = "";
-    if (cardConfig.compliant && !window.JCT_WIDGET) {
-        why = `<a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a>`;
-    }
+    // TODO: this enables a "why am I seeing this?" feature on the card which links to the
+    // results explanation on a per-card basis.  We have agreed not to enable this for the moment
+    // while we review the text
+    //
+    // if (cardConfig.compliant && !window.JCT_WIDGET) {
+    //     why = `<div class="read_more_banner"><a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a></div>`;
+    //     cardClass = "card explainable_card";
+    // }
 
     return `<div class="col col--1of4">
-        <article class="card">
+        <article class="${cardClass}">
             ${icon}
             <h4 class="label card__heading">
                 ${preferred}
@@ -575,8 +581,9 @@ jct.readMoreModal = function(cardId) {
     let modal_html = `<div class="modal" id="jct_modal_${cardId}" style="display: block">
         <div class="modal-content" id="jct_modal_${cardId}_content">
             <header class="modal-header">
-                <h2>${jct.lang.cards[cardId].explain.title}
+                <h2>
                     <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${cardId}">&times;</span>
+                    ${jct.lang.cards[cardId].explain.title}
                 </h2>
             </header>
             <div>${content}</div>
@@ -634,8 +641,9 @@ jct.build_modal = (modal_id) => {
     let modal_html = `<div class="modal" id="jct_modal_${modal_id}" style="display: block">
         <div class="modal-content" id="jct_modal_${modal_id}_content">
             <header class="modal-header">
-                <h2>${modalText.title}
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>
+                <h2>
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>                    
+                    ${modalText.title}
                 </h2>
             </header>
             <div>${modalText.body}</div>
@@ -682,19 +690,19 @@ jct.searchFunders = function(str) {
                         add = 2;
                     }
                     if (matches.hasOwnProperty(funder.id)) {
-                        matches[funder.id].score += add;
+                        matches[funder.id+funder.name].score += add;
                     } else {
-                        matches[funder.id] = {"record" : funder, "score" : add}
+                        matches[funder.id+funder.name] = {"record" : funder, "score" : add}
                     }
                 }
             }
 
             // then also check the funder id, which is a high scoring match
             if (st === funder.id) {
-                if (matches.hasOwnProperty(funder.id)) {
-                    matches[funder.id].score += 100;
+                if (matches.hasOwnProperty(funder.id+funder.name)) {
+                    matches[funder.id+funder.name].score += 100;
                 } else {
-                    matches[funder.id] = {"record" : funder, "score" : 100}
+                    matches[funder.id+funder.name] = {"record" : funder, "score" : 100}
                 }
             }
         }
@@ -1404,7 +1412,7 @@ jct.setup = (manageUrl=true) => {
 
 // -------- funders --------
 
-jct.funderlist=[{"country": null, "id": "academyoffinlandaka", "abbr": "AKA", "name": "Academy of Finland"}, {"country": null, "id": "aligningscienceacrossparkinsonsasap", "abbr": "ASAP", "name": "Aligning Science Across Parkinson's"}, {"country": null, "id": "austriansciencefundfwf", "abbr": "FWF", "name": "Austrian Science Fund"}, {"country": null, "id": "billmelindagatesfoundation", "abbr": null, "name": "Bill & Melinda Gates Foundation"}, {"country": null, "id": "europeancommissionhorizoneuropeframeworkprogramme", "abbr": null, "name": "European Commission (Horizon Europe Framework Programme)"}, {"country": "Sweden", "id": "formassweden", "abbr": null, "name": "Formas"}, {"country": "Sweden", "id": "fortesweden", "abbr": null, "name": "FORTE"}, {"country": null, "id": "frenchnationalresearchagencyanr", "abbr": "ANR", "name": "French National Research Agency"}, {"country": "Jordan", "id": "highercouncilforscienceandtechnologyhcstjordan", "abbr": "HCST", "name": "Higher Council for Science and Technology"}, {"country": null, "id": "howardhughesmedicalinstitutehhmi", "abbr": "HHMI", "name": "Howard Hughes Medical Institute"}, {"country": null, "id": "luxembourgnationalresearchfundfnr", "abbr": "FNR", "name": "Luxembourg National Research Fund"}, {"country": "Italy", "id": "nationalinstitutefornuclearphysicsinfnitaly", "abbr": "INFN", "name": "National Institute for Nuclear Physics"}, {"country": "Zambia", "id": "nationalscienceandtechnologycouncilnstczambia", "abbr": "NSTC", "name": "National Science and Technology Council"}, {"country": "Poland", "id": "nationalsciencecentrepolandncn", "abbr": "NCN", "name": "National Science Centre"}, {"country": null, "id": "netherlandsorganisationforscientificresearchnwo", "abbr": "NWO", "name": "Netherlands Organisation for Scientific Research"}, {"country": null, "id": "researchcouncilofnorwayrcn", "abbr": "RCN", "name": "Research Council of Norway"}, {"country": null, "id": "sciencefoundationirelandsfi", "abbr": "SFI", "name": "Science Foundation Ireland"}, {"country": null, "id": "slovenianresearchagencyarrs", "abbr": "ARRS", "name": "Slovenian Research Agency"}, {"country": null, "id": "southafricanmedicalresearchcouncilsamrc", "abbr": "SAMRC", "name": "South African Medical Research Council"}, {"country": null, "id": "specialprogrammeforresearchandtrainingintropicaldiseasestdr", "abbr": "TDR", "name": "Special Programme for Research and Training in Tropical Diseases"}, {"country": null, "id": "templetonworldcharityfoundationtwcf", "abbr": "TWCF", "name": "Templeton World Charity Foundation"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "UKRI", "name": "UK Research and Innovation. Policy effective from April 2022"}, {"country": "Sweden", "id": "vinnovasweden", "abbr": null, "name": "Vinnova"}, {"country": null, "id": "wellcome", "abbr": null, "name": "Wellcome"}, {"country": null, "id": "worldhealthorganizationwho", "abbr": "WHO", "name": "World Health Organization"}]
+jct.funderlist=[{"country": null, "id": "academyoffinlandaka", "abbr": "AKA", "name": "Academy of Finland"}, {"country": null, "id": "aligningscienceacrossparkinsonsasap", "abbr": "ASAP", "name": "Aligning Science Across Parkinson's"}, {"country": null, "id": "austriansciencefundfwf", "abbr": "FWF", "name": "Austrian Science Fund"}, {"country": null, "id": "billmelindagatesfoundation", "abbr": null, "name": "Bill & Melinda Gates Foundation"}, {"country": null, "id": "europeancommissionhorizoneuropeframeworkprogramme", "abbr": null, "name": "European Commission (Horizon Europe Framework Programme)"}, {"country": "Sweden", "id": "formassweden", "abbr": null, "name": "Formas"}, {"country": "Sweden", "id": "fortesweden", "abbr": null, "name": "FORTE"}, {"country": null, "id": "frenchnationalresearchagencyanr", "abbr": "ANR", "name": "French National Research Agency"}, {"country": "Jordan", "id": "highercouncilforscienceandtechnologyhcstjordan", "abbr": "HCST", "name": "Higher Council for Science and Technology"}, {"country": null, "id": "howardhughesmedicalinstitutehhmi", "abbr": "HHMI", "name": "Howard Hughes Medical Institute"}, {"country": null, "id": "luxembourgnationalresearchfundfnr", "abbr": "FNR", "name": "Luxembourg National Research Fund"}, {"country": "Italy", "id": "nationalinstitutefornuclearphysicsinfnitaly", "abbr": "INFN", "name": "National Institute for Nuclear Physics"}, {"country": "Zambia", "id": "nationalscienceandtechnologycouncilnstczambia", "abbr": "NSTC", "name": "National Science and Technology Council"}, {"country": "Poland", "id": "nationalsciencecentrepolandncn", "abbr": "NCN", "name": "National Science Centre"}, {"country": null, "id": "netherlandsorganisationforscientificresearchnwo", "abbr": "NWO", "name": "Netherlands Organisation for Scientific Research"}, {"country": null, "id": "researchcouncilofnorwayrcn", "abbr": "RCN", "name": "Research Council of Norway"}, {"country": null, "id": "sciencefoundationirelandsfi", "abbr": "SFI", "name": "Science Foundation Ireland"}, {"country": null, "id": "slovenianresearchagencyarrs", "abbr": "ARRS", "name": "Slovenian Research Agency"}, {"country": null, "id": "southafricanmedicalresearchcouncilsamrc", "abbr": "SAMRC", "name": "South African Medical Research Council"}, {"country": null, "id": "specialprogrammeforresearchandtrainingintropicaldiseasestdr", "abbr": "TDR", "name": "Special Programme for Research and Training in Tropical Diseases"}, {"country": null, "id": "templetonworldcharityfoundationtwcf", "abbr": "TWCF", "name": "Templeton World Charity Foundation"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "UKRI", "name": "UK Research and Innovation."}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "AHRC (UKRI)", "name": "Arts and Humanities Research Council"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "BBSRC (UKRI)", "name": "Biotechnology and Biological Sciences Research Council"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "ESRC (UKRI)", "name": "Economic and Social Research Council"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "EPSRC (UKRI)", "name": "Engineering and Physical Sciences Research Council"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "UKRI", "name": "Innovate UK"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "MRC (UKRI)", "name": "Medical Research Council"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "NERC (UKRI)", "name": "Natural Environment Research Council"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "UKRI", "name": "Research England"}, {"country": null, "id": "unitedkingdomresearchinnovationukri", "abbr": "STFC (UKRI)", "name": "Science and Technology Facilities Council"}, {"country": "Sweden", "id": "vinnovasweden", "abbr": null, "name": "Vinnova"}, {"country": null, "id": "wellcome", "abbr": null, "name": "Wellcome"}, {"country": null, "id": "worldhealthorganizationwho", "abbr": "WHO", "name": "World Health Organization"}]
 
 
 // -------- find_out_more --------

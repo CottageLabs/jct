@@ -15,7 +15,7 @@ def compile(env=""):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Compile the widget')
-    parser.add_argument('environment', type=str, default="",
+    parser.add_argument("-e", '--environment', type=str, default="",
                         help='environment to compile the widget for.  No argument defaults to production')
 
     args = parser.parse_args()
