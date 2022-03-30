@@ -1198,7 +1198,7 @@ jct.setup = (manageUrl=true) => {
                 frag += '<span class="jct__option_journal_title">' + t + '</span>';
             }
             if (publisher) {
-                frag += ' <span class="jct__option_journal_publisher">(' + publisher + ')</span> ';
+                frag += ' <span class="jct__option_journal_publisher">(' + publisher.trim() + ')</span> ';
             }
             let issnPrefix = "";
             if (!t && !publisher) {
@@ -1217,7 +1217,7 @@ jct.setup = (manageUrl=true) => {
                 frag += t;
             }
             if (publisher) {
-                frag += " (" + publisher + ")";
+                frag += " (" + publisher.trim() + ")";
             }
             if (issns) {
                 if (t || publisher) {
@@ -1279,7 +1279,7 @@ jct.setup = (manageUrl=true) => {
                 entry += ", " + obj.country;
             }
             if (obj.abbr) {
-                entry += " (" + obj.abbr;
+                entry += " (" + obj.abbr + ")";
             }
             return entry;
         },
