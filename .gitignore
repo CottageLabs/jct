@@ -4,3 +4,6 @@
 static/inputit.js
 data/
 resources/
+.hugo_build.lock
+static/_sass/components/*.css
+static/_sass/components/*.css.map

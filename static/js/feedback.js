@@ -1,4 +1,4 @@
-jct.lang.modals.feedback = {
+jct.site_modals.feedback = {
     title: `Feedback? Suggestion? Contact us here.`,
     body: `<p>This tool is delivered by <a href="https://cottagelabs.com/" target="_blank" rel="noopener">
         Cottage Labs</a> on behalf of <a href="https://www.coalition-s.org/" target="_blank" rel="noopener">cOAlition S</a>. </p>

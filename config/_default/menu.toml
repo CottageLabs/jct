@@ -36,3 +36,8 @@
     pre = " • "
     url = "/notices#disclaimer_and_copyright"
     weight = 7
+[[main]]
+    name = "Release History"
+    pre = " • "
+    url = "/release-history"
+    weight = 8

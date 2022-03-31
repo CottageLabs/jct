@@ -8,7 +8,14 @@ let jct = {
     cache: {},
     chosen: {},
     latest_response: null,
-    lang: JCT_LANG,
+    latest_full_response: null,
+    lang: null,
+    funder_langs: {},
+    load : {
+        funder: false,
+        response: false
+    },
+    site_modals : {},
     modal_setup : {},
     clinputs: {},
     inputsCycle: {
@@ -89,8 +96,8 @@ jct.inputs_plugin_html =`
 // ----------------------------------------
 jct.results_plugin_html = `
     <header class="jct_compliance">
-        <h2 id="jct_compliant" style="display:none">${jct.lang.site.compliant}</h2>
-        <h2 id="jct_notcompliant" style="display:none">${jct.lang.site.non_compliant}</h2>
+        <h2 id="jct_compliant" style="display:none"></h2>
+        <h2 id="jct_notcompliant" style="display:none"></h2>
     </header>
 `;
 
@@ -102,138 +109,6 @@ jct.tiles_plugin_html = `
         <h3 class="sr-only">Results</h3>
     </section>
 `;
-
-/////////////////////////////////////////////////////////
-// Cards and card management
-
-jct.getCardsToDisplay = function(config, results) {
-
-    function _matches(cardConfig, results) {
-        return _matches_routes(cardConfig.match_routes, results) &&
-            _matches_qualifications(cardConfig.match_qualifications, results);
-    }
-
-    function _matches_routes(routes, results) {
-        if (!routes) {
-            return true;
-        }
-
-        let compliantRoutes = [];
-        for (let i = 0; i < results.length; i++) {
-            let r = results[i];
-            if (r.compliant === "yes") {
-                compliantRoutes.push(r.route);
-            }
-        }
-
-        if (routes.must) {
-            for (let i = 0; i < routes.must.length; i++) {
-                let mr = routes.must[i];
-                if (!compliantRoutes.includes(mr)) {
-                    return false;
-                }
-            }
-        }
-
-        if (routes.not) {
-            for (let i = 0; i < routes.not.length; i++) {
-                let nr = routes.not[i];
-                if (compliantRoutes.includes(nr)) {
-                    return false;
-                }
-            }
-        }
-
-        if (routes.or) {
-            for (let i = 0; i < routes.or.length; i++) {
-                let or = routes.or[i];
-                if (compliantRoutes.includes(or)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    function _matches_qualifications(qualifications, results) {
-        if (!qualifications) {
-            return true;
-        }
-
-        if (qualifications.must) {
-            for (let i = 0; i < qualifications.must.length; i++) {
-                let mq = qualifications.must[i];
-                if (!_hasQualification(mq, results)) {
-                    return false;
-                }
-            }
-        }
-
-        if (qualifications.not) {
-            for (let i = 0; i < qualifications.not.length; i++) {
-                let nq = qualifications.not[i];
-                if (_hasQualification(nq, results)) {
-                    return false;
-                }
-            }
-        }
-
-        if (qualifications.or) {
-            for (let i = 0; i < qualifications.or.length; i++) {
-                let oq = qualifications.or[i];
-                if (_hasQualification(oq, results)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    function _hasQualification(path, results) {
-        let bits = path.split(".");
-        for (let i = 0; i < results.length; i++) {
-            let r = results[i];
-            if (bits[0] === r.route) {
-                if ("qualifications" in r) {
-                    for (let j = 0; j < r.qualifications.length; j++) {
-                        let qual = r.qualifications[j];
-                        if (Object.keys(qual).includes(bits[1])) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    // list the cards to display
-    let cards = [];
-    for (let i = 0; i < config.cards.length; i++) {
-        let cardConfig = config.cards[i];
-        if (_matches(cardConfig, results)) {
-            cards.push(cardConfig);
-        }
-    }
-
-    // sort them according to the correct order
-    let sorted_cards = []
-    for (let i = 0; i < config.card_order.length; i++) {
-        let next = config.card_order[i];
-        for (let j = 0; j < cards.length; j++) {
-            let card = cards[j];
-            if (card.id === next) {
-                sorted_cards.push(card);
-            }
-        }
-    }
-
-    return sorted_cards;
-}
 
 // ----------------------------------------
 // Function to display the selected list of tiles
@@ -262,14 +137,14 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
 
     // get the icon if it exists, and the icon identifier is not "false" (the string).
     let icon = "";
-    if (cardText.icon && cardText.icon !== "false") {
+    if (cardText.icon) {
         icon = uiText.icons[cardText.icon];
         if (icon === undefined) {
             icon = "";
         }
     }
 
-    let preferred = cardConfig.preferred === "true" ? `<em>${uiText.site.preferred}</em><br><br>` : "";
+    let preferred = cardConfig.preferred ? `<em>${uiText.site.preferred}</em><br><br>` : "";
     let modalText = uiText.site.card_modal;
     if (cardText.modal) {
         modalText = cardText.modal;
@@ -310,8 +185,19 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
         body = body.replace("{institution}", uiText.site.card_institution_missing);
     }
 
+    let cardClass = "card"
+    let why = "";
+    // TODO: this enables a "why am I seeing this?" feature on the card which links to the
+    // results explanation on a per-card basis.  We have agreed not to enable this for the moment
+    // while we review the text
+    //
+    // if (cardConfig.compliant && !window.JCT_WIDGET) {
+    //     why = `<div class="read_more_banner"><a href="#" class="read_more" data-card="${cardConfig.id}">${jct.lang.site.why_am_i_seeing_this}</a></div>`;
+    //     cardClass = "card explainable_card";
+    // }
+
     return `<div class="col col--1of4">
-        <article class="card">
+        <article class="${cardClass}">
             ${icon}
             <h4 class="label card__heading">
                 ${preferred}
@@ -319,6 +205,7 @@ jct.buildCard = function(cardConfig, uiText, results, choices) {
             </h4>
             ${body}
             <p>${modal}</p>
+            ${why}
         </article>
     </div>`;
 }
@@ -333,6 +220,38 @@ jct.bindModals = function() {
         trigger.removeEventListener("click", jct.modalTrigger);
         trigger.addEventListener("click", jct.modalTrigger)
     }
+
+    let readMores = document.getElementsByClassName("read_more");
+    for (let i = 0; i < readMores.length; i++) {
+        let trigger = readMores[i];
+        trigger.removeEventListener("click", jct.readMoreTrigger);
+        trigger.addEventListener("click", jct.readMoreTrigger)
+    }
+}
+
+jct.readMoreTrigger = function(event) {
+    event.preventDefault();
+    let element = event.target;
+    let cardId = element.getAttribute("data-card");
+    let modal = jct.readMoreModal(cardId);
+    jct.modalShow(modal);
+}
+
+jct.readMoreModal = function(cardId) {
+    let content = jct.explain_card(jct.latest_full_response, cardId);
+
+    let modal_html = `<div class="modal" id="jct_modal_${cardId}" style="display: block">
+        <div class="modal-content" id="jct_modal_${cardId}_content">
+            <header class="modal-header">
+                <h2>
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${cardId}">&times;</span>
+                    ${jct.lang.cards[cardId].explain.title}
+                </h2>
+            </header>
+            <div>${content}</div>
+        </div>
+    </div>`;
+    return modal_html;
 }
 
 jct.modalTrigger = function(event) {
@@ -374,15 +293,19 @@ jct._windowCloseModal = function(e) {
 }
 
 jct.build_modal = (modal_id) => {
-    let modalText = jct.lang.modals[modal_id];
+    let modalText = jct.lang ? jct.lang.modals[modal_id] : "";
+    if (!modalText) {
+        modalText = jct.site_modals[modal_id];
+    }
     if (!modalText) {
         return "";
     }
     let modal_html = `<div class="modal" id="jct_modal_${modal_id}" style="display: block">
         <div class="modal-content" id="jct_modal_${modal_id}_content">
             <header class="modal-header">
-                <h2>${modalText.title}
-                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>
+                <h2>
+                    <span class="close jct_modal_close" aria-label="Close" role="button" data-id="jct_modal_${modal_id}">&times;</span>                    
+                    ${modalText.title}
                 </h2>
             </header>
             <div>${modalText.body}</div>
@@ -429,19 +352,19 @@ jct.searchFunders = function(str) {
                         add = 2;
                     }
                     if (matches.hasOwnProperty(funder.id)) {
-                        matches[funder.id].score += add;
+                        matches[funder.id+funder.name].score += add;
                     } else {
-                        matches[funder.id] = {"record" : funder, "score" : add}
+                        matches[funder.id+funder.name] = {"record" : funder, "score" : add}
                     }
                 }
             }
 
             // then also check the funder id, which is a high scoring match
             if (st === funder.id) {
-                if (matches.hasOwnProperty(funder.id)) {
-                    matches[funder.id].score += 100;
+                if (matches.hasOwnProperty(funder.id+funder.name)) {
+                    matches[funder.id+funder.name].score += 100;
                 } else {
-                    matches[funder.id] = {"record" : funder, "score" : 100}
+                    matches[funder.id+funder.name] = {"record" : funder, "score" : 100}
                 }
             }
         }
@@ -500,12 +423,32 @@ jct.jx = (route,q,after,api) => {
         let searchParams = new URLSearchParams(q);
         for (const [key, value] of searchParams.entries()) {url.searchParams.append(key, value)}
     }
+
+    // request the calculation
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url.href);
     xhr.send();
-    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.success(xhr)); };
+    xhr.onload = () => { xhr.status !== 200 ? jct.error(xhr) : (typeof after === 'function' ? after(xhr) : jct.result_loaded(xhr)); };
     xhr.onprogress = (e) => { jct.progress(e); };
     xhr.onerror = () => { jct.error(); };
+
+    // request the funder language for the calculation
+    if (route === "calculate") {
+        jct.load.funder = false;
+        jct.load.response = false;
+
+        if (jct.funder_langs.hasOwnProperty(q.funder)) {
+            jct.load_funder(q.funder, jct.funder_langs[q.funder]);
+            return;
+        }
+        let funderUrl = new URL("funder_language/" + q.funder, base_url)
+        let fxhr = new XMLHttpRequest();
+        // fxhr.open("GET", new URL(base_url + "/funder_language/" + q.funder));
+        fxhr.open("GET", funderUrl.href);
+        fxhr.send();
+        fxhr.onload = () => { fxhr.status !== 200 ? jct.funder_error(fxhr) : jct.funder_loaded(q.funder, fxhr); };
+        fxhr.onerror = () => { jct.funder_error(); };
+    }
 }
 
 // ----------------------------------------
@@ -554,14 +497,13 @@ jct.progress = (e) => {
 // ----------------------------------------
 // function to handle success from main api response
 // ----------------------------------------
-jct.success = (xhr) => {
+jct.success = () => {
+    let js = jct.latest_full_response;
+
     jct.d.gebi('jct_compliant').style.display = 'none';
     jct.d.gebi('jct_notcompliant').style.display = 'none';
     jct.d.gebi("jct_loading").style.display = "none";
-    let js = JSON.parse(xhr.response);
-    if (!jct.result_equals_chosen(js.request))
-        return;
-    jct.latest_response = js.results;
+
     let paths_results = jct.d.gebi("jct_paths_results");
     jct._emptyElement(paths_results)
     jct.display_result(js);
@@ -570,26 +512,77 @@ jct.success = (xhr) => {
         jct.d.hide_detailed_results();
         jct.explain(js)
     }
+    let print = jct.d.gebi('jct_print');
+    if (print) {
+        print.style.display = 'initial';
+    }
     if (jct.d.gebi("jct_find_out_more")) {
         jct.setup_fom_url();
     }
     jct.bindModals();
 }
 
+jct.funder_error = (xhr) => {
+    alert("Unable to load funder language pack, please try again");
+    // this is going to need to cancel the request to reset the UI
+}
+
+jct.funder_loaded = (funder_id, xhr) => {
+    let js = JSON.parse(xhr.response);
+    jct.load_funder(funder_id, js);
+}
+
+jct.load_funder = (funder_id, lang) => {
+    jct.funder_langs[funder_id] = lang;
+    jct.lang = jct.funder_langs[funder_id];
+    jct.load.funder = true;
+    jct.doSuccess();
+}
+
+jct.doSuccess = () => {
+    if (jct.load.funder && jct.load.response) {
+        jct.success();
+    }
+}
+
+jct.result_loaded = (xhr) => {
+    let js = JSON.parse(xhr.response);
+    if (!jct.result_equals_chosen(js.request)) {
+        return;
+    }
+    jct.latest_full_response = js;
+    jct.latest_response = js.results;
+    jct.load.response = true;
+    jct.doSuccess();
+}
+
 //-----------------------------------------
 // function to display the results
 //-----------------------------------------
 jct.display_result = (js) => {
-    jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
-    jct.d.gebi("jct_results").style.display = 'block';
     if (js.compliant) {
+        let compliantHeader = jct.d.gebi('jct_compliant');
+        compliantHeader.innerText = jct.lang.site.compliant;
+        compliantHeader.style.display = 'block';
+
         jct._setComplianceTheme(true);
-    }
-    else {
+    } else {
+        let compliantHeader = jct.d.gebi('jct_notcompliant');
+        compliantHeader.innerText = jct.lang.site.non_compliant;
+        compliantHeader.style.display = 'block';
+
         jct._setComplianceTheme(false);
-        // jct._addNonCompliantOptions();
     }
-    let cardsToDisplay = jct.getCardsToDisplay(jct.config, js.results);
+
+    // jct.d.gebi(js.compliant ? 'jct_compliant' : 'jct_notcompliant').style.display = 'block';
+    jct.d.gebi("jct_results").style.display = 'block';
+    // if (js.compliant) {
+    //
+    // }
+    // else {
+    //
+    // }
+    let cardsToDisplay = js.cards;
     jct.displayCards(cardsToDisplay, js.results);
 
     x = window.matchMedia("(max-width: 767px)")
@@ -758,10 +751,10 @@ jct.d.show_detailed_results = () => {
         explainResults.innerHTML = 'Hide explanation';
     }
     jct.d.gebi('jct_detailed_results').style.display = "flex";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'initial';
-    }
+    // let print = jct.d.gebi('jct_print');
+    // if (print) {
+    //     print.style.display = 'initial';
+    // }
 }
 
 // ----------------------------------------
@@ -773,10 +766,10 @@ jct.d.hide_detailed_results = () => {
         explainResults.innerHTML = 'Explain this result';
     }
     jct.d.gebi('jct_detailed_results').style.display = "none";
-    let print = jct.d.gebi('jct_print');
-    if (print) {
-        print.style.display = 'none';
-    }
+    // let print = jct.d.gebi('jct_print');
+    // if (print) {
+    //     print.style.display = 'none';
+    // }
 }
 
 // ----------------------------------------
@@ -867,7 +860,7 @@ jct.setup = (manageUrl=true) => {
                 frag += '<span class="jct__option_journal_title">' + t + '</span>';
             }
             if (publisher) {
-                frag += ' <span class="jct__option_journal_publisher">(' + publisher + ')</span> ';
+                frag += ' <span class="jct__option_journal_publisher">(' + publisher.trim() + ')</span> ';
             }
             let issnPrefix = "";
             if (!t && !publisher) {
@@ -886,7 +879,7 @@ jct.setup = (manageUrl=true) => {
                 frag += t;
             }
             if (publisher) {
-                frag += " (" + publisher + ")";
+                frag += " (" + publisher.trim() + ")";
             }
             if (issns) {
                 if (t || publisher) {
@@ -948,7 +941,7 @@ jct.setup = (manageUrl=true) => {
                 entry += ", " + obj.country;
             }
             if (obj.abbr) {
-                entry += " (" + obj.abbr;
+                entry += " (" + obj.abbr + ")";
             }
             return entry;
         },
