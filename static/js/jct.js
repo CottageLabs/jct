@@ -360,7 +360,7 @@ jct.searchFunders = function(str) {
             }
 
             // then also check the funder id, which is a high scoring match
-            if (st === funder.id) {
+            if (st === funder.id && funder.primary) {
                 if (matches.hasOwnProperty(funder.id+funder.name)) {
                     matches[funder.id+funder.name].score += 100;
                 } else {
