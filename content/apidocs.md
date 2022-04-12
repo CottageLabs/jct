@@ -37,7 +37,7 @@ before responding to the request.
 The parameters you can pass to the `/calculate` endpoint are as follows:
 
 * **issn** - either the print or online ISSN of the journal you wish to check. *required*
-* **funder** - the JCT ID for the funder that you wish to check.  Allowable Funder IDs are listed [here](/funder-ids). *optional*
+* **funder** - the JCT ID for the funder that you wish to check.  Allowable Funder IDs are listed [here](/funder-ids). *required*
 * **ror** - the ROR ID of the organisation that you wish to check.  See [https://ror.org](https://ror.org/) for more information. *optional*
 
 The `issn` field is the only *required* field, though without the `ror` and `funder` fields your results will
