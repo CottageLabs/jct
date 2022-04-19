@@ -973,7 +973,7 @@ jct.setup = (manageUrl=true) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
                 }
-                jct.jx('suggest/institution/'+text, false, ourcb);
+                jct.jx('suggest/iac/'+text, false, ourcb);
             }
         },
         optionsTemplate : function(obj) {
