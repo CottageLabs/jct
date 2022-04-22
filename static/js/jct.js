@@ -985,7 +985,7 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
+            text = text.toLowerCase(); //.replace(' of','').replace('the ','');
             if (text.length > 1) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
