@@ -865,7 +865,7 @@ jct.setup = (manageUrl=true) => {
                     callback(js.data);
                 }
                 // jct.jx('suggest/journal/'+text, false, ourcb);
-                jct.jx('suggest/jac/'+text, false, ourcb);
+                jct.jx('suggest/journal/'+text, false, ourcb);
             }
         },
         optionsTemplate : function(obj) {
@@ -991,7 +991,7 @@ jct.setup = (manageUrl=true) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
                 }
-                jct.jx('suggest/iac/'+text, false, ourcb);
+                jct.jx('suggest/institution/'+text, false, ourcb);
             }
         },
         optionsTemplate : function(obj) {
