@@ -784,6 +784,25 @@ jct.d.toggle_detailed_results = () => {
     }
 }
 
+jct.suggest_prepare = (txt, stop_words) => {
+    txt = txt.toLowerCase().trim();
+    for (let sw of stop_words) {
+        let fullThing = new RegExp("^" + sw + "$");
+        let atEnd = new RegExp(" " + sw + "$");
+        let atStart = new RegExp("^" + sw + " ");
+        let inMiddle = new RegExp(" " + sw + " ");
+
+        txt = txt.replace(fullThing, "").replace(atEnd, "").replace(atStart, "").replace(inMiddle, " ")
+    }
+    while (true) {
+        if (!(txt.includes("  "))) {
+            break
+        }
+        txt.replace("  ", " ")
+    }
+    return txt
+}
+
 //////////////////////////////////////////////////////////
 // Initialisation
 
@@ -836,13 +855,13 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
+            let effectiveTextLength = text.length;
             let pattern = /[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9xX]/;
-            if (pattern.test(text)) {
-                text = text.toUpperCase();
-            } else {
-                text = text.toLowerCase().replace(' of','').replace('the ','');
+            if (!pattern.test(text)) {
+                let effective_text = jct.suggest_prepare(text, ["of", "the", "and", "journa", "journal"])
+                effectiveTextLength = effective_text.length;
             }
-            if (text.length > 1) {
+            if (effectiveTextLength >= 3) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
@@ -852,7 +871,7 @@ jct.setup = (manageUrl=true) => {
         },
         optionsTemplate : function(obj) {
             let t = obj.title;
-            let issns = obj.issn.join(", ");
+            let issns = obj.issns.join(", ");
             let publisher = obj.publisher;
             let frag = "<a class='optionsTemplate'>";
 
@@ -871,7 +890,7 @@ jct.setup = (manageUrl=true) => {
         },
         selectedTemplate : function(obj) {
             let t = obj.title;
-            let issns = obj.issn;
+            let issns = obj.issns;
             let publisher = obj.publisher;
 
             let frag = "";
@@ -967,8 +986,9 @@ jct.setup = (manageUrl=true) => {
             autocomplete: "off"
         },
         options : function(text, callback) {
-            text = text.toLowerCase().replace(' of','').replace('the ','');
-            if (text.length > 1) {
+            let effective_text = jct.suggest_prepare(text, ["of", "the", "and", "universi", "universit", "university"])
+            let effectiveTextLength = effective_text.length;
+            if (effectiveTextLength >= 3) {
                 let ourcb = (xhr) => {
                     let js = JSON.parse(xhr.response);
                     callback(js.data);
